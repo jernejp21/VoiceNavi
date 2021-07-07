@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for Config_TMR0_TMR1.
-* Creation Date: 2021-07-02
+* Creation Date: 2021-07-06
 ***********************************************************************************************************************/
 
 #ifndef CFG_Config_TMR0_TMR1_H
@@ -40,9 +40,9 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-#define TMR0_PCLK_COUNTER_DIVISION                    (2) 
+#define TMR0_PCLK_COUNTER_DIVISION                    (1) 
 #define _0EA5_TMR01_COMP_MATCH_VALUE_A                (0x0EA5U)
-#define _003B_TMR01_COMP_MATCH_VALUE_B                (0x003BU)
+#define _0001_TMR01_COMP_MATCH_VALUE_B                (0x0001U)
 
 /***********************************************************************************************************************
 Typedef definitions

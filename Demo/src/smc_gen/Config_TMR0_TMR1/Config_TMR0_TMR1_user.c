@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for Config_TMR0_TMR1.
-* Creation Date: 2021-07-02
+* Creation Date: 2021-07-06
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -67,19 +67,7 @@ void R_Config_TMR0_TMR1_Create_UserInit(void)
 * Return Value : None
 ***********************************************************************************************************************/
 
-#if FAST_INTERRUPT_VECTOR == VECT_PERIB_INTB146
-#pragma interrupt r_Config_TMR0_TMR1_cmia0_interrupt(vect=VECT(PERIB,INTB146),fint)
-#else
-#pragma interrupt r_Config_TMR0_TMR1_cmia0_interrupt(vect=VECT(PERIB,INTB146))
-#endif
-static void r_Config_TMR0_TMR1_cmia0_interrupt(void)
-{
-    /* Start user code for r_Config_TMR0_TMR1_cmia0_interrupt. Do not edit comment generated here */
-	PORTD.PODR.BIT.B6 ^= 1;
-	PORTD.PODR.BIT.B7 ^= 1;
-	DA.DADR1 = g_counter++;
-    /* End user code. Do not edit comment generated here */
-}
+
 
 /* Start user code for adding. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */

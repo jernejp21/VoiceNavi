@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for Config_TMR0_TMR1.
-* Creation Date: 2021-07-02
+* Creation Date: 2021-07-06
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -72,8 +72,8 @@ void R_Config_TMR0_TMR1_Create(void)
     TMR0.TCSR.BYTE = _00_TMR_AD_TRIGGER_DISABLE | _E0_TMR02_TCSR_DEFAULT;
 
     /* Set compare match value */ 
-    TMR01.TCORA = _0EA5_TMR01_COMP_MATCH_VALUE_A;
-    TMR01.TCORB = _003B_TMR01_COMP_MATCH_VALUE_B;
+    TMR01.TCORA = 2721;
+    TMR01.TCORB = _0001_TMR01_COMP_MATCH_VALUE_B;
 
     /* Configure TMR0 interrupts */ 
     ICU.SLIBR146.BYTE = 0x03U;
@@ -96,7 +96,7 @@ void R_Config_TMR0_TMR1_Start(void)
     IEN(PERIB, INTB146) = 1U;
 
     /*Start counting*/
-    TMR1.TCCR.BYTE = _08_TMR_CLK_SRC_PCLK | _01_TMR_PCLK_DIV_2;
+    TMR1.TCCR.BYTE = _08_TMR_CLK_SRC_PCLK | _00_TMR_PCLK_DIV_1;
 }
 
 /***********************************************************************************************************************
