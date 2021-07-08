@@ -22,6 +22,7 @@ typedef struct wav_header
 	uint16_t bps;
 	char data[4];
 	uint32_t data_size;
+	uint32_t start_address;
 }wav_header_t;
 
 void WAV_Open(wav_header_t*, uint8_t*);
