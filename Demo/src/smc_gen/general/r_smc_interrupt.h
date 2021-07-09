@@ -22,7 +22,7 @@
 * Version      : 1.2.2
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements interrupt setting.
-* Creation Date: 2021-07-06
+* Creation Date: 2021-07-09
 ***********************************************************************************************************************/
 
 #ifndef SMC_INTERRUPT_H
@@ -55,8 +55,6 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-#define FAST_INTERRUPT_VECTOR                      (0)
-
 /* The macro definitions below list the full set of priority levels as selected in the Interrupts tab
  * Please do not modify this file manually
  */
@@ -170,7 +168,7 @@ Macro definitions
 #define ICU_TPU3_TGI3B_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_TPU1_TGI1A_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_TPU3_TGI3C_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_TMR0_CMIA0_PRIORITY                    (_08_ICU_PRIORITY_LEVEL8)
+#define ICU_TMR0_CMIA0_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_TMR0_CMIB0_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_TMR0_OVI0_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_TMR1_CMIA1_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)

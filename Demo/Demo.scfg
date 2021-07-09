@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <smc>
     <general version="2.0.0.0">
-        <configuration active="true" id="com.renesas.smc.toolchain.rxc.configuration.release">
+        <configuration active="true" id="com.renesas.smc.toolchain.gccrx.configuration.release">
             <property id="com.renesas.smc.service.project.buildArtefactType" values="com.renesas.smc.service.project.buildArtefactType.exe"/>
-            <toolchain id="com.renesas.smc.toolchain.rxc.toolchain.rxc">
+            <toolchain id="com.renesas.smc.toolchain.gccrx.toolchain.gccrx">
                 <option id="com.renesas.smc.toolchain.option.buildArtefactType" key="com.renesas.smc.toolchain.option.buildArtefactType.exe"/>
                 <option id="com.renesas.smc.toolchain.option.rtos" key="com.renesas.smc.toolchain.option.rtos.none"/>
             </toolchain>
@@ -19,14 +19,14 @@
             <item enabled="true" id="check"/>
             <item enabled="true" id="uncheck"/>
         </option>
-        <option enabled="true" id="mainsourcebox" selection="srcR">
+        <option enabled="true" id="mainsourcebox" selection="srcEOI">
             <item enabled="true" id="srcR"/>
             <item enabled="true" id="srcEOI"/>
         </option>
         <option enabled="true" id="mainfrequency" selection="textinputitem">
             <item enabled="true" id="textinputitem" input="12" value="12.000000"/>
         </option>
-        <option enabled="true" id="mainwaittime" selection="textinputitem">
+        <option enabled="false" id="mainwaittime" selection="textinputitem">
             <item enabled="true" id="textinputitem" input="9980" value="9980.000000"/>
         </option>
         <option enabled="true" id="subclockenable" selection="uncheck">
@@ -52,7 +52,7 @@
             <item enabled="true" id="frq18"/>
             <item enabled="true" id="frq20"/>
         </option>
-        <option enabled="false" id="hocooscenable" selection="check">
+        <option enabled="false" id="hocooscenable" selection="uncheck">
             <item enabled="true" id="check"/>
             <item enabled="true" id="uncheck"/>
         </option>
@@ -371,7 +371,7 @@
         <Item currentVect="143" defaultVect="143" id="TPU3_TGI3B" priority="15" usedState="Not Use"/>
         <Item currentVect="144" defaultVect="144" id="TPU1_TGI1A" priority="15" usedState="Not Use"/>
         <Item currentVect="145" defaultVect="145" id="TPU3_TGI3C" priority="15" usedState="Not Use"/>
-        <Item currentVect="146" defaultVect="146" id="TMR0_CMIA0" priority="8" usedState="Used"/>
+        <Item currentVect="146" defaultVect="146" id="TMR0_CMIA0" priority="15" usedState="Not Use"/>
         <Item currentVect="147" defaultVect="147" id="TMR0_CMIB0" priority="15" usedState="Not Use"/>
         <Item currentVect="148" defaultVect="148" id="TMR0_OVI0" priority="15" usedState="Not Use"/>
         <Item currentVect="149" defaultVect="149" id="TMR1_CMIA1" priority="15" usedState="Not Use"/>
@@ -487,22 +487,19 @@
         <pinItem allocation="11" comments="" direction="None" id="XTAL" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="13" comments="" direction="None" id="EXTAL" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="7" comments="" direction="None" id="FINED" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="32" comments="" direction="None" id="USB0_OVRCURA" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="30" comments="" direction="None" id="USB0_VBUSEN" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="100" comments="" direction="None" id="DA1" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="36" comments="" direction="None" id="USB0_DM" isUsedBySoftware="false" locked="false" status="4"/>
         <pinItem allocation="37" comments="" direction="None" id="USB0_DP" isUsedBySoftware="false" locked="false" status="4"/>
-        <pinnumItem comment="PMOD1-CS" id="66"/>
-        <pinnumItem comment="LED1" id="79"/>
-        <pinnumItem comment="SW1" id="59"/>
-        <pinnumItem comment="PMOD1-IO0" id="49"/>
         <pinnumItem comment="PMOD1-RST" id="29"/>
-        <pinnumItem comment="LED0" id="80"/>
-        <pinnumItem comment="PMOD1-IO1" id="50"/>
-        <pinnumItem comment="PMOD1-MISO" id="63"/>
         <pinnumItem comment="PMOD1-IRQ" id="31"/>
+        <pinnumItem comment="PMOD1-IO0" id="49"/>
+        <pinnumItem comment="PMOD1-IO1" id="50"/>
+        <pinnumItem comment="SW1" id="59"/>
+        <pinnumItem comment="PMOD1-MISO" id="63"/>
         <pinnumItem comment="PMOD1-MOSI" id="64"/>
         <pinnumItem comment="PMOD1-SCK" id="65"/>
+        <pinnumItem comment="PMOD1-CS" id="66"/>
+        <pinnumItem comment="LED1" id="79"/>
+        <pinnumItem comment="LED0" id="80"/>
     </tool>
     <tool id="Summary" version="1.0.0.0">
         <option id="com.renesas.smc.code.path" value="src\smc_gen"/>
@@ -516,7 +513,7 @@
                 <gridItem id="BSP_CFG_USTACK_BYTES" selectedIndex="0x1000"/>
                 <gridItem id="BSP_CFG_ISTACK_BYTES" selectedIndex="0x400"/>
                 <gridItem id="BSP_CFG_HEAP_BYTES" selectedIndex="0x400"/>
-                <gridItem id="BSP_CFG_IO_LIB_ENABLE" selectedIndex="1"/>
+                <gridItem id="BSP_CFG_IO_LIB_ENABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USER_CHARGET_ENABLED" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USER_CHARGET_FUNCTION" selectedIndex="my_sw_charget_function"/>
                 <gridItem id="BSP_CFG_USER_CHARPUT_ENABLED" selectedIndex="0"/>
@@ -561,171 +558,6 @@
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
         </configuration>
-        <configuration id="49504bc1-70b2-4632-b6e5-90a9f47979f9" inuse="true" name="Config_TMR0_TMR1">
-            <allocatable id="TMR0">
-                <isocket id="CountingClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
-                <option enabled="true" id="CountMode" selection="16bitMode">
-                    <item id="8bitMode" input="" vlaue="0"/>
-                    <item id="16bitMode" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="ClockSourceOption" selection="PCLK">
-                    <item id="PCLK" input="" vlaue="0"/>
-                    <item id="PCLK2" input="" vlaue="0"/>
-                    <item id="PCLK8" input="" vlaue="0"/>
-                    <item id="PCLK32" input="" vlaue="0"/>
-                    <item id="PCLK64" input="" vlaue="0"/>
-                    <item id="PCLK1024" input="" vlaue="0"/>
-                    <item id="PCLK8192" input="" vlaue="0"/>
-                    <item id="ExternalClockRising" input="" vlaue="0"/>
-                    <item id="ExternalClockFalling" input="" vlaue="0"/>
-                    <item id="ExternalClockBoth" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="CounterClearOption" selection="ClearedMatchA">
-                    <item id="Disabled" input="" vlaue="0"/>
-                    <item id="ClearedMatchA" input="" vlaue="0"/>
-                    <item id="ClearedMatchB" input="" vlaue="0"/>
-                    <item id="ClearedRisingReset" input="" vlaue="0"/>
-                    <item id="ClearedResetHigh" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="CompareMatchAValue" selection="CompareMatchAValue">
-                    <item id="CompareMatchAValue" input="3750" vlaue="3749"/>
-                </option>
-                <option enabled="true" id="MatchValueOptionA" selection="count">
-                    <item id="ms" input="" vlaue="0"/>
-                    <item id="us" input="" vlaue="0"/>
-                    <item id="ns" input="" vlaue="0"/>
-                    <item id="count" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="S12ADEnable" selection="Disable">
-                    <item id="Disable" input="" vlaue="0"/>
-                    <item id="Enable" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="CompareMatchBValue" selection="CompareMatchBValue">
-                    <item id="CompareMatchBValue" input="2" vlaue="1"/>
-                </option>
-                <option enabled="true" id="TMO0OutputEnable" selection="Disable">
-                    <item id="Disable" input="" vlaue="0"/>
-                    <item id="Enable" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="OutputMatchA" selection="Nochange">
-                    <item id="Nochange" input="" vlaue="0"/>
-                    <item id="Output0" input="" vlaue="0"/>
-                    <item id="Output1" input="" vlaue="0"/>
-                    <item id="ToggleOutput" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="OutputMatchB" selection="Nochange">
-                    <item id="Nochange" input="" vlaue="0"/>
-                    <item id="Output0" input="" vlaue="0"/>
-                    <item id="Output1" input="" vlaue="0"/>
-                    <item id="ToggleOutput" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="TCORAEnable" selection="Enable">
-                    <item id="Disable" input="" vlaue="0"/>
-                    <item id="Enable" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="TCORAOption" selection="Level8">
-                    <item id="Level0" input="" vlaue="0"/>
-                    <item id="Level1" input="" vlaue="0"/>
-                    <item id="Level2" input="" vlaue="0"/>
-                    <item id="Level3" input="" vlaue="0"/>
-                    <item id="Level4" input="" vlaue="0"/>
-                    <item id="Level5" input="" vlaue="0"/>
-                    <item id="Level6" input="" vlaue="0"/>
-                    <item id="Level7" input="" vlaue="0"/>
-                    <item id="Level8" input="" vlaue="0"/>
-                    <item id="Level9" input="" vlaue="0"/>
-                    <item id="Level10" input="" vlaue="0"/>
-                    <item id="Level11" input="" vlaue="0"/>
-                    <item id="Level12" input="" vlaue="0"/>
-                    <item id="Level13" input="" vlaue="0"/>
-                    <item id="Level14" input="" vlaue="0"/>
-                    <item id="Level15" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="TCORBEnable" selection="Disable">
-                    <item id="Disable" input="" vlaue="0"/>
-                    <item id="Enable" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="TCORBOption" selection="Level15">
-                    <item id="Level0" input="" vlaue="0"/>
-                    <item id="Level1" input="" vlaue="0"/>
-                    <item id="Level2" input="" vlaue="0"/>
-                    <item id="Level3" input="" vlaue="0"/>
-                    <item id="Level4" input="" vlaue="0"/>
-                    <item id="Level5" input="" vlaue="0"/>
-                    <item id="Level6" input="" vlaue="0"/>
-                    <item id="Level7" input="" vlaue="0"/>
-                    <item id="Level8" input="" vlaue="0"/>
-                    <item id="Level9" input="" vlaue="0"/>
-                    <item id="Level10" input="" vlaue="0"/>
-                    <item id="Level11" input="" vlaue="0"/>
-                    <item id="Level12" input="" vlaue="0"/>
-                    <item id="Level13" input="" vlaue="0"/>
-                    <item id="Level14" input="" vlaue="0"/>
-                    <item id="Level15" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="TCNTEnable" selection="Disable">
-                    <item id="Disable" input="" vlaue="0"/>
-                    <item id="Enable" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="TCNTOption" selection="Level15">
-                    <item id="Level0" input="" vlaue="0"/>
-                    <item id="Level1" input="" vlaue="0"/>
-                    <item id="Level2" input="" vlaue="0"/>
-                    <item id="Level3" input="" vlaue="0"/>
-                    <item id="Level4" input="" vlaue="0"/>
-                    <item id="Level5" input="" vlaue="0"/>
-                    <item id="Level6" input="" vlaue="0"/>
-                    <item id="Level7" input="" vlaue="0"/>
-                    <item id="Level8" input="" vlaue="0"/>
-                    <item id="Level9" input="" vlaue="0"/>
-                    <item id="Level10" input="" vlaue="0"/>
-                    <item id="Level11" input="" vlaue="0"/>
-                    <item id="Level12" input="" vlaue="0"/>
-                    <item id="Level13" input="" vlaue="0"/>
-                    <item id="Level14" input="" vlaue="0"/>
-                    <item id="Level15" input="" vlaue="0"/>
-                </option>
-            </allocatable>
-            <component description="This software component generates two units (unit 0, unit 1) of an on-chip 8-bit timer (TMR) module that comprise two 8-bit counter channels, totaling four channels." detailDescription="" display="8-Bit Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.tmr" version="1.7.0"/>
-            <allocator channelLevel0="0" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="16-Bit Timer 0" display="TMR0_TMR1" id="com.renesas.smc.tools.swcomponent.codegenerator.tmr.rx651.tmr0_tmr1" type="TMR01">
-                <context>
-                    <option enabled="true" id="CountMode" selection="16bitMode">
-                        <item enabled="true" id="8bitMode"/>
-                        <item enabled="true" id="16bitMode"/>
-                    </option>
-                </context>
-            </allocator>
-            <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
-        </configuration>
-        <configuration id="fb16c7a9-38de-4018-a1b9-6b3fa0d85ca5" inuse="true" name="Config_DA">
-            <allocatable id="DA">
-                <isocket id="ICLKClock" selection="Clock.tool_clock_iclk" value="1.2E8"/>
-                <option enabled="true" id="DataFormat" selection="Right">
-                    <item id="Right" input="" vlaue="0"/>
-                    <item id="Left" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="EnableDA1" selection="Enable">
-                    <item id="Enable" input="" vlaue="0"/>
-                    <item id="Disable" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="EnableDA1Amp" selection="Disable">
-                    <item id="Enable" input="" vlaue="0"/>
-                    <item id="Disable" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="EnableS12AD1" selection="Disable">
-                    <item id="Enable" input="" vlaue="0"/>
-                    <item id="Disable" input="" vlaue="0"/>
-                </option>
-                <option enabled="true" id="DA1WaitTime" selection="DA1WaitTime">
-                    <item id="DA1WaitTime" input="73" vlaue="73"/>
-                </option>
-            </allocatable>
-            <component description="This software component provides configurations for D/A Converter module." detailDescription="" display="D/A Converter" id="com.renesas.smc.tools.swcomponent.codegenerator.da" version="1.8.4"/>
-            <allocator channelLevel0="" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="D/A Converter" display="DA" id="com.renesas.smc.tools.swcomponent.codegenerator.da.rx651.da" type="">
-                <context/>
-            </allocator>
-            <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
-        </configuration>
         <configuration inuse="true" name="r_usb_hmsc">
             <component description="Dependency : r_bsp version(s) 5.50&#10;Dependency : r_usb_basic version(s) 1.30&#10;The r_usb_hmsc package provides USB Host mass storage class driver" detailDescription="USB Host Mass Storage Class" display="r_usb_hmsc" id="r_usb_hmsc1.30" version="1.30"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
@@ -733,10 +565,10 @@
         </configuration>
         <configuration inuse="true" name="r_usb_basic">
             <component description="Dependency : r_bsp version(s) 5.50&#10;The r_usb_basic package provides USB basic host and peripheral firmware" detailDescription="USB basic(low-level) driver" display="r_usb_basic" id="r_usb_basic1.30" version="1.30">
-                <gridItem id="USB0_VBUSEN" selectedIndex="1"/>
-                <gridItem id="USB0_OVRCURA" selectedIndex="1"/>
+                <gridItem id="USB0_VBUSEN" selectedIndex="0"/>
+                <gridItem id="USB0_OVRCURA" selectedIndex="0"/>
                 <gridItem id="USB0_OVRCURB" selectedIndex="0"/>
-                <gridItem id="USB0_HOST" selectedIndex="1"/>
+                <gridItem id="USB0_HOST" selectedIndex="0"/>
                 <gridItem id="USB0_VBUS" selectedIndex="0"/>
                 <gridItem id="USB0_PERI" selectedIndex="0"/>
                 <gridItem id="USBA_VBUSEN" selectedIndex="0"/>
@@ -756,11 +588,11 @@
                 <gridItem id="USB_CFG_USB1_DMA_RX" selectedIndex="4"/>
                 <gridItem id="USB_CFG_CLKSEL" selectedIndex="0"/>
                 <gridItem id="USB_CFG_BUSWAIT" selectedIndex="7"/>
-                <gridItem id="USB_CFG_INTERRUPT_PRIORITY" selectedIndex="8"/>
+                <gridItem id="USB_CFG_INTERRUPT_PRIORITY" selectedIndex="2"/>
                 <gridItem id="USB_CFG_VBUS" selectedIndex="0"/>
                 <gridItem id="USB_CFG_BC" selectedIndex="1"/>
                 <gridItem id="USB_CFG_DCP" selectedIndex="1"/>
-                <gridItem id="USB_CFG_HUB" selectedIndex="0"/>
+                <gridItem id="USB_CFG_HUB" selectedIndex="1"/>
                 <gridItem id="USB_CFG_TYPEC" selectedIndex="0"/>
                 <gridItem id="USB_CFG_COMPLIANCE" selectedIndex="1"/>
                 <gridItem id="USB_CFG_TPLCNT" selectedIndex="1"/>
@@ -776,6 +608,11 @@
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
         </configuration>
+        <configuration inuse="true" name="r_tfat_rx">
+            <component description="Dependency : r_bsp version(s) 5.52&#10;Dependency : r_tfat_driver_rx version(s) 2.20&#10;Dependency : r_cmt_rx version(s) 4.40&#10;Dependency : r_sys_time_rx version(s) 1.01&#10;TFAT is a FAT file system which just requires small memory.&#10;TFAT is based on FatFs.&#10;&#10;Please refer to the&#10; https://www.renesas.com/mw/tfat-rx" detailDescription="Open Source FAT File System." display="r_tfat_rx" id="r_tfat_rx4.02" version="4.02"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+        </configuration>
         <configuration inuse="true" name="r_sys_time_rx">
             <component description="Dependency : r_bsp version(s) 5.20&#10;Dependency : r_cmt_rx version(s) 4.00&#10;Generic system timer for RX MCUs using CMT module." detailDescription="Generic system timer for RX MCUs using CMT module." display="r_sys_time_rx" id="r_sys_time_rx1.01" version="1.01"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
@@ -785,11 +622,6 @@
             <component description="Dependency : r_bsp version(s) 5.52&#10;This module creates a timer tick using a CMT channel based on a frequency input by the user." detailDescription="Simple CMT driver for creating timer tick." display="r_cmt_rx" id="r_cmt_rx4.70" version="4.70">
                 <gridItem id="CMT_RX_CFG_IPR" selectedIndex="5"/>
             </component>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-        </configuration>
-        <configuration inuse="true" name="r_tfat_rx">
-            <component description="Dependency : r_bsp version(s) 5.52&#10;Dependency : r_tfat_driver_rx version(s) 2.20&#10;Dependency : r_cmt_rx version(s) 4.40&#10;Dependency : r_sys_time_rx version(s) 1.01&#10;TFAT is a FAT file system which just requires small memory.&#10;TFAT is based on FatFs.&#10;&#10;Please refer to the&#10; https://www.renesas.com/mw/tfat-rx" detailDescription="Open Source FAT File System." display="r_tfat_rx" id="r_tfat_rx4.02" version="4.02"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
         </configuration>
@@ -830,7 +662,7 @@
                 <gridItem id="FLASH_CFG_CODE_FLASH_ENABLE" selectedIndex="0"/>
                 <gridItem id="FLASH_CFG_DATA_FLASH_BGO" selectedIndex="0"/>
                 <gridItem id="FLASH_CFG_CODE_FLASH_BGO" selectedIndex="0"/>
-                <gridItem id="FLASH_CFG_CODE_FLASH_RUN_FROM_ROM" selectedIndex="1"/>
+                <gridItem id="FLASH_CFG_CODE_FLASH_RUN_FROM_ROM" selectedIndex="0"/>
             </component>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>

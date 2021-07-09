@@ -189,8 +189,6 @@ extern void R_BSP_MAIN_FUNCTION(void);
 ***********************************************************************************************************************/
 R_BSP_POR_FUNCTION(R_BSP_STARTUP_FUNCTION)
 {
-	PORTD.PDR.BIT.B6 = 1;
-		PORTD.PDR.BIT.B7 = 1;
     /* Stack pointers are setup prior to calling this function - see comments above */
 
     /* You can use auto variables in this function but such variables other than register variables 

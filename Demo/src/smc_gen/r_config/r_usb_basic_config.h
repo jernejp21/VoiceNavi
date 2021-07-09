@@ -144,7 +144,7 @@
  *  1                   : lowest
  *  15                  : highest
  */
-#define USB_CFG_INTERRUPT_PRIORITY  (9)
+#define USB_CFG_INTERRUPT_PRIORITY  (3)
 
 /******************************************************************************/
 /** Settings in USB Host Mode                                                 */
@@ -166,7 +166,7 @@
  * USB_CFG_ENABLE       : Using USB Hub
  * USB_CFG_DISABLE      : Not using USB Hub
  */
-#define USB_CFG_HUB                 (USB_CFG_DISABLE)
+#define USB_CFG_HUB                 (USB_CFG_ENABLE)
 
 /** [Setting whther to use Type-C]
  * USB_CFG_ENABLE       : Using Type-C
