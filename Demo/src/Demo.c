@@ -7,6 +7,7 @@
  *  NOTE:THIS IS A TYPICAL EXAMPLE.
  *
  ***********************************************************************/
+#include "stdlib.h"
 #include "r_smc_entry.h"
 #include "r_usb_basic_if.h"
 #include "r_usb_hmsc_if.h"
@@ -45,13 +46,20 @@ uint8_t *add_p = (uint8_t*)FLASH_DF_BLOCK_0;
 
 wav_header_t waf_file;
 
+int* arr;
+
 void main(void) {
 	printf("Entered main()\n");
 
 	PORTD.PDR.BIT.B6 = 1;
 	PORTD.PDR.BIT.B7 = 1;
 
-	WAV_Open(&waf_file, (uint8_t*)FLASH_DF_BLOCK_0);
+	arr = (int*)malloc(11*4);
+	arr[0] = 10;
+	arr[10] = 8;
+	//arr[150] = 18;
+
+	/*WAV_Open(&waf_file, (uint8_t*)FLASH_DF_BLOCK_0);
 
 	R_Config_DA1_Start();
 	R_Config_TMR0_TMR1_Start();
@@ -61,7 +69,7 @@ void main(void) {
 	ctrl.type = USB_HMSC;
 	cfg.usb_speed = USB_FS;
 	cfg.usb_mode = USB_HOST;
-	usb_err = R_USB_Open(&ctrl, &cfg);
+	usb_err = R_USB_Open(&ctrl, &cfg);*/
 
 	//flashErr = R_FLASH_Open();
 
