@@ -18,11 +18,11 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_TMR0_TMR1_user.c
-* Version      : 1.7.0
+* File Name    : DAC.c
+* Version      : 1.8.4
 * Device(s)    : R5F565NEDxFP
-* Description  : This file implements device driver for Config_TMR0_TMR1.
-* Creation Date: 2021-07-12
+* Description  : This file implements device driver for DAC.
+* Creation Date: 2021-07-14
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -35,9 +35,8 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "Config_TMR0_TMR1.h"
+#include "DAC.h"
 /* Start user code for include. Do not edit comment generated here */
-#include "globals.h"
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 
@@ -48,36 +47,68 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Config_TMR0_TMR1_Create_UserInit
-* Description  : This function adds user code after initializing TMR
+* Function Name: R_DAC_Create
+* Description  : This function initializes the DA converter
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void R_Config_TMR0_TMR1_Create_UserInit(void)
+void R_DAC_Create(void)
 {
-    /* Start user code for user init. Do not edit comment generated here */
-  /* End user code. Do not edit comment generated here */
+    /* Cancel DA stop state in LPC */
+    MSTP(DA) = 0U;
+
+    /* Set DA format select register */
+    DA.DADPR.BYTE = _00_DA_DPSEL_R;
+
+    /* Set D/A-A/D synchronous control register */
+    DA.DAADSCR.BYTE = _00_DA_DAADSYNC_DISABLE;
+
+    /* Set DA1 pin */
+    PORT0.PMR.BYTE &= 0xDFU;
+    PORT0.PDR.BYTE &= 0xDFU;
+    MPC.P05PFS.BIT.ASEL = 1U;
+
+    R_DAC_Create_UserInit();
 }
 
 /***********************************************************************************************************************
-* Function Name: r_Config_TMR0_TMR1_cmia0_interrupt
-* Description  : This function is CMIA0 interrupt service routine
+* Function Name: R_DAC1_Start
+* Description  : This function enables the DA1 converter
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void r_Config_TMR0_TMR1_cmia0_interrupt(void)
+void R_DAC1_Start(void)
 {
-    /* Start user code for r_Config_TMR0_TMR1_cmia0_interrupt. Do not edit comment generated here */
-  counter++;
-  /* End user code. Do not edit comment generated here */
+    DA.DACR.BIT.DAE = 0U;
+    DA.DACR.BIT.DAOE1 = 1U;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_DAC1_Stop
+* Description  : This function stops the DA1 converter
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_DAC1_Stop(void)
+{
+    DA.DACR.BIT.DAOE1 = 0U;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_DAC1_Set_ConversionValue
+* Description  : This function sets the DA1 converter value
+* Arguments    : reg_value -
+*                    value of conversion
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_DAC1_Set_ConversionValue(uint16_t reg_value)
+{
+    DA.DADR1 = (uint16_t)(reg_value & 0x0FFFU);
 }
 
 /* Start user code for adding. Do not edit comment generated here */
-void R_Config_TMR0_TMR1_Set_Frequency(uint32_t freq_hz)
-{
-  // Timer clock is 60000 kHz
-  TMR01.TCORA = (uint16_t)(60000000/freq_hz);
-}
 /* End user code. Do not edit comment generated here */

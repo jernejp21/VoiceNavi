@@ -18,11 +18,11 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_DA_user.c
+* File Name    : DAC_user.c
 * Version      : 1.8.4
 * Device(s)    : R5F565NEDxFP
-* Description  : This file implements device driver for Config_DA.
-* Creation Date: 2021-07-12
+* Description  : This file implements device driver for DAC.
+* Creation Date: 2021-07-14
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -35,7 +35,7 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "Config_DA.h"
+#include "DAC.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -47,16 +47,16 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Config_DA_Create_UserInit
+* Function Name: R_DAC_Create_UserInit
 * Description  : This function adds user code after initializing DA module
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void R_Config_DA_Create_UserInit(void)
+void R_DAC_Create_UserInit(void)
 {
     /* Start user code for user init. Do not edit comment generated here */
-  /* End user code. Do not edit comment generated here */
+    /* End user code. Do not edit comment generated here */
 }
 
 /* Start user code for adding. Do not edit comment generated here */

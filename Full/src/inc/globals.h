@@ -9,6 +9,13 @@
 #ifndef __GLOBALS_H
 #define __GLOBALS_H
 
-extern int counter;
+#include "../wav.h"
+
+#define FILE_SIZE (32000)
+
+extern int g_counter;
+extern int g_readBuffer;
+extern uint8_t g_file_data[FILE_SIZE];
+extern wav_header_t g_wav_file;
 
 #endif //__GLOBALS_H

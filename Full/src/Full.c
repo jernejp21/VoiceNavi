@@ -21,7 +21,9 @@
 
 void main(void);
 
-int counter;
+int g_counter;
+int g_readBuffer;
+
 char line[100];
 int startOfFileNames;
 int startOfPlaylist;
@@ -31,13 +33,16 @@ const static uint8_t g_msc_file[14] = "0:sample02.wpj";
 FIL file;
 UINT file_size;
 FRESULT fr;
+uint8_t g_file_data[FILE_SIZE];
 
 file_name_pos_t file_names[255];
 playlist_t output_music[255];
 
+wav_header_t g_wav_file;
+
 void main(void)
 {
-  char flash_data = 1;
+  char flash_data = 0;
   usb_ctrl_t ctrl;
   usb_cfg_t cfg;
   usb_err_t usb_err;
@@ -46,9 +51,10 @@ void main(void)
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
   // resetpgr.c in PowerON_Reset_PC function.
 
-  //PORTD.PDR.BIT.B6 = 1;
-  R_Config_TMR0_TMR1_Set_Frequency(1);  //Set freq to 1 kHz
-  R_Config_TMR0_TMR1_Start();
+  R_DAC1_Start();
+  R_TMR01_Set_Frequency(1, 1);  //Set freq to 1 kHz for counter B
+  R_TMR01_Start();
+  R_TMR01_Stop_A();
 
   ctrl.module = USB_IP0;
   ctrl.type = USB_HMSC;
@@ -57,7 +63,7 @@ void main(void)
   usb_err = R_USB_Open(&ctrl, &cfg);
 
   /* With polling, check for 1s if USB is connected or not */
-  while(counter < 1000)
+  while(g_counter < 1000)
   {
     event = R_USB_GetEvent(&ctrl);  // Get event code
 
@@ -67,16 +73,14 @@ void main(void)
 
         PORTD.PDR.BIT.B6 = 1;
         PORTD.PDR.BIT.B7 = 0;
-        R_Config_TMR0_TMR1_Stop();
+        R_TMR01_Stop();
         printf("Detected attached USB memory.\n");
-        fr = f_mount(&fs, "", 0); /* Create a file object. */
-        fr = f_open(&file, (const TCHAR*) &g_msc_file, FA_READ);
-        counter = 1000;
+        g_counter = 1000;
         break;
 
       case USB_STS_DETACH:
         printf("Detected detached USB memory.\n");
-        //R_Config_TMR0_TMR1_Stop();
+        //R_TMR01_Stop();
         break;
 
       case USB_STS_NOT_SUPPORT:
@@ -96,9 +100,14 @@ void main(void)
   }
 
   /* Check if there is any data in flash. */
+  //flash_data = check_flash_data()
+  flash_data = 1;
+
   /* If data in flash, prepare lookout tables. */
   if(flash_data == 1)
   {
+    fr = f_mount(&fs, "", 0);
+    fr = f_open(&file, (const TCHAR*) &g_msc_file, FA_READ);
     while(f_gets((TCHAR*) &line, sizeof(line), &file))
     {
       /* Section #2 in wpj file represents file name order.
@@ -109,7 +118,7 @@ void main(void)
       if(strncmp(line, "#2", 2) == 0)
       {
         startOfFileNames = 1;
-        counter = 0;
+        g_counter = 0;
         continue;
       }
 
@@ -123,34 +132,48 @@ void main(void)
       {
         startOfPlaylist = 1;
         startOfFileNames = 0;
-        counter = 0;
+        g_counter = 0;
         continue;
       }
 
       if(startOfFileNames)
       {
-        placeNameToTable((char*) &file_names[counter].file_name, (char*) &line);
-        counter++;
+        placeNameToTable((char*) &file_names[g_counter].file_name, (char*) &line);
+        g_counter++;
       }
 
       if(startOfPlaylist)
       {
-        placeSongsToTable((playlist_t*) &output_music[counter], (char*) &line);
-        counter++;
+        placeSongsToTable((playlist_t*) &output_music[g_counter], (char*) &line);
+        g_counter++;
       }
 
       printf(line);
     }
+    f_close(&file);
 
   }
   else
   {
-
+    while(1);  // No data in flash, look forever here.
   }
+
+  f_open(&file, "0808000m.wav", FA_READ);
+  f_read(&file, &g_file_data, sizeof(g_file_data), &file_size);
+  WAV_Open(&g_wav_file, &g_file_data[0]);
+  R_TMR01_Set_Frequency(g_wav_file.sample_rate, 0);
+  R_TMR01_Start_A();
+  R_TMR01_Start();
 
   while(1)
   {
-
+    if(g_readBuffer)
+    {
+      g_readBuffer = 0;
+      PORTD.PDR.BIT.B6 ^= 1;
+      f_read(&file, &g_file_data, sizeof(g_file_data), &file_size);
+      //PORTD.PDR.BIT.B6 = 0;
+    }
   }
 
 }

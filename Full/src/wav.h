@@ -40,6 +40,7 @@ typedef struct playlist
   uint8_t group;
   uint8_t repeat;
   uint8_t file_nr[MAX_NR_FILES];
+  uint8_t playlist_len;
 } playlist_t;
 
 void WAV_Open(wav_header_t*, uint8_t*);

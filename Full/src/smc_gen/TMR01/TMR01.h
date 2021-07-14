@@ -18,15 +18,15 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_TMR0_TMR1.h
+* File Name    : TMR01.h
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
-* Description  : This file implements device driver for Config_TMR0_TMR1.
-* Creation Date: 2021-07-12
+* Description  : This file implements device driver for TMR01.
+* Creation Date: 2021-07-14
 ***********************************************************************************************************************/
 
-#ifndef CFG_Config_TMR0_TMR1_H
-#define CFG_Config_TMR0_TMR1_H
+#ifndef CFG_TMR01_H
+#define CFG_TMR01_H
 
 /***********************************************************************************************************************
 Includes
@@ -51,11 +51,15 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
-void R_Config_TMR0_TMR1_Create(void);
-void R_Config_TMR0_TMR1_Create_UserInit(void);
-void R_Config_TMR0_TMR1_Start(void);
-void R_Config_TMR0_TMR1_Stop(void);
+void R_TMR01_Create(void);
+void R_TMR01_Create_UserInit(void);
+void R_TMR01_Start(void);
+void R_TMR01_Stop(void);
 /* Start user code for function. Do not edit comment generated here */
-void R_Config_TMR0_TMR1_Set_Frequency(uint32_t);
+void R_TMR01_Set_Frequency(uint32_t, uint8_t);
+void R_TMR01_Stop_A(void);
+void R_TMR01_Stop_B(void);
+void R_TMR01_Start_A(void);
+void R_TMR01_Start_B(void);
 /* End user code. Do not edit comment generated here */
 #endif

@@ -18,41 +18,108 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_DA.h
-* Version      : 1.8.4
+* File Name    : TMR01.c
+* Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
-* Description  : This file implements device driver for Config_DA.
-* Creation Date: 2021-07-12
+* Description  : This file implements device driver for TMR01.
+* Creation Date: 2021-07-14
 ***********************************************************************************************************************/
 
-#ifndef CFG_Config_DA_H
-#define CFG_Config_DA_H
+/***********************************************************************************************************************
+Pragma directive
+***********************************************************************************************************************/
+/* Start user code for pragma. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_r12da.h"
-
-/***********************************************************************************************************************
-Macro definitions (Register bit)
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Typedef definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Global functions
-***********************************************************************************************************************/
-void R_Config_DA_Create(void);
-void R_Config_DA_Create_UserInit(void);
-void R_Config_DA1_Start(void);
-void R_Config_DA1_Stop(void);
-void R_Config_DA1_Set_ConversionValue(uint16_t reg_value);
-/* Start user code for function. Do not edit comment generated here */
+#include "r_cg_macrodriver.h"
+#include "TMR01.h"
+/* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-#endif
+#include "r_cg_userdefine.h"
+
+/***********************************************************************************************************************
+Global variables and functions
+***********************************************************************************************************************/
+/* Start user code for global. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: R_TMR01_Create
+* Description  : This function initializes the TMR0 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_TMR01_Create(void)
+{
+    /* Disable TMR0 interrupts */
+    IEN(PERIB, INTB146) = 0U;
+    IEN(PERIB, INTB147) = 0U;
+
+    /* Cancel TMR module stop state */
+    MSTP(TMR01) = 0U; 
+
+    /* Set timer counter control setting */
+    TMR0.TCCR.BYTE = _18_TMR_CLK_TMR1_OVRF | _00_TMR_CLK_DISABLED;
+
+    /* Set counter clear and interrupt */
+    TMR0.TCR.BYTE = _80_TMR_CMIB_INT_ENABLE | _40_TMR_CMIA_INT_ENABLE | _08_TMR_CNT_CLR_COMP_MATCH_A | 
+                    _00_TMR_OVI_INT_DISABLE;
+
+    /* Set A/D trigger and output */
+    TMR0.TCSR.BYTE = _00_TMR_AD_TRIGGER_DISABLE | _E0_TMR02_TCSR_DEFAULT;
+
+    /* Set compare match value */ 
+    TMR01.TCORA = _0001_TMR01_COMP_MATCH_VALUE_A;
+    TMR01.TCORB = _0001_TMR01_COMP_MATCH_VALUE_B;
+
+    /* Configure TMR0 interrupts */ 
+    ICU.SLIBR146.BYTE = 0x03U;
+    IPR(PERIB, INTB146) = _03_TMR_PRIORITY_LEVEL3;
+    ICU.SLIBR147.BYTE = 0x04U;
+    IPR(PERIB, INTB147) = _03_TMR_PRIORITY_LEVEL3;
+
+    R_TMR01_Create_UserInit();
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR01_Start
+* Description  : This function starts the TMR0 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_TMR01_Start(void)
+{
+    /*Enable TMR0 interrupt*/
+    IR(PERIB, INTB146) = 0U;
+    //IEN(PERIB, INTB146) = 1U;
+    IR(PERIB, INTB147) = 0U;
+    //IEN(PERIB, INTB147) = 1U;
+
+    /*Start counting*/
+    TMR1.TCCR.BYTE = _08_TMR_CLK_SRC_PCLK | _00_TMR_PCLK_DIV_1;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR01_Stop
+* Description  : This function stop the TMR0 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_TMR01_Stop(void)
+{
+    /*Enable TMR0 interrupt*/ 
+    IEN(PERIB, INTB146) = 0U; 
+    IEN(PERIB, INTB147) = 0U;
+
+    /*Stop counting*/ 
+    TMR1.TCCR.BYTE = _00_TMR_CLK_DISABLED;
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
