@@ -27,7 +27,7 @@ typedef struct wav_header
 }wav_header_t;
 
 /* File name order (position) structure */
-#define FILE_NAME_LEN 8
+#define FILE_NAME_LEN 13
 typedef struct file_name_pos
 {
   char file_name[FILE_NAME_LEN];

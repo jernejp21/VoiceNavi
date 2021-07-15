@@ -37,6 +37,13 @@
     <booleanAttribute key="com.renesas.cdt.launch.dsf.downloadImagesUpgradedV30" value="true"/>
     <stringAttribute key="com.renesas.cdt.launch.dsf.launchSeqType" value="com.renesas.cdt.launch.dsf.launchSequence.e2GdbServer"/>
     <stringAttribute key="com.renesas.cdt.launch.dsf.serverPath" value="${renesas.support.targetLoc:rx-debug}\e2-server-gdb"/>
+    <listAttribute key="com.renesas.cdt.launch.ui.address.mruList.eventpointDataAccessAddress">
+        <listEntry value="&amp;file_names[0].file_name[8]"/>
+        <listEntry value="&amp;file_names[0].file_name[9]"/>
+    </listAttribute>
+    <listAttribute key="com.renesas.cdt.launch.ui.address.mruList.eventpointExecutionAddress">
+        <listEntry value="&amp;file_names[0].file_name[8]"/>
+    </listAttribute>
     <listAttribute key="com.renesas.cdt.launch.ui.address.mruList.memoryMonitorExpression">
         <listEntry value="0"/>
     </listAttribute>
@@ -111,6 +118,6 @@
         <listEntry value="4"/>
     </listAttribute>
     <booleanAttribute key="org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND" value="false"/>
-    <stringAttribute key="org.eclipse.dsf.launch.MEMORY_BLOCKS" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&lt;memoryBlockExpressionList context=&quot;reserved-for-future-use&quot;&gt;&lt;gdbmemoryBlockExpression address=&quot;0&quot; core_thread_id=&quot;1_i1&quot; label=&quot;0&quot;&gt;&lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.hexint&quot;&gt;&lt;renderingInstance containerId=&quot;org.eclipse.debug.ui.MemoryView.RenderingViewPane.1&quot; viewId=&quot;org.eclipse.debug.ui.MemoryView&quot; viewSecondaryId=&quot;&quot;/&gt;&lt;/memoryRendering&gt;&lt;/gdbmemoryBlockExpression&gt;&lt;/memoryBlockExpressionList&gt;"/>
+    <stringAttribute key="org.eclipse.dsf.launch.MEMORY_BLOCKS" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&lt;memoryBlockExpressionList context=&quot;reserved-for-future-use&quot;&gt;&lt;gdbmemoryBlockExpression address=&quot;0&quot; core_thread_id=&quot;1_i1&quot; label=&quot;0&quot;/&gt;&lt;/memoryBlockExpressionList&gt;"/>
     <stringAttribute key="process_factory_id" value="org.eclipse.cdt.dsf.gdb.GdbProcessFactory"/>
 </launchConfiguration>

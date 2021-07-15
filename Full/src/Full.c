@@ -20,9 +20,13 @@
 #include "wav.h"
 
 void main(void);
+void playFromPlaylist(uint8_t);
 
 int g_counter;
 int g_readBuffer;
+uint32_t g_file_size;
+uint32_t g_current_byte;
+int g_playing;
 
 char line[100];
 int startOfFileNames;
@@ -31,7 +35,6 @@ int startOfPlaylist;
 static FATFS fs; /* File system object structure */
 const static uint8_t g_msc_file[14] = "0:sample02.wpj";
 FIL file;
-UINT file_size;
 FRESULT fr;
 uint8_t g_file_data[FILE_SIZE];
 
@@ -48,12 +51,20 @@ void main(void)
   usb_err_t usb_err;
   uint16_t event;
 
+  PORTE.PDR.BYTE = 0;
+  PORTE.PCR.BYTE = 0xFF;
+
+  PORTD.PDR.BIT.B6 = 0;
+  PORTD.PDR.BIT.B7 = 0;
+
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
   // resetpgr.c in PowerON_Reset_PC function.
 
   R_DAC1_Start();
+  R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
   R_TMR01_Set_Frequency(1, 1);  //Set freq to 1 kHz for counter B
   R_TMR01_Start();
+  R_TMR01_Start_B();
   R_TMR01_Stop_A();
 
   ctrl.module = USB_IP0;
@@ -72,37 +83,28 @@ void main(void)
       case USB_STS_CONFIGURED:
 
         PORTD.PDR.BIT.B6 = 1;
-        PORTD.PDR.BIT.B7 = 0;
         R_TMR01_Stop();
-        printf("Detected attached USB memory.\n");
         g_counter = 1000;
+        flash_data = 1;
         break;
 
       case USB_STS_DETACH:
-        printf("Detected detached USB memory.\n");
-        //R_TMR01_Stop();
         break;
 
       case USB_STS_NOT_SUPPORT:
-        printf("USB not supported.\n");
         break;
 
       case USB_STS_NONE:
-        //printf("STS_NONE.\n");
-        PORTD.PDR.BIT.B6 = 0;
-        PORTD.PDR.BIT.B7 = 1;
-
         break;
 
       default:
         break;
     }
   }
+  g_counter = 0;
 
   /* Check if there is any data in flash. */
   //flash_data = check_flash_data()
-  flash_data = 1;
-
   /* If data in flash, prepare lookout tables. */
   if(flash_data == 1)
   {
@@ -136,6 +138,12 @@ void main(void)
         continue;
       }
 
+      /* #0 marks end of playlist */
+      if(strncmp(line, "#0", 2) == 0)
+      {
+        break;
+      }
+
       if(startOfFileNames)
       {
         placeNameToTable((char*) &file_names[g_counter].file_name, (char*) &line);
@@ -146,9 +154,13 @@ void main(void)
       {
         placeSongsToTable((playlist_t*) &output_music[g_counter], (char*) &line);
         g_counter++;
-      }
 
-      printf(line);
+        PORTD.PDR.BIT.B7 = 1;
+        if(g_counter > 254)
+        {
+          break;
+        }
+      }
     }
     f_close(&file);
 
@@ -158,22 +170,71 @@ void main(void)
     while(1);  // No data in flash, look forever here.
   }
 
-  f_open(&file, "0808000m.wav", FA_READ);
-  f_read(&file, &g_file_data, sizeof(g_file_data), &file_size);
-  WAV_Open(&g_wav_file, &g_file_data[0]);
-  R_TMR01_Set_Frequency(g_wav_file.sample_rate, 0);
-  R_TMR01_Start_A();
-  R_TMR01_Start();
-
   while(1)
   {
-    if(g_readBuffer)
+    uint8_t xor = PORTE.PIDR.BYTE ^ 0xFF;  //Unset bit will be 1, other bits will be 0.
+    int counter = -1;
+
+    while(xor)
     {
-      g_readBuffer = 0;
-      PORTD.PDR.BIT.B6 ^= 1;
-      f_read(&file, &g_file_data, sizeof(g_file_data), &file_size);
-      //PORTD.PDR.BIT.B6 = 0;
+      xor = xor >> 1;
+      counter++;
+    }
+
+    if(counter != -1)
+    {
+      playFromPlaylist((uint8_t) counter);
     }
   }
 
+}
+
+int g_playing = 0;
+
+void playFromPlaylist(uint8_t playNr)
+{
+  int index = 0;
+  int fileToPlay;
+  UINT size;
+  char *fileName_p;
+  int trackNr = 0;
+  int repetitions = 0;
+
+  while(output_music[playNr].repeat > repetitions)
+  {
+    while(output_music[playNr].playlist_len > trackNr)
+    {
+      fileToPlay = output_music[playNr].file_nr[index];
+      fileName_p = &file_names[fileToPlay].file_name[0];
+
+      fr = f_open(&file, fileName_p, FA_READ);
+      fr = f_read(&file, &g_file_data, WAV_HEADER_SIZE, &size);
+
+      WAV_Open(&g_wav_file, (uint8_t*) &g_file_data);
+      f_read(&file, &g_file_data, sizeof(g_file_data), &size);
+      g_counter = 0;
+
+      g_playing = 1;
+      R_TMR01_Set_Frequency(g_wav_file.sample_rate, 0);
+      R_TMR01_Start_A();
+      R_TMR01_Start();
+      while(g_playing)
+      {
+        if(g_readBuffer)
+        {
+          g_readBuffer = 0;
+          f_read(&file, &g_file_data, sizeof(g_file_data), &size);
+        }
+      }
+      R_TMR01_Stop();
+      f_close(&file);
+
+      trackNr++;
+      index++;
+    }
+
+    trackNr = 0;
+    index = 0;
+    repetitions++;
+  }
 }

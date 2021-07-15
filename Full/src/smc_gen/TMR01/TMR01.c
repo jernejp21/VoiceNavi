@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for TMR01.
-* Creation Date: 2021-07-14
+* Creation Date: 2021-07-15
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -66,7 +66,7 @@ void R_TMR01_Create(void)
     TMR0.TCCR.BYTE = _18_TMR_CLK_TMR1_OVRF | _00_TMR_CLK_DISABLED;
 
     /* Set counter clear and interrupt */
-    TMR0.TCR.BYTE = _80_TMR_CMIB_INT_ENABLE | _40_TMR_CMIA_INT_ENABLE | _08_TMR_CNT_CLR_COMP_MATCH_A | 
+    TMR0.TCR.BYTE = _80_TMR_CMIB_INT_ENABLE | _40_TMR_CMIA_INT_ENABLE | _00_TMR_CNT_CLR_DISABLE | 
                     _00_TMR_OVI_INT_DISABLE;
 
     /* Set A/D trigger and output */

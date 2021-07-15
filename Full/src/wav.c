@@ -107,10 +107,14 @@ void placeSongsToTable(playlist_t *dest, char *source)
   uint8_t decimal = 1;
   uint8_t file_nr = 0;
 
+  uint8_t multi;
+  uint8_t newDec;
+
   for(;; source++)
   {
     if(('\r' == *source) || ('\n' == *source))
     {
+      dest->playlist_len = file_nr + 1;
       return;
     }
 
@@ -136,12 +140,14 @@ void placeSongsToTable(playlist_t *dest, char *source)
 
       case 2:
         dest->repeat = (dest->repeat * decimal) + ((uint8_t) *source - '0');
-        decimal *= 10;
+        decimal = 10;
         break;
 
       default:
+        multi = dest->file_nr[file_nr] * decimal;
+        newDec = (uint8_t)*source - '0';
         dest->file_nr[file_nr] = (dest->file_nr[file_nr] * decimal) + ((uint8_t) *source - '0');
-        decimal *= 10;
+        decimal = 10;
         break;
     }
   }
