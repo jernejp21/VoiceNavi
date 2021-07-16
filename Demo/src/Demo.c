@@ -17,38 +17,39 @@
 #include "r_tfat_drv_if_dev.h"
 //#include "r_tfat_driver_rx_config.h"
 #include "r_tfat_driver_rx_if.h"
-#include "r_flash_rx_if.h"
-#include "sbrk.h"
+#include "r_flash_spi_if.h"
+#include "r_memdrv_rx_if.h"
+#include "r_rspi_rx_if.h"
 
 #include "wav.h"
 
 void main(void);
 void placeNameToTable(char*, char*);
 
-#define FILE_SIZE (FLASH_DF_BLOCK_SIZE)
+#define FILE_SIZE (6400)
 
 usb_ctrl_t ctrl;
 usb_cfg_t cfg;
 usb_err_t usb_err;
 uint16_t event;
 uint8_t g_drv_no;
-static char g_file_data[FILE_SIZE];
+char g_file_data1[FILE_SIZE];
+char g_file_data2[FILE_SIZE];
 static FATFS fs; /* File system object structure */
-const static uint8_t g_msc_file[14] = "0:sample02.wpj";
+const static uint8_t g_msc_file[14] = "0:1644100m.wav";
 FIL file;
 UINT file_size;
 FRESULT fr;
 DSTATUS ds;
-flash_err_t flashErr;
 TCHAR *tchar;
 
 FILINFO fileinfo;
 uint16_t counter = 0;
 uint32_t filePointer;
 
-uint8_t *add_p = (uint8_t*) FLASH_DF_BLOCK_0;
+//uint8_t *add_p = (uint8_t*) FLASH_DF_BLOCK_0;
 
-wav_header_t waf_file;
+wav_header_t wav_file;
 
 int *arr;
 
@@ -56,10 +57,13 @@ char line[100];
 int startOfFileNames;
 int startOfOutputMusic;
 
-#define NAME_LEN 8
+int g_readBuffer1 = 0;
+int g_readBuffer = 0;
+
+#define NAME_LEN 11
 typedef struct file_name_pos
 {
-  char file_name[NAME_LEN];
+  char file_name[NAME_LEN + 1];
 } file_name_pos_t;
 
 typedef struct output_struct
@@ -67,207 +71,99 @@ typedef struct output_struct
   uint8_t group;
   uint8_t repeat;
   uint8_t file_nr[8];
+  uint8_t playlist_len;
 } output_struct_t;
 
-file_name_pos_t *file_names;
-output_struct_t *output_music;
+file_name_pos_t file_names[255];
+output_struct_t output_music[255];
 
 void placeSongsToTable(output_struct_t*, char*);
+void playFromPlaylist(uint8_t);
+
+int g_isUSBRead = 0;
+
+flash_spi_status_t flashStatus;
+
+memdrv_err_t memdrv_err;
+st_memdrv_info_t memdrv_info;
+uint8_t mem_data[4] = {0x9F, 0x00, 0, 0};
+
+static rspi_command_word_t my_rspi_command;
+
+/* start of main func */
 
 void main(void)
 {
   printf("Entered main()\n");
 
-  PORTD.PDR.BIT.B6 = 1;
-  PORTD.PDR.BIT.B7 = 1;
+  my_rspi_command.cpha = RSPI_SPCMD_CPHA_SAMPLE_EVEN;
+  my_rspi_command.cpol = RSPI_SPCMD_CPOL_IDLE_HI;
+  my_rspi_command.br_div = RSPI_SPCMD_BR_DIV_1;
+  my_rspi_command.ssl_assert = RSPI_SPCMD_ASSERT_SSL0;
+  my_rspi_command.ssl_negate = RSPI_SPCMD_SSL_KEEP;
+  my_rspi_command.bit_length = RSPI_SPCMD_BIT_LENGTH_8;
+  my_rspi_command.bit_order = RSPI_SPCMD_ORDER_MSB_FIRST;
+  my_rspi_command.next_delay = RSPI_SPCMD_NEXT_DLY_SSLND;
+  my_rspi_command.ssl_neg_delay = RSPI_SPCMD_SSL_NEG_DLY_SSLND;
+  my_rspi_command.clock_delay = RSPI_SPCMD_CLK_DLY_SPCKD;
+  my_rspi_command.dummy = RSPI_SPCMD_DUMMY;
 
-  /*arr = (int*) sbrk(10 * 4);
-   arr[0] = 5;
-   arr[5] = 8;
-   arr[9] = 11;
+  flashStatus = R_FLASH_SPI_Open(0);
 
-   sbrk(-10 * 4);  //free allocated memory
-
-   arr = (int*) malloc(11 * 4);
-   arr[0] = 10;
-   arr[10] = 8;
-   //arr[150] = 18;*/
-
-  ctrl.module = USB_IP0;
-  ctrl.type = USB_HMSC;
-  cfg.usb_speed = USB_FS;
-  cfg.usb_mode = USB_HOST;
-  usb_err = R_USB_Open(&ctrl, &cfg);
-
-  //flashErr = R_FLASH_Open();
+  flashStatus = R_FLASH_SPI_Read_ID(0, &mem_data[0]);
+  /*ctrl.module = USB_IP0;
+   ctrl.type = USB_HMSC;
+   cfg.usb_speed = USB_FS;
+   cfg.usb_mode = USB_HOST;
+   usb_err = R_USB_Open(&ctrl, &cfg);*/
   while(1)
   {
-    event = R_USB_GetEvent(&ctrl);  // Get event code
+    /*while(!g_isUSBRead)
+     {
+     event = R_USB_GetEvent(&ctrl);  // Get event code
 
-    switch(event)
-    {
-      case USB_STS_CONFIGURED:
+     switch(event)
+     {
+     case USB_STS_CONFIGURED:
 
-        printf("Detected attached USB memory.\n");
-        usb_err = R_USB_HmscGetDriveNo(&ctrl, &g_drv_no);
+     printf("Detected attached USB memory.\n");
+     usb_err = R_USB_HmscGetDriveNo(&ctrl, &g_drv_no);
 
-        //ds = usb_disk_initialize(g_drv_no);
-        //tchar = f_gets((TCHAR*)&line, sizeof(line), &file);
-        //f_putc(line, &file);
-        fr = f_mount(&fs, "", 0); /* Create a file object. */
-        fr = f_open(&file, (const TCHAR*) &g_msc_file, FA_READ);
-        f_stat((const TCHAR*) g_msc_file, &fileinfo);
+     fr = f_mount(&fs, "0:", 0); // Create a file object.
+     //playFromPlaylist(6);
+     fr = f_open(&file, (const TCHAR*) &g_msc_file, (FA_OPEN_ALWAYS | FA_READ));
+     f_stat((const TCHAR*) g_msc_file, &fileinfo);
+     f_read(&file, &g_file_data1, 44, &file_size);
+     //f_read(&file, &g_file_data, sizeof(g_file_data), &file_size);
 
-        while(f_gets((TCHAR*) &line, sizeof(line), &file))
-        {
-          if(strncmp(line, "#2", 2) == 0)
-          {
-            file_names = (file_name_pos_t*) sbrk(sizeof(file_name_pos_t));  //set heap address
-            sbrk(-sizeof(file_name_pos_t));  //clear set heap address, because we increase heap in next step
-            startOfFileNames = 1;
-            continue;
-          }
+     f_close(&file);  // Close the file object.
 
-          if(strncmp(line, "#3", 2) == 0)
-          {
-            output_music = (output_struct_t*) sbrk(sizeof(output_music));  //set heap address
-            sbrk(-sizeof(output_music));  //clear set heap address, because we increase heap in next step
-            startOfOutputMusic = 1;
-            startOfFileNames = 0;
-            counter = 0;
-            continue;
-          }
+     f_unmount("0:");
 
-          if(startOfFileNames)
-          {
-            if((int) sbrk(sizeof(file_name_pos_t)) != -1)
-            {
-              placeNameToTable((char*) &file_names[counter].file_name, (char*) &line);
-              //wav_names[counter].file_name[0] = line[0];
-              counter++;
-            }
-          }
+     WAV_Open(&wav_file, (uint8_t*) &g_file_data1);
+     f_read(&file, &g_file_data1, sizeof(g_file_data1), &file_size);
+     R_Config_TMR0_TMR1_Set_Frequency(wav_file.sample_rate);
+     R_Config_TMR0_TMR1_Start();
+     break;
 
-          if(startOfOutputMusic)
-          {
-            if((int) sbrk(sizeof(output_music)) != -1)
-            {
-              placeSongsToTable((output_struct_t*) &output_music[counter], (char*) &line);
-              //wav_names[counter].file_name[0] = line[0];
-              counter++;
-            }
-          }
+     case USB_STS_DETACH:
+     printf("Detected detached USB memory.\n");
+     break;
 
-          printf(line);
-        }
+     case USB_STS_NOT_SUPPORT:
+     printf("USB not supported.\n");
+     break;
 
-        /*R_FLASH_Erase(FLASH_DF_BLOCK_0, 512);
+     case USB_STS_NONE:
+     //printf("nekaj\n");
 
-         while(add_p < (uint8_t*)(FLASH_DF_BLOCK_511 + FLASH_DF_BLOCK_SIZE))
-         {
-         f_read(&file, g_file_data, sizeof(g_file_data), &file_size);
-         if(file_size == 0)
-         {
-         break;
-         }
-         R_FLASH_Write((uint32_t) &g_file_data, (uint32_t)add_p, FILE_SIZE);
-         add_p += FLASH_DF_BLOCK_SIZE;
-         }*/
-        //fr = f_write(&file, g_file_data, sizeof(g_file_data), &file_size);
-        //fr = f_read(&file, &g_file_data, sizeof(g_file_data), &file_size);
-        f_close(&file);  // Close the file object.
-        //f_unmount("0:");
-        //R_Config_TMR0_TMR1_Start();
-        break;
+     break;
 
-      case USB_STS_DETACH:
-        printf("Detected detached USB memory.\n");
-        break;
+     default:
+     break;
+     }
+     }*/
 
-      case USB_STS_NOT_SUPPORT:
-        printf("USB not supported.\n");
-        break;
-
-      case USB_STS_NONE:
-        //printf("nekaj\n");
-
-        break;
-
-      default:
-        break;
-    }
-  }
-}
-
-void placeNameToTable(char *dest, char *source)
-{
-  uint8_t startCopy = 0;
-
-  for(;; source++)
-  {
-    if(('\r' == *source) || ('\n' == *source))
-    {
-      return;
-    }
-
-    if(',' == *source)
-    {
-      startCopy = 1;
-      continue;
-    }
-
-    if(startCopy)
-    {
-      *dest = *source;
-      dest++;
-    }
-  }
-}
-
-void placeSongsToTable(output_struct_t *dest, char *source)
-{
-  output_struct_t *output = dest;
-  int commaCount = 0;
-  uint8_t decimal = 1;
-  uint8_t file_nr = 0;
-
-  for(;; source++)
-  {
-    if(('\r' == *source) || ('\n' == *source))
-    {
-      return;
-    }
-
-    if(',' == *source)
-    {
-      commaCount++;
-      decimal = 1;
-      if(commaCount > 3)
-      {
-        file_nr++;
-      }
-      continue;
-    }
-
-    switch(commaCount)
-    {
-      case 0:
-        break;
-
-      case 1:
-        output->group = (uint8_t) *source - '0';
-        break;
-
-      case 2:
-        output->repeat = (output->repeat * decimal) + ((uint8_t) *source - '0');
-        decimal = 10;
-        break;
-
-      default:
-        output->file_nr[file_nr] = (output->file_nr[file_nr] * decimal) + ((uint8_t) *source - '0');
-        decimal = 10;
-        break;
-    }
   }
 }
 

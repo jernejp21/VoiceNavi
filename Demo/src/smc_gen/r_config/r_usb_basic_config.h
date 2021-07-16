@@ -144,7 +144,7 @@
  *  1                   : lowest
  *  15                  : highest
  */
-#define USB_CFG_INTERRUPT_PRIORITY  (3)
+#define USB_CFG_INTERRUPT_PRIORITY  (4)
 
 /******************************************************************************/
 /** Settings in USB Host Mode                                                 */
@@ -154,7 +154,7 @@
  * USB_CFG_HIGH         : High assert
  * USB_CFG_LOW          : Low assert
  */
-#define USB_CFG_VBUS                (USB_CFG_HIGH)
+#define USB_CFG_VBUS                (USB_CFG_LOW)
 
 /** [Setting USB port operation when using Battery Charging (BC) function]
  * USB_CFG_ENABLE       : DCP enabled.
@@ -166,7 +166,7 @@
  * USB_CFG_ENABLE       : Using USB Hub
  * USB_CFG_DISABLE      : Not using USB Hub
  */
-#define USB_CFG_HUB                 (USB_CFG_ENABLE)
+#define USB_CFG_HUB                 (USB_CFG_DISABLE)
 
 /** [Setting whther to use Type-C]
  * USB_CFG_ENABLE       : Using Type-C
@@ -222,7 +222,7 @@
  * USB_CFG_DBLBON       : DBLB bit set.
  * USB_CFG_DBLBOFF      : DBLB bit cleared.
  */
-#define USB_CFG_DBLB                (USB_CFG_DBLBON)
+#define USB_CFG_DBLB                (USB_CFG_DBLBOFF)
 
 /** [CNTMD bit setting]
  * USB_CFG_CNTMDON      : CNTMD bit set.

@@ -56,7 +56,7 @@ Configuration Options
 #define TFAT_SDMEM_DRIVE_NUM        (0)
 #define TFAT_USB_MINI_DRIVE_NUM     (0)
 #define TFAT_MMC_DRIVE_NUM          (0)
-#define TFAT_SERIAL_FLASH_DRIVE_NUM (0)
+#define TFAT_SERIAL_FLASH_DRIVE_NUM (1)
 
 /* allocate a drive number(initial setting)
   <valid define>
@@ -81,7 +81,7 @@ Configuration Options
   Please use drv_change_alloc().
 */
 #define TFAT_DRIVE_ALLOC_NUM_0    (TFAT_CTRL_USB)
-#define TFAT_DRIVE_ALLOC_NUM_1    (TFAT_CTRL_NONE)
+#define TFAT_DRIVE_ALLOC_NUM_1    (TFAT_CTRL_SERIAL_FLASH)
 #define TFAT_DRIVE_ALLOC_NUM_2    (TFAT_CTRL_NONE)
 #define TFAT_DRIVE_ALLOC_NUM_3    (TFAT_CTRL_NONE)
 #define TFAT_DRIVE_ALLOC_NUM_4    (TFAT_CTRL_NONE)

@@ -22,7 +22,7 @@
 * Version      : 1.2.102
 * Device(s)    : R5F565NEDxFP
 * Description  : Initialization file for code generation configurations.
-* Creation Date: 2021-07-09
+* Creation Date: 2021-07-16
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -35,6 +35,8 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
+#include "Config_TMR0_TMR1.h"
+#include "Config_DA.h"
 #include "r_smc_cgc.h"
 #include "r_smc_interrupt.h"
 /* Start user code for include. Do not edit comment generated here */
@@ -81,6 +83,10 @@ void R_Systeminit(void)
 
     /* Initialize clocks settings */
     R_CGC_Create();
+
+    /* Set peripheral settings */
+    R_Config_TMR0_TMR1_Create();
+    R_Config_DA_Create();
 
     /* Register undefined interrupt */
     R_BSP_InterruptWrite(BSP_INT_SRC_UNDEFINED_INTERRUPT,(bsp_int_cb_t)r_undefined_exception);
