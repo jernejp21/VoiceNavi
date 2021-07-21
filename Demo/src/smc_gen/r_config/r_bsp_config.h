@@ -172,12 +172,12 @@ Configuration Options
 /* User Stack size in bytes.
  * NOTE: This setting is available only when using CCRX and GNUC.
  *       This is invalid when using Renesas RTOS with CCRX. */
-#define BSP_CFG_USTACK_BYTES            (0x1000)
+#define BSP_CFG_USTACK_BYTES            (0x1800)
 #endif
 
 /* Interrupt Stack size in bytes.
    NOTE: This setting is available only when using CCRX and GNUC. */
-#define BSP_CFG_ISTACK_BYTES            (0x400)
+#define BSP_CFG_ISTACK_BYTES            (0x800)
 
 /* Heap size in bytes.
    To disable the heap you must follow these steps:
@@ -187,7 +187,7 @@ Configuration Options
       settings and choosing the Standard Library section. After that choose 'Contents' in e2 studio.
       This will present a list of modules that can be included. Uncheck the box for stdio.h.
    NOTE: This setting is available only when using CCRX and GNUC. */
-#define BSP_CFG_HEAP_BYTES              (0x400)
+#define BSP_CFG_HEAP_BYTES              (0x100)
 
 /* Initializes C input & output library functions.
    0 = Disable I/O library initialization in resetprg.c. If you are not using stdio then use this value.

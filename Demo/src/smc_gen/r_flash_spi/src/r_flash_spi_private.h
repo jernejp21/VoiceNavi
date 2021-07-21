@@ -54,6 +54,8 @@ Includes <System Includes> , "Project Includes"
 #elif (FLASH_SPI_CFG_DEV0_S25FL_SECTOR_64KB == 1) || (FLASH_SPI_CFG_DEV0_S25FL_SECTOR_256KB == 1) || \
       (FLASH_SPI_CFG_DEV1_S25FL_SECTOR_64KB == 1) || (FLASH_SPI_CFG_DEV1_S25FL_SECTOR_256KB == 1)
 #include "./src/flash_types/flash_s25fl/r_flash_spi_type_sub.h"
+#elif (FLASH_SPI_CFG_DEV0_AS5F == 1)
+#include "./src/flash_types/flash_as/r_flash_spi_type_sub.h"
 #endif
 
 /* FLASH driver port header file */
@@ -77,7 +79,8 @@ Includes <System Includes> , "Project Includes"
 
 /* Checking FLASH_SPI_CFG_DEV0_xxx is set*/
 #if (FLASH_SPI_CFG_DEV0_INCLUDED != 1 )
-#elif (FLASH_SPI_CFG_DEV0_INCLUDED == 1 ) && (( FLASH_SPI_CFG_DEV0_MX25L == 1 ) || (FLASH_SPI_CFG_DEV0_MX66L == 1) || (FLASH_SPI_CFG_DEV0_MX25R == 1) )
+#elif (FLASH_SPI_CFG_DEV0_INCLUDED == 1 ) && (( FLASH_SPI_CFG_DEV0_MX25L == 1 ) || (FLASH_SPI_CFG_DEV0_MX66L == 1) || (FLASH_SPI_CFG_DEV0_MX25R == 1) || \
+       (FLASH_SPI_CFG_DEV0_AS5F == 1))
 #else
     #error "ERROR - One of the FLASH_SPI_CFG_DEV0_xxx must be set. -  Parameter error in configures file."
 #endif
@@ -94,7 +97,8 @@ Includes <System Includes> , "Project Includes"
 #elif (FLASH_SPI_CFG_DEV0_INCLUDED == 1 ) && ( \
    ( ( FLASH_SPI_CFG_DEV0_MX25L == 1 ) &&  (FLASH_SPI_CFG_DEV0_MX66L != 1) && (FLASH_SPI_CFG_DEV0_MX25R != 1)) || \
    ( ( FLASH_SPI_CFG_DEV0_MX25L != 1 ) &&  (FLASH_SPI_CFG_DEV0_MX66L == 1) && (FLASH_SPI_CFG_DEV0_MX25R != 1)) || \
-   ( ( FLASH_SPI_CFG_DEV0_MX25L != 1 ) &&  (FLASH_SPI_CFG_DEV0_MX66L != 1) && (FLASH_SPI_CFG_DEV0_MX25R == 1)))
+   ( ( FLASH_SPI_CFG_DEV0_MX25L != 1 ) &&  (FLASH_SPI_CFG_DEV0_MX66L != 1) && (FLASH_SPI_CFG_DEV0_MX25R == 1)) || \
+   (FLASH_SPI_CFG_DEV0_AS5F == 1) )
 #else
     #error "ERROR - Only One FLASH_SPI_CFG_DEV0_xxx can be set. -  Parameter error in configures file."
 #endif
@@ -155,7 +159,7 @@ Includes <System Includes> , "Project Includes"
      ((FLASH_SPI_CFG_DEV0_SIZE_512K != 1 ) &&  (FLASH_SPI_CFG_DEV0_SIZE_1M != 1) && (FLASH_SPI_CFG_DEV0_SIZE_2M != 1) && \
      (FLASH_SPI_CFG_DEV0_SIZE_4M != 1) && (FLASH_SPI_CFG_DEV0_SIZE_16M != 1) && (FLASH_SPI_CFG_DEV0_SIZE_32M != 1) && \
      (FLASH_SPI_CFG_DEV0_SIZE_64M != 1) && (FLASH_SPI_CFG_DEV0_SIZE_128M != 1) && (FLASH_SPI_CFG_DEV0_SIZE_256M != 1) && \
-     (FLASH_SPI_CFG_DEV0_SIZE_512M != 1) && (FLASH_SPI_CFG_DEV0_SIZE_1G == 1)))
+     (FLASH_SPI_CFG_DEV0_SIZE_512M != 1) && (FLASH_SPI_CFG_DEV0_SIZE_1G == 1) || (FLASH_SPI_CFG_DEV0_AS5F == 1)))
 #else 
     #error "ERROR - Only One FLASH_SPI_CFG_DEV0_SIZE_xxx can be set. -  Parameter error in configures file."
 #endif
@@ -252,6 +256,7 @@ Macro definitions
 #define FLASH_SPI_TYPE_M25P             (uint32_t)(0x00000010)
 #define FLASH_SPI_TYPE_M45PE            (uint32_t)(0x00000020)
 #define FLASH_SPI_TYPE_S25FL            (uint32_t)(0x00000040)
+#define FLASH_SPI_TYPE_AS5F             (uint32_t)(0x00000080)
 
 /* Address boundary */
 #define FLASH_SPI_ADDR_BOUNDARY         (uint32_t)(0x00000003)

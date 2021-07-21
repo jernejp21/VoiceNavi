@@ -2632,10 +2632,10 @@ static memdrv_err_t r_memdrv_rspi_write_data(uint8_t channel,
     g_transfer_busy = true;
 
 #if RSPI_LITTLE_ENDIAN == 1
-    if (MEMDRV_TRNS_DATA_CMD == cmd.word[0])
+    /*if (MEMDRV_TRNS_DATA_CMD == cmd.word[0])
     {
         count = count >> 2;
-    }
+    }*/
 #else
     #if defined (__ICCRX__)
     uint16_t cmd_big_endian = 0;
@@ -2702,10 +2702,10 @@ static memdrv_err_t r_memdrv_rspi_read_data(uint8_t channel,
     g_transfer_busy = true;
 
 #if RSPI_LITTLE_ENDIAN == 1
-    if (MEMDRV_TRNS_DATA_CMD == cmd.word[0])
+    /*if (MEMDRV_TRNS_DATA_CMD == cmd.word[0])
     {
         count = count >> 2;
-    }
+    }*/
 #else
     #if defined (__ICCRX__)
     uint16_t cmd_big_endian = 0;

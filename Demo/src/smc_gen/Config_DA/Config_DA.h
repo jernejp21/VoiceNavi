@@ -22,7 +22,7 @@
 * Version      : 1.8.4
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for Config_DA.
-* Creation Date: 2021-07-16
+* Creation Date: 2021-07-19
 ***********************************************************************************************************************/
 
 #ifndef CFG_Config_DA_H

@@ -92,7 +92,7 @@ Macro definitions
 #define MEMDRV_MODE_QUAD                     ((uint8_t)(0x03))
 
 #define MEMDRV_TRNS_CMD                      (0x0783)
-#define MEMDRV_TRNS_DATA_CMD                 (0x0203)
+#define MEMDRV_TRNS_DATA_CMD                 (0x0783)
 
 /***********************************************************************************************************************
 Typedef definitions

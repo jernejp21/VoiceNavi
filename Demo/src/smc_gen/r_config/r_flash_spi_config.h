@@ -87,9 +87,10 @@ SPECIFY DEVICES TO INCLUDE SOFTWARE SUPPORT
    Please set 1 for one device No. */
 /* 0 : Not use the flash memory. */
 /* 1 : Use the flash memory. */
-#define FLASH_SPI_CFG_DEV0_MX25L    (1)             /* Device 0 Macronix MX25L                  */
+#define FLASH_SPI_CFG_DEV0_MX25L    (0)             /* Device 0 Macronix MX25L                  */
 #define FLASH_SPI_CFG_DEV0_MX66L    (0)             /* Device 0 Macronix MX66L                  */
 #define FLASH_SPI_CFG_DEV0_MX25R    (0)             /* Device 0 Macronix MX25R                  */
+#define FLASH_SPI_CFG_DEV0_AS5F     (1)             /* Device 0 Alliance Memory AS5F32G04       */
 
 #define FLASH_SPI_CFG_DEV1_MX25L    (0)             /* Device 1 Macronix MX25L                  */
 #define FLASH_SPI_CFG_DEV1_MX66L    (0)             /* Device 1 Macronix MX66L                  */

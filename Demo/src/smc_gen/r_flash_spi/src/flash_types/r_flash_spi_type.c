@@ -80,6 +80,7 @@ const uint32_t gc_flash_dev1_types = FLASH_SPI_DEV1_TYPE;
 *************************************************************************************************/
 flash_spi_status_t r_flash_spi_init_port(uint8_t devno)
 {
+    //Jernej: popravljeno
     uint32_t flash_type = 0;
 
     /* Check parameters. */
@@ -131,6 +132,11 @@ flash_spi_status_t r_flash_spi_init_port(uint8_t devno)
         case FLASH_SPI_TYPE_S25FL:
 #if (FLASH_SPI_CFG_DEV0_S25FL == 1)
             r_flash_spi_s25fl_init_port(devno);         /* SS# initialization                   */
+#endif
+        break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            r_flash_spi_as_init_port(devno);
 #endif
         break;
         default:
@@ -306,6 +312,11 @@ flash_spi_status_t r_flash_spi_read_status(uint8_t devno, uint8_t * p_status)
             ret = r_flash_spi_s25fl_read_stsreg(devno, p_status);
 #endif
         break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            ret = r_flash_spi_as_read_stsreg(devno, p_status);
+#endif
+        break;
         default:
             /* Do nothing. */
         break;
@@ -437,6 +448,11 @@ flash_spi_status_t r_flash_spi_set_write_protect(uint8_t devno, uint8_t wpsts)
             ret = r_flash_spi_s25fl_set_write_protect(devno, wpsts);
 #endif
         break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            ret = r_flash_spi_as_set_write_protect(devno, wpsts);
+        break;
+#endif
         default:
             /* Do nothing. */
         break;
@@ -680,6 +696,11 @@ flash_spi_status_t r_flash_spi_read_data(uint8_t devno, flash_spi_info_t * p_fla
             ret = r_flash_spi_s25fl_check_cnt(devno, p_flash_spi_info);
 #endif
         break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            ret = r_flash_spi_as_check_cnt(devno, p_flash_spi_info);
+        break;
+#endif
         default:
             /* Do nothing. */
         break;
@@ -746,6 +767,11 @@ flash_spi_status_t r_flash_spi_read_data(uint8_t devno, flash_spi_info_t * p_fla
             ret = r_flash_spi_s25fl_read(devno, p_flash_spi_info);
 #endif
         break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            ret = r_flash_spi_as_read(devno, p_flash_spi_info);
+        break;
+#endif
         default:
             /* Do nothing. */
         break;
@@ -865,6 +891,11 @@ flash_spi_status_t r_flash_spi_write_data_page(uint8_t devno, flash_spi_info_t *
             ret = r_flash_spi_s25fl_check_cnt(devno, p_flash_spi_info);
 #endif
         break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            ret = r_flash_spi_as_check_cnt(devno, p_flash_spi_info);
+        break;
+#endif
         default:
             /* Do nothing. */
         break;
@@ -930,6 +961,11 @@ flash_spi_status_t r_flash_spi_write_data_page(uint8_t devno, flash_spi_info_t *
             tmpcnt = r_flash_spi_s25fl_page_calc(devno, p_flash_spi_info);
 #endif
         break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            tmpcnt = r_flash_spi_as_page_calc(devno, p_flash_spi_info);
+        break;
+#endif
         default:
             /* Do nothing. */
         break;
@@ -989,6 +1025,11 @@ flash_spi_status_t r_flash_spi_write_data_page(uint8_t devno, flash_spi_info_t *
             ret = r_flash_spi_s25fl_write_page(devno, p_flash_spi_info);
 #endif
         break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            ret = r_flash_spi_as_write_page(devno, p_flash_spi_info);
+        break;
+#endif
         default:
             /* Do nothing. */
         break;
@@ -1129,6 +1170,11 @@ flash_spi_status_t r_flash_spi_erase(uint8_t devno, flash_spi_erase_info_t * p_f
             ret = r_flash_spi_s25fl_erase(devno, p_flash_spi_erase_info);
 #endif
         break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            ret = r_flash_spi_as_erase(devno, p_flash_spi_erase_info);
+        break;
+#endif
         default:
             /* Do nothing. */
         break;
@@ -1261,6 +1307,11 @@ flash_spi_status_t r_flash_spi_polling(uint8_t devno, flash_spi_poll_mode_t mode
             ret_busy_chk = r_flash_spi_s25fl_polling(devno, mode);
 #endif
         break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            ret_busy_chk = r_flash_spi_as_polling(devno, mode);
+        break;
+#endif
         default:
             /* Do nothing. */
         break;
@@ -1499,6 +1550,11 @@ flash_spi_status_t r_flash_spi_get_memory_info(uint8_t devno, flash_spi_mem_info
             ret = r_flash_spi_s25fl_get_memory_info(devno, p_flash_spi_mem_info);
 #endif
         break;
+        case FLASH_SPI_TYPE_AS5F:
+#if (FLASH_SPI_CFG_DEV0_AS5F == 1)
+            ret = r_flash_spi_as_get_memory_info(devno, p_flash_spi_mem_info);
+        break;
+#endif
         default:
             /* Do nothing. */
         break;

@@ -48,9 +48,9 @@ Includes   <System Includes> , "Project Includes"
 /*******************************************************************************
 Macro definitions
 *******************************************************************************/
-#define FLASH_WRITE_PROTECT_OPEN        (1)
-#define FLASH_WRITE_PROTECT_CLOSE       (0)
-#define FLASH_WRITE_PROTECT_STATUS      (0x3c)
+#define FLASH_WRITE_PROTECT_OPEN        (0)
+#define FLASH_WRITE_PROTECT_CLOSE       (1)
+#define FLASH_WRITE_PROTECT_STATUS      (0x02)
 
 /* Sector Erase busy timeout 200*1ms = 0.2s  */                                 /** SET **/
 #define FLASH_SE_BUSY_WAIT              (200)
@@ -61,7 +61,7 @@ Macro definitions
 #define FLASH_BUSY                      (0x01)
 #define FLASH_NO_BUSY                   (0x00)
 
-#define FLASH_SECTOR_SIZE               (4096)
+#define FLASH_SECTOR_SIZE               (2048) //Column address size for NAND
 #define BIT_PER_BYTE_SHIFT              (8)
 
 #define TIMER_MAX_CH                    (8)
@@ -135,8 +135,8 @@ DRESULT flash_spi_disk_read (
     flash_spi_status_t      ret = FLASH_SPI_SUCCESS;
 
     /* Set flash read arguments */
-    Flash_Info_R.addr       = (uint32_t)(sector_number * FLASH_SECTOR_SIZE);
-    Flash_Info_R.cnt        = (uint32_t)(sector_count * FLASH_SECTOR_SIZE);
+    Flash_Info_R.addr       = (uint32_t)(sector_number); // * FLASH_SECTOR_SIZE);
+    Flash_Info_R.cnt        = (uint32_t)(sector_count);  //* FLASH_SECTOR_SIZE);
     Flash_Info_R.p_data     = buffer;
     Flash_Info_R.op_mode    = FLASH_SPI_SINGLE;
 
@@ -196,13 +196,13 @@ DRESULT flash_spi_disk_write (
         return RES_ERROR;
     }
 
-    if (0 != (flash_status & FLASH_WRITE_PROTECT_STATUS))   // Write protect is disable
+    if (0 == (flash_status & FLASH_WRITE_PROTECT_STATUS))   // Write protect is disable
     {
         return RES_WRPRT;
     }
 
     sector_cnt          = sector_count;                     // Write sector count
-    address             = (uint32_t)(sector_number * FLASH_SECTOR_SIZE);    // Write address
+    address             = (uint32_t)(sector_number); // * FLASH_SECTOR_SIZE);    // Write page number
 
     /* WAIT_LOOP */
     while (sector_cnt--)
@@ -211,7 +211,7 @@ DRESULT flash_spi_disk_write (
         Flash_Info_E.mode   = FLASH_SPI_MODE_S_ERASE;
 
         /* erase sector */
-        ret = R_FLASH_SPI_Erase(drive, &Flash_Info_E);
+        /*ret = R_FLASH_SPI_Erase(drive, &Flash_Info_E);
         if (FLASH_SPI_SUCCESS > ret)
         {
             return RES_ERROR;
@@ -221,7 +221,7 @@ DRESULT flash_spi_disk_write (
         if (FLASH_SPI_SUCCESS != ret)
         {
             return RES_ERROR;
-        }
+        }*/
         
         /* Set write arguments */
         Flash_Info_W.addr       = address;
@@ -525,6 +525,7 @@ static int8_t flash_spi_check_timer (
     int8_t ret = 0;
 
     /* ---- Check compare ---- */
+    flash_spi_1ms_interval();
     if (gs_timer_cnt_out[channel][TIMER_CH_COUNT] >= gs_timer_cnt_out[channel][TIMER_CH_MAX_COUNT])
     {
         ret = FLASH_ERROR;

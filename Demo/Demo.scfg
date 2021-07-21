@@ -492,17 +492,17 @@
         <pinItem allocation="66$B" comments="" direction="None" id="SSLA0" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="100" comments="" direction="None" id="DA1" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="64$B" comments="" direction="None" id="MOSIA" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinnumItem comment="PMOD1-CS" id="66"/>
-        <pinnumItem comment="LED1" id="79"/>
-        <pinnumItem comment="SW1" id="59"/>
-        <pinnumItem comment="PMOD1-IO0" id="49"/>
         <pinnumItem comment="PMOD1-RST" id="29"/>
-        <pinnumItem comment="LED0" id="80"/>
-        <pinnumItem comment="PMOD1-IO1" id="50"/>
-        <pinnumItem comment="PMOD1-MISO" id="63"/>
         <pinnumItem comment="PMOD1-IRQ" id="31"/>
+        <pinnumItem comment="PMOD1-IO0" id="49"/>
+        <pinnumItem comment="PMOD1-IO1" id="50"/>
+        <pinnumItem comment="SW1" id="59"/>
+        <pinnumItem comment="PMOD1-MISO" id="63"/>
         <pinnumItem comment="PMOD1-MOSI" id="64"/>
         <pinnumItem comment="PMOD1-SCK" id="65"/>
+        <pinnumItem comment="PMOD1-CS" id="66"/>
+        <pinnumItem comment="LED1" id="79"/>
+        <pinnumItem comment="LED0" id="80"/>
     </tool>
     <tool id="Summary" version="1.0.0.0">
         <option id="com.renesas.smc.code.path" value="src\smc_gen"/>
@@ -513,9 +513,9 @@
             <component description="Dependencies : None&#10;The r_bsp package provides a foundation for code to be built on top of. It provides startup code, iodefines, and MCU information for different boards. There are 2 folders that make up the r_bsp package. The 'mcu' folder contains files that are common to a MCU group. These files provide functionality such as easy register access, CPU functions, and a file named 'mcu_info.h' for each MCU group. The 'mcu_info.h' file has information about the MCU on the board and is configured based on the information given in r_bsp_config.h. The information in 'mcu_info.h' is used to help configure Renesas middleware that uses the r_bsp package. The 'board' folder has a folder with startup code for each supported board.  Which MCU and board is chosen is decided by the settings in 'platform.h'. The user can choose which board they are using by uncommenting the include path that applies to their board. For example, if you are using the RSK+RX64M then you would uncomment the #include &quot;./board/generic_rx64m/r_bsp.h&quot; include path. Users are encouraged to add their own boards to the 'board' directory. BSPs are configured by using the r_bsp_config.h file. Each board will have a reference configuration file named r_bsp_config_reference.h. The user should copy this file to their project, rename it to r_bsp_config.h, and use the options inside the file to configure the BSP for their project." detailDescription="Board Support Packages." display="r_bsp" id="r_bsp5.64" version="5.64">
                 <gridItem id="BSP_CFG_STARTUP_DISABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USER_STACK_ENABLE" selectedIndex="1"/>
-                <gridItem id="BSP_CFG_USTACK_BYTES" selectedIndex="0x1000"/>
-                <gridItem id="BSP_CFG_ISTACK_BYTES" selectedIndex="0x400"/>
-                <gridItem id="BSP_CFG_HEAP_BYTES" selectedIndex="0x400"/>
+                <gridItem id="BSP_CFG_USTACK_BYTES" selectedIndex="0x1800"/>
+                <gridItem id="BSP_CFG_ISTACK_BYTES" selectedIndex="0x800"/>
+                <gridItem id="BSP_CFG_HEAP_BYTES" selectedIndex="0x100"/>
                 <gridItem id="BSP_CFG_IO_LIB_ENABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USER_CHARGET_ENABLED" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USER_CHARGET_FUNCTION" selectedIndex="my_sw_charget_function"/>
