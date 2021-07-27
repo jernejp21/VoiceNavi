@@ -16,7 +16,7 @@ void WAV_Open(wav_header_t* header, uint8_t* address)
 	}
 
 	// File size
-	header->file_size = *((uint32_t*)address);
+	header->file_size = *((uint32_t*)address) + 8; //File size in WAV file is actual size -8 bytes.
 	address += 4;
 
 	// File type header - must be "WAVE", if not error

@@ -7,11 +7,13 @@
 
 #include <stdint.h>
 
+#define WAV_HEADER_SIZE 44  //WAVE file header size is 44 bytes.
+
 /* WAVE file header structure */
 typedef struct wav_header
 {
 	char riff[4];  //Marks the file as a riff file.
-	uint32_t file_size;  //Size of the overall file -8 bytes, in bytes.
+	uint32_t file_size;  //Size of the overall file 8 bytes, in bytes.
 	char wave[4];  //File Type Header. It always equals "WAVE".
 	char fmt[4];  //Format chunk marker. Includes trailing null
 	uint32_t d_len;  //Length of format data as listed above
@@ -26,12 +28,20 @@ typedef struct wav_header
 	uint32_t start_address;  //Start address of data section.
 }wav_header_t;
 
-/* File name order (position) structure */
+/* File name structure */
 #define FILE_NAME_LEN 13
-typedef struct file_name_pos
+typedef struct file_name
 {
   char file_name[FILE_NAME_LEN];
-} file_name_pos_t;
+} file_name_t;
+
+/* File data structure */
+#define FILE_NAME_LEN 13
+typedef struct file_meta_data
+{
+  uint32_t file_size;
+  uint32_t address;
+} file_meta_data_t;
 
 /* Playlist structure */
 #define MAX_NR_FILES 8

@@ -22,7 +22,7 @@
 * Version      : 1.0.2
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements SMC pin code generation.
-* Creation Date: 2021-07-15
+* Creation Date: 2021-07-26
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -60,6 +60,18 @@ void R_Pins_Create(void)
     MPC.P05PFS.BYTE = 0x80U;
     PORT0.PMR.BYTE &= 0xDFU;
     PORT0.PDR.BYTE &= 0xDFU;
+
+    /* Set MISOA pin */
+    MPC.PA7PFS.BYTE = 0x0DU;
+    PORTA.PMR.BYTE |= 0x80U;
+
+    /* Set MOSIA pin */
+    MPC.PA6PFS.BYTE = 0x0DU;
+    PORTA.PMR.BYTE |= 0x40U;
+
+    /* Set RSPCKA pin */
+    MPC.PA5PFS.BYTE = 0x0DU;
+    PORTA.PMR.BYTE |= 0x20U;
 
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
 }

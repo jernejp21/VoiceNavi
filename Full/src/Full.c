@@ -15,9 +15,11 @@
 #include "r_usb_basic_if.h"
 #include "r_usb_hmsc_if.h"
 #include "r_tfat_drv_if_dev.h"
+#include "r_memdrv_rx_if.h"
 
 #include "globals.h"
 #include "wav.h"
+#include "NAND_flash.h"
 
 void main(void);
 void playFromPlaylist(uint8_t);
@@ -38,24 +40,34 @@ FIL file;
 FRESULT fr;
 uint8_t g_file_data[FILE_SIZE];
 
-file_name_pos_t file_names[255];
-playlist_t output_music[255];
+file_meta_data_t g_file_meta_data[255];
+playlist_t g_output_music[255];
+flash_custom_FAT_t flash_table[255];
+
+uint8_t spi_tx_buff[4];
+uint8_t spi_rx_buff[4];
 
 wav_header_t g_wav_file;
 
 void main(void)
 {
-  char flash_data = 0;
+  char is_data_in_flash = 0;
   usb_ctrl_t ctrl;
   usb_cfg_t cfg;
   usb_err_t usb_err;
   uint16_t event;
+  st_memdrv_info_t memdrv_info;
+  nand_flash_status_t nand_status;
 
   PORTE.PDR.BYTE = 0;
   PORTE.PCR.BYTE = 0xFF;
 
   PORTD.PDR.BIT.B6 = 0;
   PORTD.PDR.BIT.B7 = 0;
+
+  //SPI CS Pin
+  PORTA.PDR.BIT.B4 = 1; //Set pin as output
+  PORTA.PODR.BIT.B4 = 1; //Set pin HIGH
 
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
   // resetpgr.c in PowerON_Reset_PC function.
@@ -67,11 +79,19 @@ void main(void)
   R_TMR01_Start_B();
   R_TMR01_Stop_A();
 
+  //Init USB Host Mass Storage Device controller
   ctrl.module = USB_IP0;
   ctrl.type = USB_HMSC;
   cfg.usb_speed = USB_FS;
   cfg.usb_mode = USB_HOST;
   usb_err = R_USB_Open(&ctrl, &cfg);
+
+  //Init SPI for NAND Flash
+  memdrv_info.cnt = 0;
+  memdrv_info.p_data = NULL;
+  memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
+
+  R_MEMDRV_Open(0, &memdrv_info);
 
   /* With polling, check for 1s if USB is connected or not */
   while(g_counter < 1000)
@@ -85,7 +105,9 @@ void main(void)
         PORTD.PDR.BIT.B6 = 1;
         R_TMR01_Stop();
         g_counter = 1000;
-        flash_data = 1;
+        //nand_status = NAND_Erase();
+        //NAND_CopyToFlash();
+        is_data_in_flash = 1;
         break;
 
       case USB_STS_DETACH:
@@ -101,69 +123,16 @@ void main(void)
         break;
     }
   }
+  R_TMR01_Stop();
   g_counter = 0;
 
   /* Check if there is any data in flash. */
-  //flash_data = check_flash_data()
+  //is_data_in_flash = check_if_data_in_flash()
   /* If data in flash, prepare lookout tables. */
-  if(flash_data == 1)
+  if(is_data_in_flash == 1)
   {
-    fr = f_mount(&fs, "", 0);
-    fr = f_open(&file, (const TCHAR*) &g_msc_file, FA_READ);
-    while(f_gets((TCHAR*) &line, sizeof(line), &file))
-    {
-      /* Section #2 in wpj file represents file name order.
-       * 0,file1.wav
-       * 1,file50.wav
-       * 2,file8.wav 
-       */
-      if(strncmp(line, "#2", 2) == 0)
-      {
-        startOfFileNames = 1;
-        g_counter = 0;
-        continue;
-      }
-
-      /* Section #3 in wpj file represents playlist.
-       * input channel, output channel, repetition, file to play (up to 8 files)
-       * 0,1,1,2
-       * 1,1,1,2
-       * 2,1,2,0
-       */
-      if(strncmp(line, "#3", 2) == 0)
-      {
-        startOfPlaylist = 1;
-        startOfFileNames = 0;
-        g_counter = 0;
-        continue;
-      }
-
-      /* #0 marks end of playlist */
-      if(strncmp(line, "#0", 2) == 0)
-      {
-        break;
-      }
-
-      if(startOfFileNames)
-      {
-        placeNameToTable((char*) &file_names[g_counter].file_name, (char*) &line);
-        g_counter++;
-      }
-
-      if(startOfPlaylist)
-      {
-        placeSongsToTable((playlist_t*) &output_music[g_counter], (char*) &line);
-        g_counter++;
-
-        PORTD.PDR.BIT.B7 = 1;
-        if(g_counter > 254)
-        {
-          break;
-        }
-      }
-    }
-    f_close(&file);
-
+    NAND_ReadFromFlash(0, sizeof(flash_table), (uint8_t*)&flash_table[0]);
+    NAND_ReadFromFlash(NAND_PAGE_SIZE+10, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
   }
   else
   {
@@ -200,12 +169,12 @@ void playFromPlaylist(uint8_t playNr)
   int trackNr = 0;
   int repetitions = 0;
 
-  while(output_music[playNr].repeat > repetitions)
+  while(g_output_music[playNr].repeat > repetitions)
   {
-    while(output_music[playNr].playlist_len > trackNr)
+    while(g_output_music[playNr].playlist_len > trackNr)
     {
-      fileToPlay = output_music[playNr].file_nr[index];
-      fileName_p = &file_names[fileToPlay].file_name[0];
+      fileToPlay = g_output_music[playNr].file_nr[index];
+      //fileName_p = &file_names[fileToPlay].file_name[0];
 
       fr = f_open(&file, fileName_p, FA_READ);
       fr = f_read(&file, &g_file_data, WAV_HEADER_SIZE, &size);

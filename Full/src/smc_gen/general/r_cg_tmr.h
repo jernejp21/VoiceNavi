@@ -22,7 +22,7 @@
 * Version      : 1.2.102
 * Device(s)    : R5F565NEDxFP
 * Description  : General header file for TMR peripheral.
-* Creation Date: 2021-07-15
+* Creation Date: 2021-07-26
 ***********************************************************************************************************************/
 
 #ifndef TMR_H
