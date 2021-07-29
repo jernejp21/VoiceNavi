@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for TMR01.
-* Creation Date: 2021-07-26
+* Creation Date: 2021-07-29
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -57,7 +57,6 @@ void R_TMR01_Create(void)
 {
     /* Disable TMR0 interrupts */
     IEN(PERIB, INTB146) = 0U;
-    IEN(PERIB, INTB147) = 0U;
 
     /* Cancel TMR module stop state */
     MSTP(TMR01) = 0U; 
@@ -66,7 +65,7 @@ void R_TMR01_Create(void)
     TMR0.TCCR.BYTE = _18_TMR_CLK_TMR1_OVRF | _00_TMR_CLK_DISABLED;
 
     /* Set counter clear and interrupt */
-    TMR0.TCR.BYTE = _80_TMR_CMIB_INT_ENABLE | _40_TMR_CMIA_INT_ENABLE | _00_TMR_CNT_CLR_DISABLE | 
+    TMR0.TCR.BYTE = _40_TMR_CMIA_INT_ENABLE | _08_TMR_CNT_CLR_COMP_MATCH_A | _00_TMR_CMIB_INT_DISABLE | 
                     _00_TMR_OVI_INT_DISABLE;
 
     /* Set A/D trigger and output */
@@ -78,9 +77,7 @@ void R_TMR01_Create(void)
 
     /* Configure TMR0 interrupts */ 
     ICU.SLIBR146.BYTE = 0x03U;
-    IPR(PERIB, INTB146) = _03_TMR_PRIORITY_LEVEL3;
-    ICU.SLIBR147.BYTE = 0x04U;
-    IPR(PERIB, INTB147) = _03_TMR_PRIORITY_LEVEL3;
+    IPR(PERIB, INTB146) = _01_TMR_PRIORITY_LEVEL1;
 
     R_TMR01_Create_UserInit();
 }
@@ -96,9 +93,7 @@ void R_TMR01_Start(void)
 {
     /*Enable TMR0 interrupt*/
     IR(PERIB, INTB146) = 0U;
-    //IEN(PERIB, INTB146) = 1U;
-    IR(PERIB, INTB147) = 0U;
-    //IEN(PERIB, INTB147) = 1U;
+    IEN(PERIB, INTB146) = 1U;
 
     /*Start counting*/
     TMR1.TCCR.BYTE = _08_TMR_CLK_SRC_PCLK | _00_TMR_PCLK_DIV_1;
@@ -114,8 +109,7 @@ void R_TMR01_Start(void)
 void R_TMR01_Stop(void)
 {
     /*Enable TMR0 interrupt*/ 
-    IEN(PERIB, INTB146) = 0U; 
-    IEN(PERIB, INTB147) = 0U;
+    IEN(PERIB, INTB146) = 0U;
 
     /*Stop counting*/ 
     TMR1.TCCR.BYTE = _00_TMR_CLK_DISABLED;

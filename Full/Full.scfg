@@ -371,13 +371,13 @@
         <Item currentVect="143" defaultVect="143" id="TPU3_TGI3B" priority="15" usedState="Not Use"/>
         <Item currentVect="144" defaultVect="144" id="TPU1_TGI1A" priority="15" usedState="Not Use"/>
         <Item currentVect="145" defaultVect="145" id="TPU3_TGI3C" priority="15" usedState="Not Use"/>
-        <Item currentVect="146" defaultVect="146" id="TMR0_CMIA0" priority="3" usedState="Used"/>
-        <Item currentVect="147" defaultVect="147" id="TMR0_CMIB0" priority="3" usedState="Used"/>
+        <Item currentVect="146" defaultVect="146" id="TMR0_CMIA0" priority="1" usedState="Used"/>
+        <Item currentVect="147" defaultVect="147" id="TMR0_CMIB0" priority="3" usedState="Not Use"/>
         <Item currentVect="148" defaultVect="148" id="TMR0_OVI0" priority="15" usedState="Not Use"/>
         <Item currentVect="149" defaultVect="149" id="TMR1_CMIA1" priority="15" usedState="Not Use"/>
         <Item currentVect="150" defaultVect="150" id="TMR1_CMIB1" priority="15" usedState="Not Use"/>
         <Item currentVect="151" defaultVect="151" id="TMR1_OVI1" priority="15" usedState="Not Use"/>
-        <Item currentVect="152" defaultVect="152" id="TMR2_CMIA2" priority="15" usedState="Not Use"/>
+        <Item currentVect="152" defaultVect="152" id="TMR2_CMIA2" priority="3" usedState="Used"/>
         <Item currentVect="153" defaultVect="153" id="TMR2_CMIB2" priority="15" usedState="Not Use"/>
         <Item currentVect="154" defaultVect="154" id="TMR2_OVI2" priority="15" usedState="Not Use"/>
         <Item currentVect="155" defaultVect="155" id="TMR3_CMIA3" priority="15" usedState="Not Use"/>
@@ -485,7 +485,6 @@
     <tool id="Pins" version="1.0.1.0">
         <pinItem allocation="2" comments="" direction="None" id="EMLE" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="11" comments="" direction="None" id="XTAL" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="65$B" comments="" direction="None" id="RSPCKA" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="63$B" comments="" direction="None" id="MISOA" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="13" comments="" direction="None" id="EXTAL" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="7" comments="" direction="None" id="FINED" isUsedBySoftware="true" locked="false" status="0"/>
@@ -493,17 +492,18 @@
         <pinItem allocation="36" comments="" direction="None" id="USB0_DM" isUsedBySoftware="false" locked="false" status="4"/>
         <pinItem allocation="37" comments="" direction="None" id="USB0_DP" isUsedBySoftware="false" locked="false" status="4"/>
         <pinItem allocation="64$B" comments="" direction="None" id="MOSIA" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinnumItem comment="PMOD1-RST" id="29"/>
-        <pinnumItem comment="PMOD1-IRQ" id="31"/>
-        <pinnumItem comment="PMOD1-IO0" id="49"/>
-        <pinnumItem comment="PMOD1-IO1" id="50"/>
-        <pinnumItem comment="SW1" id="59"/>
-        <pinnumItem comment="PMOD1-MISO" id="63"/>
-        <pinnumItem comment="PMOD1-MOSI" id="64"/>
-        <pinnumItem comment="PMOD1-SCK" id="65"/>
+        <pinItem allocation="65$B" comments="" direction="None" id="RSPCKA" isUsedBySoftware="true" locked="false" status="0"/>
         <pinnumItem comment="PMOD1-CS" id="66"/>
         <pinnumItem comment="LED1" id="79"/>
+        <pinnumItem comment="SW1" id="59"/>
+        <pinnumItem comment="PMOD1-IO0" id="49"/>
+        <pinnumItem comment="PMOD1-RST" id="29"/>
         <pinnumItem comment="LED0" id="80"/>
+        <pinnumItem comment="PMOD1-IO1" id="50"/>
+        <pinnumItem comment="PMOD1-MISO" id="63"/>
+        <pinnumItem comment="PMOD1-IRQ" id="31"/>
+        <pinnumItem comment="PMOD1-MOSI" id="64"/>
+        <pinnumItem comment="PMOD1-SCK" id="65"/>
     </tool>
     <tool id="Summary" version="1.0.0.0">
         <option id="com.renesas.smc.code.path" value="src\smc_gen"/>
@@ -679,7 +679,7 @@
                     <item id="ExternalClockFalling" input="" vlaue="0"/>
                     <item id="ExternalClockBoth" input="" vlaue="0"/>
                 </option>
-                <option enabled="true" id="CounterClearOption" selection="Disabled">
+                <option enabled="true" id="CounterClearOption" selection="ClearedMatchA">
                     <item id="Disabled" input="" vlaue="0"/>
                     <item id="ClearedMatchA" input="" vlaue="0"/>
                     <item id="ClearedMatchB" input="" vlaue="0"/>
@@ -722,7 +722,7 @@
                     <item id="Disable" input="" vlaue="0"/>
                     <item id="Enable" input="" vlaue="0"/>
                 </option>
-                <option enabled="true" id="TCORAOption" selection="Level3">
+                <option enabled="true" id="TCORAOption" selection="Level1">
                     <item id="Level0" input="" vlaue="0"/>
                     <item id="Level1" input="" vlaue="0"/>
                     <item id="Level2" input="" vlaue="0"/>
@@ -740,7 +740,7 @@
                     <item id="Level14" input="" vlaue="0"/>
                     <item id="Level15" input="" vlaue="0"/>
                 </option>
-                <option enabled="true" id="TCORBEnable" selection="Enable">
+                <option enabled="true" id="TCORBEnable" selection="Disable">
                     <item id="Disable" input="" vlaue="0"/>
                     <item id="Enable" input="" vlaue="0"/>
                 </option>
@@ -899,6 +899,142 @@
             </component>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+        </configuration>
+        <configuration id="a54ffca9-75b0-4275-a9bb-e11b82310175" inuse="true" name="TMR23">
+            <allocatable id="TMR2">
+                <isocket id="CountingClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                <option enabled="true" id="CountMode" selection="16bitMode">
+                    <item id="8bitMode" input="" vlaue="0"/>
+                    <item id="16bitMode" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="ClockSourceOption" selection="PCLK1024">
+                    <item id="PCLK" input="" vlaue="0"/>
+                    <item id="PCLK2" input="" vlaue="0"/>
+                    <item id="PCLK8" input="" vlaue="0"/>
+                    <item id="PCLK32" input="" vlaue="0"/>
+                    <item id="PCLK64" input="" vlaue="0"/>
+                    <item id="PCLK1024" input="" vlaue="0"/>
+                    <item id="PCLK8192" input="" vlaue="0"/>
+                    <item id="ExternalClockRising" input="" vlaue="0"/>
+                    <item id="ExternalClockFalling" input="" vlaue="0"/>
+                    <item id="ExternalClockBoth" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="CounterClearOption" selection="ClearedMatchA">
+                    <item id="Disabled" input="" vlaue="0"/>
+                    <item id="ClearedMatchA" input="" vlaue="0"/>
+                    <item id="ClearedMatchB" input="" vlaue="0"/>
+                    <item id="ClearedRisingReset" input="" vlaue="0"/>
+                    <item id="ClearedResetHigh" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="CompareMatchAValue" selection="CompareMatchAValue">
+                    <item id="CompareMatchAValue" input="1000" vlaue="58593"/>
+                </option>
+                <option enabled="true" id="MatchValueOptionA" selection="ms">
+                    <item id="ms" input="" vlaue="0"/>
+                    <item id="us" input="" vlaue="0"/>
+                    <item id="ns" input="" vlaue="0"/>
+                    <item id="count" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="S12ADEnable" selection="Disable">
+                    <item id="Disable" input="" vlaue="0"/>
+                    <item id="Enable" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="CompareMatchBValue" selection="CompareMatchBValue">
+                    <item id="CompareMatchBValue" input="2" vlaue="116"/>
+                </option>
+                <option enabled="true" id="TMO0OutputEnable" selection="Disable">
+                    <item id="Disable" input="" vlaue="0"/>
+                    <item id="Enable" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="OutputMatchA" selection="Nochange">
+                    <item id="Nochange" input="" vlaue="0"/>
+                    <item id="Output0" input="" vlaue="0"/>
+                    <item id="Output1" input="" vlaue="0"/>
+                    <item id="ToggleOutput" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="OutputMatchB" selection="Nochange">
+                    <item id="Nochange" input="" vlaue="0"/>
+                    <item id="Output0" input="" vlaue="0"/>
+                    <item id="Output1" input="" vlaue="0"/>
+                    <item id="ToggleOutput" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="TCORAEnable" selection="Enable">
+                    <item id="Disable" input="" vlaue="0"/>
+                    <item id="Enable" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="TCORAOption" selection="Level3">
+                    <item id="Level0" input="" vlaue="0"/>
+                    <item id="Level1" input="" vlaue="0"/>
+                    <item id="Level2" input="" vlaue="0"/>
+                    <item id="Level3" input="" vlaue="0"/>
+                    <item id="Level4" input="" vlaue="0"/>
+                    <item id="Level5" input="" vlaue="0"/>
+                    <item id="Level6" input="" vlaue="0"/>
+                    <item id="Level7" input="" vlaue="0"/>
+                    <item id="Level8" input="" vlaue="0"/>
+                    <item id="Level9" input="" vlaue="0"/>
+                    <item id="Level10" input="" vlaue="0"/>
+                    <item id="Level11" input="" vlaue="0"/>
+                    <item id="Level12" input="" vlaue="0"/>
+                    <item id="Level13" input="" vlaue="0"/>
+                    <item id="Level14" input="" vlaue="0"/>
+                    <item id="Level15" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="TCORBEnable" selection="Disable">
+                    <item id="Disable" input="" vlaue="0"/>
+                    <item id="Enable" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="TCORBOption" selection="Level15">
+                    <item id="Level0" input="" vlaue="0"/>
+                    <item id="Level1" input="" vlaue="0"/>
+                    <item id="Level2" input="" vlaue="0"/>
+                    <item id="Level3" input="" vlaue="0"/>
+                    <item id="Level4" input="" vlaue="0"/>
+                    <item id="Level5" input="" vlaue="0"/>
+                    <item id="Level6" input="" vlaue="0"/>
+                    <item id="Level7" input="" vlaue="0"/>
+                    <item id="Level8" input="" vlaue="0"/>
+                    <item id="Level9" input="" vlaue="0"/>
+                    <item id="Level10" input="" vlaue="0"/>
+                    <item id="Level11" input="" vlaue="0"/>
+                    <item id="Level12" input="" vlaue="0"/>
+                    <item id="Level13" input="" vlaue="0"/>
+                    <item id="Level14" input="" vlaue="0"/>
+                    <item id="Level15" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="TCNTEnable" selection="Disable">
+                    <item id="Disable" input="" vlaue="0"/>
+                    <item id="Enable" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="TCNTOption" selection="Level15">
+                    <item id="Level0" input="" vlaue="0"/>
+                    <item id="Level1" input="" vlaue="0"/>
+                    <item id="Level2" input="" vlaue="0"/>
+                    <item id="Level3" input="" vlaue="0"/>
+                    <item id="Level4" input="" vlaue="0"/>
+                    <item id="Level5" input="" vlaue="0"/>
+                    <item id="Level6" input="" vlaue="0"/>
+                    <item id="Level7" input="" vlaue="0"/>
+                    <item id="Level8" input="" vlaue="0"/>
+                    <item id="Level9" input="" vlaue="0"/>
+                    <item id="Level10" input="" vlaue="0"/>
+                    <item id="Level11" input="" vlaue="0"/>
+                    <item id="Level12" input="" vlaue="0"/>
+                    <item id="Level13" input="" vlaue="0"/>
+                    <item id="Level14" input="" vlaue="0"/>
+                    <item id="Level15" input="" vlaue="0"/>
+                </option>
+            </allocatable>
+            <component description="This software component generates two units (unit 0, unit 1) of an on-chip 8-bit timer (TMR) module that comprise two 8-bit counter channels, totaling four channels." detailDescription="" display="8-Bit Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.tmr" version="1.7.0"/>
+            <allocator channelLevel0="2" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="16-Bit Timer 2" display="TMR2_TMR3" id="com.renesas.smc.tools.swcomponent.codegenerator.tmr.rx651.tmr2_tmr3" type="TMR23">
+                <context>
+                    <option enabled="true" id="CountMode" selection="16bitMode">
+                        <item enabled="true" id="8bitMode"/>
+                        <item enabled="true" id="16bitMode"/>
+                    </option>
+                </context>
+            </allocator>
+            <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
         </configuration>
     </tool>
     <tool id="System">

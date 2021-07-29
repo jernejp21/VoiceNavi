@@ -18,45 +18,43 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_smc_interrupt.c
-* Version      : 1.2.2
+* File Name    : TMR23.h
+* Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
-* Description  : This file implements interrupt setting.
+* Description  : This file implements device driver for TMR23.
 * Creation Date: 2021-07-29
 ***********************************************************************************************************************/
 
-/***********************************************************************************************************************
-Pragma directive
-***********************************************************************************************************************/
-/* Start user code for pragma. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
+#ifndef CFG_TMR23_H
+#define CFG_TMR23_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_macrodriver.h"
-#include "r_smc_interrupt.h"
-/* Start user code for include. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
-#include "r_cg_userdefine.h"
+#include "r_cg_tmr.h"
 
 /***********************************************************************************************************************
-Global variables and functions
+Macro definitions (Register bit)
 ***********************************************************************************************************************/
-/* Start user code for global. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Interrupt_Create
-* Description  : This function Used to set the fast interrupt or group interrupt 
-* Arguments    : None
-* Return Value : None
+Macro definitions
+***********************************************************************************************************************/
+#define TMR2_PCLK_COUNTER_DIVISION                    (1024) 
+#define _E4E1_TMR23_COMP_MATCH_VALUE_A                (0xE4E1U)
+#define _0074_TMR23_COMP_MATCH_VALUE_B                (0x0074U)
+
+/***********************************************************************************************************************
+Typedef definitions
 ***********************************************************************************************************************/
 
-void R_Interrupt_Create(void)
-{
-    /* No fast interrupt and group settings have been configured in the Interrupts tab. */
-}
-
-/* Start user code for adding. Do not edit comment generated here */
+/***********************************************************************************************************************
+Global functions
+***********************************************************************************************************************/
+void R_TMR23_Create(void);
+void R_TMR23_Create_UserInit(void);
+void R_TMR23_Start(void);
+void R_TMR23_Stop(void);
+/* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
+#endif

@@ -18,10 +18,10 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_smc_interrupt.c
-* Version      : 1.2.2
+* File Name    : TMR23.c
+* Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
-* Description  : This file implements interrupt setting.
+* Description  : This file implements device driver for TMR23.
 * Creation Date: 2021-07-29
 ***********************************************************************************************************************/
 
@@ -35,7 +35,7 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "r_smc_interrupt.h"
+#include "TMR23.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -47,15 +47,72 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Interrupt_Create
-* Description  : This function Used to set the fast interrupt or group interrupt 
+* Function Name: R_TMR23_Create
+* Description  : This function initializes the TMR2 channel
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void R_Interrupt_Create(void)
+void R_TMR23_Create(void)
 {
-    /* No fast interrupt and group settings have been configured in the Interrupts tab. */
+    /* Disable TMR2 interrupts */
+    IEN(PERIB, INTB152) = 0U;
+
+    /* Cancel TMR module stop state */
+    MSTP(TMR23) = 0U; 
+
+    /* Set timer counter control setting */
+    TMR2.TCCR.BYTE = _18_TMR_CLK_TMR1_OVRF | _00_TMR_CLK_DISABLED;
+
+    /* Set counter clear and interrupt */
+    TMR2.TCR.BYTE = _40_TMR_CMIA_INT_ENABLE | _08_TMR_CNT_CLR_COMP_MATCH_A | _00_TMR_CMIB_INT_DISABLE | 
+                    _00_TMR_OVI_INT_DISABLE;
+
+    /* Set A/D trigger and output */
+    TMR2.TCSR.BYTE = _00_TMR_AD_TRIGGER_DISABLE | _E0_TMR02_TCSR_DEFAULT;
+
+    /* Set compare match value */ 
+    TMR23.TCORA = _E4E1_TMR23_COMP_MATCH_VALUE_A;
+    TMR23.TCORB = _0074_TMR23_COMP_MATCH_VALUE_B;
+
+    /* Configure TMR2 interrupts */ 
+    ICU.SLIBR152.BYTE = 0x09U;
+    IPR(PERIB, INTB152) = _03_TMR_PRIORITY_LEVEL3;
+
+    R_TMR23_Create_UserInit();
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR23_Start
+* Description  : This function starts the TMR2 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_TMR23_Start(void)
+{
+    /*Enable TMR2 interrupt*/
+    IR(PERIB, INTB152) = 0U;
+    IEN(PERIB, INTB152) = 1U;
+
+    /*Start counting*/
+    TMR3.TCCR.BYTE = _08_TMR_CLK_SRC_PCLK | _05_TMR_PCLK_DIV_1024;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR23_Stop
+* Description  : This function stop the TMR2 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_TMR23_Stop(void)
+{
+    /*Enable TMR2 interrupt*/ 
+    IEN(PERIB, INTB152) = 0U;
+
+    /*Stop counting*/ 
+    TMR3.TCCR.BYTE = _00_TMR_CLK_DISABLED;
 }
 
 /* Start user code for adding. Do not edit comment generated here */

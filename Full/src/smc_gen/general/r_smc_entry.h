@@ -22,7 +22,7 @@
 * Version      : 1.2.102
 * Device(s)    : R5F565NEDxFP
 * Description  : SMC platform header file.
-* Creation Date: 2021-07-26
+* Creation Date: 2021-07-29
 ***********************************************************************************************************************/
 
 #ifndef SMC_ENTRY_H
@@ -34,6 +34,7 @@ Includes
 #include "r_cg_macrodriver.h"
 #include "TMR01.h"
 #include "DAC.h"
+#include "TMR23.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)

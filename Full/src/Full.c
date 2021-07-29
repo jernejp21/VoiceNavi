@@ -62,8 +62,8 @@ void main(void)
   PORTE.PDR.BYTE = 0;
   PORTE.PCR.BYTE = 0xFF;
 
-  PORTD.PDR.BIT.B6 = 0;
-  PORTD.PDR.BIT.B7 = 0;
+  PORTD.PDR.BIT.B6 = 1;
+  PORTD.PDR.BIT.B7 = 1;
 
   //SPI CS Pin
   PORTA.PDR.BIT.B4 = 1; //Set pin as output
@@ -72,12 +72,10 @@ void main(void)
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
   // resetpgr.c in PowerON_Reset_PC function.
 
+  FIFO_Init();
   R_DAC1_Start();
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
-  R_TMR01_Set_Frequency(1, 1);  //Set freq to 1 kHz for counter B
-  R_TMR01_Start();
-  R_TMR01_Start_B();
-  R_TMR01_Stop_A();
+  R_TMR23_Start();
 
   //Init USB Host Mass Storage Device controller
   ctrl.module = USB_IP0;
@@ -102,8 +100,7 @@ void main(void)
     {
       case USB_STS_CONFIGURED:
 
-        PORTD.PDR.BIT.B6 = 1;
-        R_TMR01_Stop();
+        R_TMR23_Stop();
         g_counter = 1000;
         //nand_status = NAND_Erase();
         //NAND_CopyToFlash();
@@ -123,7 +120,7 @@ void main(void)
         break;
     }
   }
-  R_TMR01_Stop();
+  R_TMR23_Stop();
   g_counter = 0;
 
   /* Check if there is any data in flash. */
@@ -141,7 +138,7 @@ void main(void)
 
   while(1)
   {
-    uint8_t xor = PORTE.PIDR.BYTE ^ 0xFF;  //Unset bit will be 1, other bits will be 0.
+    uint8_t xor = 5; //PORTE.PIDR.BYTE ^ 0xFF;  //Unset bit will be 1, other bits will be 0.
     int counter = -1;
 
     while(xor)
@@ -165,38 +162,52 @@ void playFromPlaylist(uint8_t playNr)
   int index = 0;
   int fileToPlay;
   UINT size;
-  char *fileName_p;
+  uint32_t fileAddress;
   int trackNr = 0;
   int repetitions = 0;
+  int fifo_status = FIFO_OK;
+  playNr = 155;
 
   while(g_output_music[playNr].repeat > repetitions)
   {
     while(g_output_music[playNr].playlist_len > trackNr)
     {
       fileToPlay = g_output_music[playNr].file_nr[index];
-      //fileName_p = &file_names[fileToPlay].file_name[0];
+      fileAddress = flash_table[fileToPlay].address;
 
-      fr = f_open(&file, fileName_p, FA_READ);
-      fr = f_read(&file, &g_file_data, WAV_HEADER_SIZE, &size);
+      //fr = f_open(&file, fileName_p, FA_READ);
+      //fr = f_read(&file, &g_file_data, WAV_HEADER_SIZE, &size);
+      NAND_ReadFromFlash(fileAddress, WAV_HEADER_SIZE, g_file_data);
 
-      WAV_Open(&g_wav_file, (uint8_t*) &g_file_data);
-      f_read(&file, &g_file_data, sizeof(g_file_data), &size);
+      WAV_Open(&g_wav_file, g_file_data);
+      fileAddress += WAV_HEADER_SIZE;
+      NAND_ReadFromFlash(fileAddress, sizeof(g_file_data), g_file_data);
+      fifo_status = FIFO_Write(g_file_data, sizeof(g_file_data));
       g_counter = 0;
 
       g_playing = 1;
-      R_TMR01_Set_Frequency(g_wav_file.sample_rate, 0);
-      R_TMR01_Start_A();
+      R_TMR01_Set_Frequency(g_wav_file.sample_rate);
+
       R_TMR01_Start();
       while(g_playing)
       {
         if(g_readBuffer)
         {
           g_readBuffer = 0;
-          f_read(&file, &g_file_data, sizeof(g_file_data), &size);
+          fileAddress += sizeof(g_file_data);
+          PORTD.PODR.BIT.B7 = 1;
+          NAND_ReadFromFlash(fileAddress, sizeof(g_file_data), g_file_data);
+          fifo_status = FIFO_Write(g_file_data, sizeof(g_file_data));
+          if(fifo_status == FIFO_FULL)
+          {
+            __asm("nop");
+          }
+          PORTD.PODR.BIT.B7 = 0;
+          //f_read(&file, &g_file_data, sizeof(g_file_data), &size);
         }
       }
       R_TMR01_Stop();
-      f_close(&file);
+      //f_close(&file);
 
       trackNr++;
       index++;
@@ -206,4 +217,49 @@ void playFromPlaylist(uint8_t playNr)
     index = 0;
     repetitions++;
   }
+}
+
+uint8_t FIFO_buffer[FIFO_SIZE];
+uint16_t FIFO_head, FIFO_tail;
+
+
+
+void FIFO_Init(void)
+{
+  FIFO_head = 0;
+  FIFO_tail = 0;
+}
+
+int FIFO_Write(uint8_t *new, uint16_t size)
+{
+  for(int i = 0; i < size; i++)
+  {
+    if(FIFO_head == ((FIFO_tail - 1 + FIFO_SIZE) % FIFO_SIZE))
+    {
+      return FIFO_FULL; /* Queue Full*/
+    }
+
+    FIFO_buffer[FIFO_head] = *(new + i);
+
+    FIFO_head = (FIFO_head + 1) % FIFO_SIZE;
+  }
+
+  return FIFO_OK;  // No errors
+}
+
+int FIFO_Read(uint8_t *old, uint16_t size)
+{
+  for(int i = 0; i < size; i++)
+  {
+    if(FIFO_head == FIFO_tail)
+    {
+      return FIFO_EMPTY; /* Queue Empty - nothing to get*/
+    }
+
+    *(old + i) = FIFO_buffer[FIFO_tail];
+
+    FIFO_tail = (FIFO_tail + 1) % FIFO_SIZE;
+  }
+
+  return FIFO_OK;  // No errors
 }

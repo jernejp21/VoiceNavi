@@ -5,10 +5,16 @@
 #ifndef __NAND_FLASH_H
 #define __NAND_FLASH_H
 
+/* This are device dependent values. Change if needed */
 #define NAND_NR_OF_BLOCKS 2048
 #define NAND_PAGE_SIZE 2048
+#define NAND_DELAY_TIME 1
+#define NAND_DELAY_UNIT BSP_DELAY_MICROSECS
+
+/* Macro for MEMDEV library */
 #define NAND_DEVNO 0
 
+/* NAND Flash commands */
 #define NAND_WRITE_DISABLE 0x04
 #define NAND_WRITE_ENABLE 0x06
 #define NAND_BLOCK_ERASE 0xD8
@@ -21,12 +27,17 @@
 #define NAND_GET_FEATURE 0x0F
 #define NAND_SET_FEATURE 0x1F
 
+/* NAND Flash registers */
 #define NAND_BLOCK_LOCK_REG 0xA0
 #define NAND_STATUS_REG 0xC0
+
+/* NAND Flash status register values */
 #define NAND_STATUS_OIP 0x01
 #define NAND_STATUS_WEL 0x02
 #define NAND_STATUS_E_FAIL 0x04
 #define NAND_STATUS_P_FAIL 0x08
+#define NAND_STATUS_ECCS0 0x10
+#define NAND_STATUS_ECCS1 0x20
 
 typedef struct flash_custom_FAT
 {

@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for TMR01.
-* Creation Date: 2021-07-26
+* Creation Date: 2021-07-29
 ***********************************************************************************************************************/
 
 #ifndef CFG_TMR01_H
@@ -56,10 +56,6 @@ void R_TMR01_Create_UserInit(void);
 void R_TMR01_Start(void);
 void R_TMR01_Stop(void);
 /* Start user code for function. Do not edit comment generated here */
-void R_TMR01_Set_Frequency(uint32_t, uint8_t);
-void R_TMR01_Stop_A(void);
-void R_TMR01_Stop_B(void);
-void R_TMR01_Start_A(void);
-void R_TMR01_Start_B(void);
+void R_TMR01_Set_Frequency(uint32_t);
 /* End user code. Do not edit comment generated here */
 #endif

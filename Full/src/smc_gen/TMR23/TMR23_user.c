@@ -18,10 +18,10 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_smc_interrupt.c
-* Version      : 1.2.2
+* File Name    : TMR23_user.c
+* Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
-* Description  : This file implements interrupt setting.
+* Description  : This file implements device driver for TMR23.
 * Creation Date: 2021-07-29
 ***********************************************************************************************************************/
 
@@ -35,8 +35,9 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "r_smc_interrupt.h"
+#include "TMR23.h"
 /* Start user code for include. Do not edit comment generated here */
+#include "globals.h"
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 
@@ -47,15 +48,31 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Interrupt_Create
-* Description  : This function Used to set the fast interrupt or group interrupt 
+* Function Name: R_TMR23_Create_UserInit
+* Description  : This function adds user code after initializing TMR
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void R_Interrupt_Create(void)
+void R_TMR23_Create_UserInit(void)
 {
-    /* No fast interrupt and group settings have been configured in the Interrupts tab. */
+    /* Start user code for user init. Do not edit comment generated here */
+  /* End user code. Do not edit comment generated here */
+}
+
+/***********************************************************************************************************************
+* Function Name: r_TMR23_cmia2_interrupt
+* Description  : This function is CMIA2 interrupt service routine
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void r_TMR23_cmia2_interrupt(void)
+{
+    /* Start user code for r_TMR23_cmia2_interrupt. Do not edit comment generated here */
+  TMR23.TCNT = 0;
+  g_counter++;
+  /* End user code. Do not edit comment generated here */
 }
 
 /* Start user code for adding. Do not edit comment generated here */

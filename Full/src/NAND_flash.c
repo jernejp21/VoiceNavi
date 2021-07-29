@@ -69,7 +69,7 @@ void NAND_CopyToFlash()
     {
       placeNameToTable((char*) &file_name.file_name, (char*) &line);
       fr = f_open(&file1, &file_name.file_name[0], FA_READ);
-      fr = f_read(&file1, &wav_buffer[0], NAND_PAGE_SIZE, &size);
+      fr = f_read(&file1, &wav_buffer[0], sizeof(wav_buffer), &size);
       WAV_Open(&wav_file, &wav_buffer[0]);
       flash_table[cnt].address = flash_address;
       flash_table[cnt].file_size = wav_file.file_size;
@@ -82,12 +82,13 @@ void NAND_CopyToFlash()
         {
           break;
         }
-        fr = f_read(&file1, &wav_buffer[0], NAND_PAGE_SIZE, &size);
+        fr = f_read(&file1, &wav_buffer[0], sizeof(wav_buffer), &size);
       }
-      while(size);
+      while(size == sizeof(wav_buffer));
 
-      flash_status = nand_copy_to_flash(flash_address, (wav_file.file_size % NAND_PAGE_SIZE), wav_buffer);
-      flash_address += wav_file.file_size % NAND_PAGE_SIZE;
+      /* Copy last part of read file to flash */
+      flash_status = nand_copy_to_flash(flash_address, size, wav_buffer);
+      flash_address += size;
       f_close(&file1);
       cnt++;
     }
@@ -96,8 +97,6 @@ void NAND_CopyToFlash()
     {
       placeSongsToTable((playlist_t*) &g_output_music[cnt], (char*) &line);
       cnt++;
-
-      PORTD.PDR.BIT.B7 = 1;
       if(cnt > 254)
       {
         break;
@@ -122,48 +121,66 @@ void NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
   st_memdrv_info_t memdrv_info;
   uint8_t tx_buff[4];
   uint8_t rx_buff[4];
-
-  if(0 == size)
-  {
-    return;  // ret;
-  }
+  uint32_t read_size;
 
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
   row_address = (uint16_t) (address / NAND_PAGE_SIZE);
   column_address = (uint16_t) (address % NAND_PAGE_SIZE);
 
-  /* 1. Page Read to Cache */
-  tx_buff[0] = NAND_PAGE_READ;
-  tx_buff[1] = *((uint8_t*) &row_address + 2);
-  tx_buff[2] = *((uint8_t*) &row_address + 1);
-  tx_buff[3] = *((uint8_t*) &row_address);
-  memdrv_info.cnt = 4;
-  memdrv_info.p_data = tx_buff;
+  while(1)
+  {
+    if(0 == size)
+    {
+      return;
+    }
 
-  PORTA.PODR.BIT.B4 = 0;  //CS LOW
-  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
-  PORTA.PODR.BIT.B4 = 1;  //CS HIGH
+    if(size <= (NAND_PAGE_SIZE - column_address))
+    {
+      read_size = size;
+    }
+    else
+    {
+      read_size = NAND_PAGE_SIZE - column_address;
+    }
 
-  /* 2. Wait until read operation finishes */
-  nand_wait_operation_complete();
+    /* 1. Page Read to Cache */
+    tx_buff[0] = NAND_PAGE_READ;
+    tx_buff[1] = *((uint8_t*) &row_address + 2);
+    tx_buff[2] = *((uint8_t*) &row_address + 1);
+    tx_buff[3] = *((uint8_t*) &row_address);
+    memdrv_info.cnt = 4;
+    memdrv_info.p_data = tx_buff;
 
-  /* 3. Read from Cache */
-  tx_buff[0] = NAND_READ_FROM_CACHE;
-  tx_buff[1] = *((uint8_t*) &column_address + 1);
-  tx_buff[2] = *((uint8_t*) &column_address);
-  tx_buff[3] = 0;  //dummy byte
-  memdrv_info.cnt = 4;
-  memdrv_info.p_data = tx_buff;
+    PORTA.PODR.BIT.B4 = 0;  //CS LOW
+    R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+    PORTA.PODR.BIT.B4 = 1;  //CS HIGH
 
-  PORTA.PODR.BIT.B4 = 0;  //CS LOW
-  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+    /* 2. Wait until read operation finishes */
+    nand_wait_operation_complete();
 
-  memdrv_info.cnt = size;
-  memdrv_info.p_data = p_data;
-  R_MEMDRV_Rx(NAND_DEVNO, &memdrv_info);
-  PORTA.PODR.BIT.B4 = 1;  //CS HIGH
+    /* 3. Read from Cache */
+    tx_buff[0] = NAND_READ_FROM_CACHE;
+    tx_buff[1] = *((uint8_t*) &column_address + 1);
+    tx_buff[2] = *((uint8_t*) &column_address);
+    tx_buff[3] = 0;  //dummy byte
+    memdrv_info.cnt = 4;
+    memdrv_info.p_data = tx_buff;
 
-  return;  // ret;
+    PORTA.PODR.BIT.B4 = 0;  //CS LOW
+    R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+
+    memdrv_info.cnt = read_size;
+    memdrv_info.p_data = p_data;
+    R_MEMDRV_Rx(NAND_DEVNO, &memdrv_info);
+    PORTA.PODR.BIT.B4 = 1;  //CS HIGH
+
+    /* Prepare for next read if needed */
+    row_address++;
+    column_address = 0;
+    size = size - read_size;
+    p_data += read_size;
+  }
+
 }
 
 int NAND_CheckDataInFlash()
@@ -206,7 +223,7 @@ nand_flash_status_t NAND_Erase()
   R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
   PORTA.PODR.BIT.B4 = 1;  //CS HIGH
 
-  R_BSP_SoftwareDelay(1, BSP_DELAY_MILLISECS);
+  R_BSP_SoftwareDelay(NAND_DELAY_TIME, NAND_DELAY_UNIT);
 
   //return;
 
@@ -223,7 +240,7 @@ nand_flash_status_t NAND_Erase()
     R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
     PORTA.PODR.BIT.B4 = 1;  //CS HIGH
 
-    R_BSP_SoftwareDelay(1, BSP_DELAY_MILLISECS);
+    R_BSP_SoftwareDelay(NAND_DELAY_TIME, NAND_DELAY_UNIT);
 
     /* 2. Block Erase */
     tx_buff[0] = NAND_BLOCK_ERASE;
@@ -237,7 +254,7 @@ nand_flash_status_t NAND_Erase()
     R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
     PORTA.PODR.BIT.B4 = 1;  //CS HIGH
 
-    R_BSP_SoftwareDelay(1, BSP_DELAY_MILLISECS);
+    R_BSP_SoftwareDelay(NAND_DELAY_TIME, NAND_DELAY_UNIT);
 
     /* 3. Check Status */
     tx_buff[0] = NAND_GET_FEATURE;
@@ -268,87 +285,104 @@ nand_flash_status_t NAND_Erase()
 
 nand_flash_status_t nand_copy_to_flash(uint32_t address, uint32_t size, uint8_t *p_data)
 {
-  nand_flash_status_t ret = NAND_WRITE_OK;
   uint16_t column_address;
   uint32_t row_address;
   st_memdrv_info_t memdrv_info;
   uint8_t tx_buff[4];
   uint8_t rx_buff[4];
-
-  if(0 == size)
-  {
-    return ret;
-  }
+  uint32_t write_size;
 
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
   row_address = (uint16_t) (address / NAND_PAGE_SIZE);
   column_address = (uint16_t) (address % NAND_PAGE_SIZE);
 
-  /* 1. Write Enable */
-  tx_buff[0] = NAND_WRITE_ENABLE;
-  memdrv_info.cnt = 1;
-  memdrv_info.p_data = tx_buff;
-
-  PORTA.PODR.BIT.B4 = 0;  //CS LOW
-  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
-  PORTA.PODR.BIT.B4 = 1;  //CS HIGH
-
-  R_BSP_SoftwareDelay(1, BSP_DELAY_MILLISECS);
-
-  /* 2. Program Load */
-  tx_buff[0] = NAND_PROGRAM_LOAD;
-  tx_buff[1] = *((uint8_t*) &column_address + 1);
-  tx_buff[2] = *((uint8_t*) &column_address);
-  memdrv_info.cnt = 3;
-  memdrv_info.p_data = tx_buff;
-
-  PORTA.PODR.BIT.B4 = 0;  //CS LOW
-  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
-
-  memdrv_info.cnt = size;
-  memdrv_info.p_data = p_data;
-  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
-  PORTA.PODR.BIT.B4 = 1;  //CS HIGH
-
-  R_BSP_SoftwareDelay(1, BSP_DELAY_MILLISECS);
-
-  /* 3. Program Execute */
-  tx_buff[0] = NAND_PROGRAM_EXECUTE;
-  tx_buff[1] = *((uint8_t*) &row_address + 2);
-  tx_buff[2] = *((uint8_t*) &row_address + 1);
-  tx_buff[3] = *((uint8_t*) &row_address);
-  memdrv_info.cnt = 4;
-  memdrv_info.p_data = tx_buff;
-
-  PORTA.PODR.BIT.B4 = 0;  //CS LOW
-  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
-  PORTA.PODR.BIT.B4 = 1;  //CS HIGH
-
-  R_BSP_SoftwareDelay(1, BSP_DELAY_MILLISECS);
-
-  /* 4. Check Status */
-  tx_buff[0] = NAND_GET_FEATURE;
-  tx_buff[1] = NAND_STATUS_REG;
-  memdrv_info.cnt = 2;
-  memdrv_info.p_data = tx_buff;
-
-  PORTA.PODR.BIT.B4 = 0;  //CS LOW
-  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
-
-  memdrv_info.cnt = 1;
-  memdrv_info.p_data = rx_buff;
-  R_MEMDRV_Rx(NAND_DEVNO, &memdrv_info);
-  PORTA.PODR.BIT.B4 = 1;  //CS HIGH
-
-  if(0 != (rx_buff[0] & NAND_STATUS_P_FAIL))
+  while(1)
   {
-    ret = NAND_WRITE_NOK;
+    if(0 == size)
+    {
+      return NAND_WRITE_OK;
+    }
+
+    if(size <= (NAND_PAGE_SIZE - column_address))
+    {
+      write_size = size;
+    }
+    else
+    {
+      write_size = NAND_PAGE_SIZE - column_address;
+    }
+
+    /* 1. Write Enable */
+    tx_buff[0] = NAND_WRITE_ENABLE;
+    memdrv_info.cnt = 1;
+    memdrv_info.p_data = tx_buff;
+
+    PORTA.PODR.BIT.B4 = 0;  //CS LOW
+    R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+    PORTA.PODR.BIT.B4 = 1;  //CS HIGH
+
+    R_BSP_SoftwareDelay(NAND_DELAY_TIME, NAND_DELAY_UNIT);
+
+    /* 2. Program Load */
+    tx_buff[0] = NAND_PROGRAM_LOAD;
+    tx_buff[1] = *((uint8_t*) &column_address + 1);
+    tx_buff[2] = *((uint8_t*) &column_address);
+    memdrv_info.cnt = 3;
+    memdrv_info.p_data = tx_buff;
+
+    PORTA.PODR.BIT.B4 = 0;  //CS LOW
+    R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+
+    memdrv_info.cnt = write_size;
+    memdrv_info.p_data = p_data;
+    R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+    PORTA.PODR.BIT.B4 = 1;  //CS HIGH
+
+    R_BSP_SoftwareDelay(NAND_DELAY_TIME, NAND_DELAY_UNIT);
+
+    /* 3. Program Execute */
+    tx_buff[0] = NAND_PROGRAM_EXECUTE;
+    tx_buff[1] = *((uint8_t*) &row_address + 2);
+    tx_buff[2] = *((uint8_t*) &row_address + 1);
+    tx_buff[3] = *((uint8_t*) &row_address);
+    memdrv_info.cnt = 4;
+    memdrv_info.p_data = tx_buff;
+
+    PORTA.PODR.BIT.B4 = 0;  //CS LOW
+    R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+    PORTA.PODR.BIT.B4 = 1;  //CS HIGH
+
+    R_BSP_SoftwareDelay(NAND_DELAY_TIME, NAND_DELAY_UNIT);
+
+    /* 4. Check Status */
+    tx_buff[0] = NAND_GET_FEATURE;
+    tx_buff[1] = NAND_STATUS_REG;
+    memdrv_info.cnt = 2;
+    memdrv_info.p_data = tx_buff;
+
+    PORTA.PODR.BIT.B4 = 0;  //CS LOW
+    R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+
+    memdrv_info.cnt = 1;
+    memdrv_info.p_data = rx_buff;
+    R_MEMDRV_Rx(NAND_DEVNO, &memdrv_info);
+    PORTA.PODR.BIT.B4 = 1;  //CS HIGH
+
+    if(0 != (rx_buff[0] & (NAND_STATUS_P_FAIL | NAND_STATUS_ECCS0 | NAND_STATUS_ECCS1)))
+    {
+      return NAND_WRITE_NOK;
+    }
+
+    /* 3. Wait until write operation finishes */
+    nand_wait_operation_complete();
+
+    /* Prepare for next write if needed */
+    row_address++;
+    column_address = 0;
+    size = size - write_size;
+    p_data += write_size;
   }
 
-  /* 3. Wait until write operation finishes */
-  nand_wait_operation_complete();
-
-  return ret;
 }
 
 void nand_wait_operation_complete()
@@ -363,7 +397,7 @@ void nand_wait_operation_complete()
   tx_buff[1] = NAND_STATUS_REG;
   do
   {
-    R_BSP_SoftwareDelay(1, BSP_DELAY_MILLISECS);
+    R_BSP_SoftwareDelay(NAND_DELAY_TIME, NAND_DELAY_UNIT);
     PORTA.PODR.BIT.B4 = 0;  //CS LOW
     memdrv_info.cnt = 2;
     memdrv_info.p_data = tx_buff;

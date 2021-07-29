@@ -11,8 +11,21 @@
 
 #include "../wav.h"
 
-#define FILE_SIZE (32000)
+#define FILE_SIZE (5000)
 
+#define FIFO_ELEMENTS 6000
+#define FIFO_SIZE (FIFO_ELEMENTS + 1)
+extern uint8_t FIFO_buffer[FIFO_SIZE];
+extern uint16_t FIFO_head, FIFO_tail;
+void FIFO_Init(void);
+int FIFO_Write(uint8_t*, uint16_t);
+int FIFO_Read(uint8_t*, uint16_t);
+typedef enum fifo
+{
+  FIFO_OK = 0,
+  FIFO_EMPTY = 1,
+  FIFO_FULL = 2,
+}fifo_t;
 
 extern int g_counter;
 extern int g_readBuffer;

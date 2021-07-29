@@ -45,6 +45,7 @@
         <Setting id="r_rspi_rx" value="FIT"/>
         <Setting id="DAC" value="CG"/>
         <Setting id="TMR01" value="CG"/>
+        <Setting id="TMR23" value="CG"/>
         <Setting id="r_usb_hmsc" value="FIT"/>
         <Setting id="r_sys_time_rx" value="FIT"/>
         <Setting id="r_usb_basic" value="FIT"/>
