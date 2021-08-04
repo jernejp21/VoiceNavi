@@ -11,7 +11,7 @@
 
 #include "../wav.h"
 
-#define FILE_SIZE (5000)
+#define FILE_SIZE (3000)
 
 #define FIFO_ELEMENTS 6000
 #define FIFO_SIZE (FIFO_ELEMENTS + 1)

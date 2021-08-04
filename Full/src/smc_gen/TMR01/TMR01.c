@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for TMR01.
-* Creation Date: 2021-07-29
+* Creation Date: 2021-08-04
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -77,7 +77,7 @@ void R_TMR01_Create(void)
 
     /* Configure TMR0 interrupts */ 
     ICU.SLIBR146.BYTE = 0x03U;
-    IPR(PERIB, INTB146) = _01_TMR_PRIORITY_LEVEL1;
+    IPR(PERIB, INTB146) = _0F_TMR_PRIORITY_LEVEL15;
 
     R_TMR01_Create_UserInit();
 }

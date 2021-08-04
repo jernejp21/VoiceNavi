@@ -22,7 +22,7 @@
  * Version      : 1.7.0
  * Device(s)    : R5F565NEDxFP
  * Description  : This file implements device driver for TMR01.
- * Creation Date: 2021-07-29
+ * Creation Date: 2021-08-04
  ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -47,7 +47,7 @@
 /* Start user code for global. Do not edit comment generated here */
 int16_t data;
 int count;
-int fiffo_test = 1;
+//int fiffo_test = 1;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
@@ -73,9 +73,16 @@ void R_TMR01_Create_UserInit(void)
 void r_TMR01_cmia0_interrupt(void)
 {
   /* Start user code for r_TMR01_cmia0_interrupt. Do not edit comment generated here */
-  //TMR01.TCNT = 0;
+  if(g_wav_file.data_size - 2 == g_current_byte)
+  {
+    //end of file
+    R_TMR01_Stop();
+    g_playing = 0;
+    g_current_byte = 0;
+    return;
+  }
+
   int fifo_status;
-  PORTD.PODR.BIT.B6 ^= 1;
   if(g_wav_file.bps == 8)
   {
     //data = g_file_data[g_counter] << 4;
@@ -96,20 +103,7 @@ void r_TMR01_cmia0_interrupt(void)
   }
 
   DA.DADR1 = data;
-  g_counter += count;
 
-  if(g_counter > (FILE_SIZE - fiffo_test))
-  {
-    g_readBuffer = 1;
-    g_counter = 0;
-  }
-
-  if(g_wav_file.data_size == g_current_byte)
-  {
-    //end of file
-    g_playing = 0;
-    g_current_byte = 0;
-  }
   /* End user code. Do not edit comment generated here */
 }
 

@@ -631,7 +631,7 @@ Configuration Options
    The default value is 0xF (maximum value).
    Don't change if there is no special processing with higher priority than all fit modules.
 */
-#define BSP_CFG_FIT_IPL_MAX                         (0xF)
+#define BSP_CFG_FIT_IPL_MAX                         (0xA)
 
 /* Software Interrupt (SWINT).
    0 = Software interrupt is not used.

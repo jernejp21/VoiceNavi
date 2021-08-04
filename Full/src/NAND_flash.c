@@ -25,6 +25,74 @@ int startOfPlaylist;
 
 file_name_t file_name;
 
+int16_t bad_blocks[NAND_MAX_BAD_BLOCKS];
+
+int NAND_CheckBlock()
+{
+  uint32_t addr;
+  int block;
+  int bad_block_cnt = 0;
+  int isBadBlock = 0;
+  uint8_t data[NAND_SPARE_AREA_SIZE];
+  st_memdrv_info_t memdrv_info;
+  uint8_t tx_buff[4];
+  uint8_t rx_buff[4];
+  uint16_t column_address = NAND_SPARE_AREA_ADD;
+
+  memset(bad_blocks, -1, sizeof(bad_blocks));
+  for(block = 0; block < NAND_NR_OF_BLOCKS; block++)
+  {
+    addr = block << 6;
+
+    /* 1. Page Read to Cache */
+    tx_buff[0] = NAND_PAGE_READ;
+    tx_buff[1] = *((uint8_t*) &addr + 2);
+    tx_buff[2] = *((uint8_t*) &addr + 1);
+    tx_buff[3] = *((uint8_t*) &addr);
+    memdrv_info.cnt = 4;
+    memdrv_info.p_data = tx_buff;
+
+    PORTA.PODR.BIT.B4 = 0;  //CS LOW
+    R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+    PORTA.PODR.BIT.B4 = 1;  //CS HIGH
+
+    /* 2. Wait until read operation finishes */
+    nand_wait_operation_complete();
+
+    /* 3. Read from Cache */
+    tx_buff[0] = NAND_READ_FROM_CACHE;
+    tx_buff[1] = *((uint8_t*) &column_address + 1);
+    tx_buff[2] = *((uint8_t*) &column_address);
+    tx_buff[3] = 0;  //dummy byte
+    memdrv_info.cnt = 4;
+    memdrv_info.p_data = tx_buff;
+
+    PORTA.PODR.BIT.B4 = 0;  //CS LOW
+    R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+
+    memdrv_info.cnt = NAND_SPARE_AREA_SIZE;
+    memdrv_info.p_data = &data[0];
+    R_MEMDRV_Rx(NAND_DEVNO, &memdrv_info);
+    PORTA.PODR.BIT.B4 = 1;  //CS HIGH
+
+    for(int i = 0; i < NAND_SPARE_AREA_SIZE; i++)
+    {
+      if(0 == data[i])
+      {
+        isBadBlock = 1;
+      }
+    }
+
+    if(isBadBlock)
+    {
+      bad_blocks[bad_block_cnt] = block;  //Mark block as bad
+      bad_block_cnt++;
+      isBadBlock = 0;
+    }
+  }
+  return 0;
+}
+
 void NAND_CopyToFlash()
 {
 
@@ -67,6 +135,10 @@ void NAND_CopyToFlash()
 
     if(startOfFileNames)
     {
+      /*if(strncmp(line, "7,008", 5) != 0)
+      {
+        continue;
+      }*/
       placeNameToTable((char*) &file_name.file_name, (char*) &line);
       fr = f_open(&file1, &file_name.file_name[0], FA_READ);
       fr = f_read(&file1, &wav_buffer[0], sizeof(wav_buffer), &size);
@@ -109,7 +181,7 @@ void NAND_CopyToFlash()
   flash_status = nand_copy_to_flash(0, sizeof(flash_table), (uint8_t*) &flash_table[0]);
 
   //Copy playlist table to NAND flash
-  flash_status = nand_copy_to_flash(NAND_PAGE_SIZE + 10, sizeof(g_output_music), (uint8_t*) &g_output_music[0]);
+  flash_status = nand_copy_to_flash(NAND_PAGE_SIZE * 3, sizeof(g_output_music), (uint8_t*) &g_output_music[0]);
 
 }
 
@@ -143,6 +215,18 @@ void NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
       read_size = NAND_PAGE_SIZE - column_address;
     }
 
+    /* Do not read from bad blocks */
+    for(int i = 0; i < NAND_MAX_BAD_BLOCKS; i++)
+    {
+      if((row_address >> 6) == bad_blocks[i])
+      {
+        // Bits 15:6 are block - mask is 0x7FC0
+        // When we add one block we have to add bit 6 - 0x40
+        row_address = (row_address & 0x7FC0) + 0x40;
+        continue;
+      }
+    }
+
     /* 1. Page Read to Cache */
     tx_buff[0] = NAND_PAGE_READ;
     tx_buff[1] = *((uint8_t*) &row_address + 2);
@@ -174,6 +258,8 @@ void NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
     R_MEMDRV_Rx(NAND_DEVNO, &memdrv_info);
     PORTA.PODR.BIT.B4 = 1;  //CS HIGH
 
+    /* Write to FIFO */
+    FIFO_Write(p_data, read_size);
     /* Prepare for next read if needed */
     row_address++;
     column_address = 0;
@@ -189,6 +275,23 @@ int NAND_CheckDataInFlash()
   return 0;
 }
 
+void NAND_Reset()
+{
+  uint8_t tx_buff[2];
+  st_memdrv_info_t memdrv_info;
+
+  /* 0-0. Reset Flash */
+  tx_buff[0] = NAND_RESET;
+  memdrv_info.cnt = 1;
+  memdrv_info.p_data = tx_buff;
+
+  PORTA.PODR.BIT.B4 = 0;  //CS LOW
+  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+  PORTA.PODR.BIT.B4 = 1;  //CS HIGH
+
+  nand_wait_operation_complete();
+}
+
 nand_flash_status_t NAND_Erase()
 {
   nand_flash_status_t ret = NAND_ERASE_OK;
@@ -197,6 +300,7 @@ nand_flash_status_t NAND_Erase()
   uint32_t addr;
   st_memdrv_info_t memdrv_info;
   int block;
+  int isBadBlock = 0;
 
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
 
@@ -227,9 +331,24 @@ nand_flash_status_t NAND_Erase()
 
   //return;
 
-  for(block = 0; block < (NAND_NR_OF_BLOCKS / 2); block++)
+  for(block = 0; block < NAND_NR_OF_BLOCKS; block++)
   {
     addr = block << 6;
+
+    /* Do not erase bad blocks */
+    for(int i = 0; i < NAND_MAX_BAD_BLOCKS; i++)
+    {
+      if(block == bad_blocks[i])
+      {
+        isBadBlock = 1;
+        break;
+      }
+    }
+    if(isBadBlock)
+    {
+      isBadBlock = 0;
+      continue;
+    }
 
     /* 1. Write Enable */
     tx_buff[0] = NAND_WRITE_ENABLE;
@@ -310,6 +429,18 @@ nand_flash_status_t nand_copy_to_flash(uint32_t address, uint32_t size, uint8_t 
     else
     {
       write_size = NAND_PAGE_SIZE - column_address;
+    }
+
+    /* Do not write to bad blocks */
+    for(int i = 0; i < NAND_MAX_BAD_BLOCKS; i++)
+    {
+      if((row_address >> 6) == bad_blocks[i])
+      {
+        // Bits 15:6 are block - mask is 0x7FC0
+        // When we add one block we have to add bit 6 - 0x40
+        row_address = (row_address & 0x7FC0) + 0x40;
+        continue;
+      }
     }
 
     /* 1. Write Enable */

@@ -371,7 +371,7 @@
         <Item currentVect="143" defaultVect="143" id="TPU3_TGI3B" priority="15" usedState="Not Use"/>
         <Item currentVect="144" defaultVect="144" id="TPU1_TGI1A" priority="15" usedState="Not Use"/>
         <Item currentVect="145" defaultVect="145" id="TPU3_TGI3C" priority="15" usedState="Not Use"/>
-        <Item currentVect="146" defaultVect="146" id="TMR0_CMIA0" priority="1" usedState="Used"/>
+        <Item currentVect="146" defaultVect="146" id="TMR0_CMIA0" priority="15" usedState="Used"/>
         <Item currentVect="147" defaultVect="147" id="TMR0_CMIB0" priority="3" usedState="Not Use"/>
         <Item currentVect="148" defaultVect="148" id="TMR0_OVI0" priority="15" usedState="Not Use"/>
         <Item currentVect="149" defaultVect="149" id="TMR1_CMIA1" priority="15" usedState="Not Use"/>
@@ -485,6 +485,7 @@
     <tool id="Pins" version="1.0.1.0">
         <pinItem allocation="2" comments="" direction="None" id="EMLE" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="11" comments="" direction="None" id="XTAL" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="65$B" comments="" direction="None" id="RSPCKA" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="63$B" comments="" direction="None" id="MISOA" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="13" comments="" direction="None" id="EXTAL" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="7" comments="" direction="None" id="FINED" isUsedBySoftware="true" locked="false" status="0"/>
@@ -492,18 +493,17 @@
         <pinItem allocation="36" comments="" direction="None" id="USB0_DM" isUsedBySoftware="false" locked="false" status="4"/>
         <pinItem allocation="37" comments="" direction="None" id="USB0_DP" isUsedBySoftware="false" locked="false" status="4"/>
         <pinItem allocation="64$B" comments="" direction="None" id="MOSIA" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="65$B" comments="" direction="None" id="RSPCKA" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinnumItem comment="PMOD1-CS" id="66"/>
-        <pinnumItem comment="LED1" id="79"/>
-        <pinnumItem comment="SW1" id="59"/>
-        <pinnumItem comment="PMOD1-IO0" id="49"/>
         <pinnumItem comment="PMOD1-RST" id="29"/>
-        <pinnumItem comment="LED0" id="80"/>
-        <pinnumItem comment="PMOD1-IO1" id="50"/>
-        <pinnumItem comment="PMOD1-MISO" id="63"/>
         <pinnumItem comment="PMOD1-IRQ" id="31"/>
+        <pinnumItem comment="PMOD1-IO0" id="49"/>
+        <pinnumItem comment="PMOD1-IO1" id="50"/>
+        <pinnumItem comment="SW1" id="59"/>
+        <pinnumItem comment="PMOD1-MISO" id="63"/>
         <pinnumItem comment="PMOD1-MOSI" id="64"/>
         <pinnumItem comment="PMOD1-SCK" id="65"/>
+        <pinnumItem comment="PMOD1-CS" id="66"/>
+        <pinnumItem comment="LED1" id="79"/>
+        <pinnumItem comment="LED0" id="80"/>
     </tool>
     <tool id="Summary" version="1.0.0.0">
         <option id="com.renesas.smc.code.path" value="src\smc_gen"/>
@@ -549,7 +549,7 @@
                 <gridItem id="BSP_CFG_EBMAPCR_3RD_PRIORITY" selectedIndex="1"/>
                 <gridItem id="BSP_CFG_EBMAPCR_4TH_PRIORITY" selectedIndex="2"/>
                 <gridItem id="BSP_CFG_EBMAPCR_5TH_PRIORITY" selectedIndex="4"/>
-                <gridItem id="BSP_CFG_FIT_IPL_MAX" selectedIndex="15"/>
+                <gridItem id="BSP_CFG_FIT_IPL_MAX" selectedIndex="10"/>
                 <gridItem id="BSP_CFG_SWINT_UNIT1_ENABLE" selectedIndex="1"/>
                 <gridItem id="BSP_CFG_SWINT_UNIT2_ENABLE" selectedIndex="1"/>
                 <gridItem id="BSP_CFG_SWINT_TASK_BUFFER_NUMBER" selectedIndex="8"/>
@@ -722,7 +722,7 @@
                     <item id="Disable" input="" vlaue="0"/>
                     <item id="Enable" input="" vlaue="0"/>
                 </option>
-                <option enabled="true" id="TCORAOption" selection="Level1">
+                <option enabled="true" id="TCORAOption" selection="Level15">
                     <item id="Level0" input="" vlaue="0"/>
                     <item id="Level1" input="" vlaue="0"/>
                     <item id="Level2" input="" vlaue="0"/>

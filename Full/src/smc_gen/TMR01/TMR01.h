@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for TMR01.
-* Creation Date: 2021-07-29
+* Creation Date: 2021-08-04
 ***********************************************************************************************************************/
 
 #ifndef CFG_TMR01_H
