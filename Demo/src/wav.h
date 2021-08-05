@@ -6,6 +6,7 @@
 #define __WAV_H
 
 #include <stdint.h>
+extern int g_count;
 
 typedef struct wav_header
 {

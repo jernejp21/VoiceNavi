@@ -18,38 +18,94 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_smc_entry.h
-* Version      : 1.2.102
+* File Name    : Config_ICU.c
+* Version      : 2.0.1
 * Device(s)    : R5F565NEDxFP
-* Description  : SMC platform header file.
+* Description  : This file implements device driver for Config_ICU.
 * Creation Date: 2021-08-05
 ***********************************************************************************************************************/
 
-#ifndef SMC_ENTRY_H
-#define SMC_ENTRY_H
+/***********************************************************************************************************************
+Pragma directive
+***********************************************************************************************************************/
+/* Start user code for pragma. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
 #include "Config_ICU.h"
-
-/***********************************************************************************************************************
-Macro definitions (Register bit)
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Typedef definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Global functions
-***********************************************************************************************************************/
-/* Start user code for function. Do not edit comment generated here */
+/* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-#endif
+#include "r_cg_userdefine.h"
 
+/***********************************************************************************************************************
+Global variables and functions
+***********************************************************************************************************************/
+/* Start user code for global. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: R_Config_ICU_Create
+* Description  : This function initializes the ICU module
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_Config_ICU_Create(void)
+{
+    /* Disable IRQ interrupts */
+    ICU.IER[0x08].BYTE = 0x00U;
+    ICU.IER[0x09].BYTE = 0x00U;
+
+    /* Disable software interrupt */
+    IEN(ICU,SWINT) = 0U;
+    IEN(ICU,SWINT2) = 0U;
+
+    /* Disable IRQ digital filter */
+    ICU.IRQFLTE1.BYTE &= ~(_20_ICU_IRQ13_FILTER_ENABLE);
+
+    /* Set IRQ13 pin */
+    MPC.PC6PFS.BYTE = 0x40U;
+    PORTC.PDR.BYTE &= 0xBFU;
+    PORTC.PMR.BYTE &= 0xBFU;
+
+    /* Set IRQ detection type */
+    ICU.IRQCR[13].BYTE = _08_ICU_IRQ_EDGE_RISING;
+    IR(ICU,IRQ13) = 0U;
+
+    /* Set IRQ13 priority level */
+    IPR(ICU,IRQ13) = _04_ICU_PRIORITY_LEVEL4;
+
+    R_Config_ICU_Create_UserInit();
+}
+
+/***********************************************************************************************************************
+* Function Name: R_Config_ICU_IRQ13_Start
+* Description  : This function enables IRQ13 interrupt
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_Config_ICU_IRQ13_Start(void)
+{
+    /* Enable IRQ13 interrupt */
+    IEN(ICU,IRQ13) = 1U;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_Config_ICU_IRQ13_Stop
+* Description  : This function disables IRQ13 interrupt
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_Config_ICU_IRQ13_Stop(void)
+{
+    /* Disable IRQ13 interrupt */
+    IEN(ICU,IRQ13) = 0U;
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */

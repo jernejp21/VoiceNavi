@@ -18,21 +18,20 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_smc_entry.h
-* Version      : 1.2.102
+* File Name    : Config_ICU.h
+* Version      : 2.0.1
 * Device(s)    : R5F565NEDxFP
-* Description  : SMC platform header file.
+* Description  : This file implements device driver for Config_ICU.
 * Creation Date: 2021-08-05
 ***********************************************************************************************************************/
 
-#ifndef SMC_ENTRY_H
-#define SMC_ENTRY_H
+#ifndef CFG_Config_ICU_H
+#define CFG_Config_ICU_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_macrodriver.h"
-#include "Config_ICU.h"
+#include "r_cg_icu.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)
@@ -49,7 +48,10 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
+void R_Config_ICU_Create(void);
+void R_Config_ICU_Create_UserInit(void);
+void R_Config_ICU_IRQ13_Start(void);
+void R_Config_ICU_IRQ13_Stop(void);
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #endif
-

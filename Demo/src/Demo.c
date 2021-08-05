@@ -12,298 +12,280 @@
 #include <string.h>
 
 #include "r_smc_entry.h"
-#include "r_usb_basic_if.h"
-#include "r_usb_hmsc_if.h"
-#include "r_tfat_drv_if_dev.h"
-//#include "r_tfat_driver_rx_config.h"
-#include "r_tfat_driver_rx_if.h"
-#include "r_flash_spi_if.h"
-#include "r_memdrv_rx_if.h"
-#include "r_rspi_rx_if.h"
-#include "r_rspi_rx_pinset.h"
+#include "platform.h"
+#include "r_sci_iic_rx_if.h"
 
-#include "wav.h"
+void main();
+void callBack_read();
+void callBack_write();
+void I2C_Send(uint8_t reg_add, uint8_t value);
+uint8_t I2C_Receive(uint8_t reg_add);
 
-void main(void);
-void placeNameToTable(char*, char*);
-void eraseFlash();
+#define I2C_ADDR 0x21
+#define I2C_READ ((I2C_ADDR << 1) | 0x01)
+#define I2C_WRITE ((I2C_ADDR << 1) | 0x00)
 
-#define FILE_SIZE (6400)
+volatile sci_iic_return_t ret;
+sci_iic_info_t iic_info;
+uint8_t i2c_rx[5];
+uint8_t i2c_tx[5];
+uint8_t i2c_address[1] = {I2C_ADDR};
+uint8_t i2c_reg_addr[1];
 
-usb_ctrl_t ctrl;
-usb_cfg_t cfg;
-usb_err_t usb_err;
-uint16_t event;
-uint8_t g_drv_no;
-char g_file_data1[FILE_SIZE];
-char g_file_data2[FILE_SIZE];
-static FATFS fs; /* File system object structure */
-static FATFS fs1; /* File system object structure */
-const static uint8_t g_msc_file[14] = "0:1644100m.wav";
-FIL file;
-UINT file_size;
-FRESULT fr;
-DSTATUS ds;
-TCHAR *tchar;
+int isRead = 1;
+int isWrite = 0;
+int g_irqFlag = 0;
 
-FILINFO fileinfo;
-uint16_t counter = 0;
-uint32_t filePointer;
-
-//uint8_t *add_p = (uint8_t*) FLASH_DF_BLOCK_0;
-
-wav_header_t wav_file;
-
-int *arr;
-
-char line[100];
-int startOfFileNames;
-int startOfOutputMusic;
-
-int g_readBuffer1 = 0;
-int g_readBuffer = 0;
-
-#define NAME_LEN 11
-typedef struct file_name_pos
-{
-  char file_name[NAME_LEN + 1];
-} file_name_pos_t;
-
-typedef struct output_struct
-{
-  uint8_t group;
-  uint8_t repeat;
-  uint8_t file_nr[8];
-  uint8_t playlist_len;
-} output_struct_t;
-
-file_name_pos_t file_names[255];
-output_struct_t output_music[255];
-
-void placeSongsToTable(output_struct_t*, char*);
-void playFromPlaylist(uint8_t);
-
-int g_isUSBRead = 0;
-
-flash_spi_status_t flashStatus;
-
-memdrv_err_t memdrv_err;
-st_memdrv_info_t memdrv_info;
-uint8_t mem_data[4] = {0x9F, 0x00, 0, 0};
 /* start of main func */
-
 void main(void)
 {
   printf("Entered main()\n");
 
-  BYTE work[FF_MAX_SS];
-  //eraseFlash();
-  //fr = f_mount(&fs, "0:", 0);
-  //fr = f_mkfs("1:", 0, work, sizeof(work));
-  fr = f_mount(&fs1, "1:", 1);
+  i2c_reg_addr[0] = 0x0A;
+  i2c_rx[0] = 255;
 
-  //flashStatus = R_FLASH_SPI_Open(0);
+  iic_info.callbackfunc = &callBack_read;
+  iic_info.ch_no = 11;
+  iic_info.cnt1st = 1;
+  iic_info.cnt2nd = 2;
+  iic_info.dev_sts = SCI_IIC_NO_INIT;
+  iic_info.p_data1st = i2c_reg_addr;
+  iic_info.p_data2nd = i2c_rx;
+  iic_info.p_slv_adr = i2c_address;
 
-  //flashStatus = R_FLASH_SPI_Read_Status p_status)(0, &mem_data[0]);
-  /*ctrl.module = USB_IP0;
-   ctrl.type = USB_HMSC;
-   cfg.usb_speed = USB_FS;
-   cfg.usb_mode = USB_HOST;
-   usb_err = R_USB_Open(&ctrl, &cfg);*/
+  ret = R_SCI_IIC_Open(&iic_info);
+
+  //IOCON
+  I2C_Send(0x0A, 0xC2);
+
+  //IODIRA
+  I2C_Send(0x00, 0xFF);
+  //IOPOLA
+  I2C_Send(0x01, 0);
+  //GPINTENA
+  I2C_Send(0x02, 0xFF);
+  //DEFVALA
+  I2C_Send(0x03, 0xFF);
+  //INTCONA
+  I2C_Send(0x04, 0xFF);
+  //GPPUA
+  I2C_Send(0x06, 0xFF);
+
+  //IODIRB
+  I2C_Send(0x10, 0xFF);
+  //IOPOLB
+  I2C_Send(0x11, 0);
+  //GPINTENB
+  I2C_Send(0x12, 0xFF);
+  //DEFVALB
+  I2C_Send(0x13, 0xFF);
+  //INTCONB
+  I2C_Send(0x14, 0xFF);
+  //GPPUB
+  I2C_Send(0x16, 0xFF);
+
+  //Clear interrupts
+  I2C_Receive(0x09);
+  I2C_Receive(0x19);
+
+  R_Config_ICU_IRQ13_Start();
+
   while(1)
   {
-    /*while(!g_isUSBRead)
-     {
-     event = R_USB_GetEvent(&ctrl);  // Get event code
+    if(isRead)
+    {
+      isRead = 0;
+      i2c_rx[0] = I2C_Receive(i2c_reg_addr[0]);
+    }
 
-     switch(event)
-     {
-     case USB_STS_CONFIGURED:
+    if(isWrite)
+    {
+      isWrite = 0;
+      I2C_Send(i2c_reg_addr[0], i2c_tx[0]);
+    }
 
-     printf("Detected attached USB memory.\n");
-     usb_err = R_USB_HmscGetDriveNo(&ctrl, &g_drv_no);
-
-     fr = f_mount(&fs, "0:", 0); // Create a file object.
-     //playFromPlaylist(6);
-     fr = f_open(&file, (const TCHAR*) &g_msc_file, (FA_OPEN_ALWAYS | FA_READ));
-     f_stat((const TCHAR*) g_msc_file, &fileinfo);
-     f_read(&file, &g_file_data1, 44, &file_size);
-     //f_read(&file, &g_file_data, sizeof(g_file_data), &file_size);
-
-     f_close(&file);  // Close the file object.
-
-     f_unmount("0:");
-
-     WAV_Open(&wav_file, (uint8_t*) &g_file_data1);
-     f_read(&file, &g_file_data1, sizeof(g_file_data1), &file_size);
-     R_Config_TMR0_TMR1_Set_Frequency(wav_file.sample_rate);
-     R_Config_TMR0_TMR1_Start();
-     break;
-
-     case USB_STS_DETACH:
-     printf("Detected detached USB memory.\n");
-     break;
-
-     case USB_STS_NOT_SUPPORT:
-     printf("USB not supported.\n");
-     break;
-
-     case USB_STS_NONE:
-     //printf("nekaj\n");
-
-     break;
-
-     default:
-     break;
-     }
-     }*/
-
+    if(g_irqFlag)
+    {
+      g_irqFlag = 0;
+      checkGPIO();
+    }
   }
 }
 
-static rspi_command_word_t my_rspi_command;
-
-static rspi_err_t           my_rspi_err;
-static rspi_handle_t        my_rspi_handle;
-static rspi_chnl_settings_t my_rspi_setting;
-
-static void my_rspi_callback(void *p_data);
-#define NR_OF_BLOCK 2045
-int transfer_busy;
-
-void eraseFlash()
+void r_Config_ICU_irq13_interrupt(void)
 {
-  uint8_t data[4];
-  uint8_t status[3];
-
-  my_rspi_command.cpha          = RSPI_SPCMD_CPHA_SAMPLE_EVEN;
-  my_rspi_command.cpol          = RSPI_SPCMD_CPOL_IDLE_HI;
-  my_rspi_command.br_div        = RSPI_SPCMD_BR_DIV_1;
-  my_rspi_command.ssl_assert    = RSPI_SPCMD_ASSERT_SSL0;
-  my_rspi_command.ssl_negate    = RSPI_SPCMD_SSL_KEEP;
-  my_rspi_command.bit_length    = RSPI_SPCMD_BIT_LENGTH_8;
-  my_rspi_command.bit_order     = RSPI_SPCMD_ORDER_MSB_FIRST;
-  my_rspi_command.next_delay    = RSPI_SPCMD_NEXT_DLY_SSLND;
-  my_rspi_command.ssl_neg_delay = RSPI_SPCMD_SSL_NEG_DLY_SSLND;
-  my_rspi_command.clock_delay   = RSPI_SPCMD_CLK_DLY_SPCKD;
-  my_rspi_command.dummy         = RSPI_SPCMD_DUMMY;
-
-  my_rspi_setting.bps_target = 1000000;                    // Ask for 1Mbps bit-rate.
-  my_rspi_setting.master_slave_mode = RSPI_MS_MODE_MASTER; // Configure the RSPI as SPI Master.
-  my_rspi_setting.gpio_ssl = RSPI_IF_MODE_4WIRE;           // Set interface mode to 4-wire.
-
-  my_rspi_err = R_RSPI_Open (0,                   // RSPI channel number
-                             &my_rspi_setting,    // Address of the RSPI settings structure.
-                             my_rspi_command,
-                             &my_rspi_callback,   // Address of user-defined callback function.
-                             &my_rspi_handle);    // Address of where the handle is to be stored
-
-  if (RSPI_SUCCESS != my_rspi_err)
-  {
-      while(1); // Your error handling code would go here.
-  }
-  transfer_busy = 1;
-
-  R_RSPI_PinSet_RSPI0();
-
-  // Reset flash
-    data[0] = 0xFF;
-    my_rspi_err = R_RSPI_Write(my_rspi_handle, my_rspi_command, data, 1);
-    while (transfer_busy)
-    {
-        R_BSP_NOP(); // Application could do something useful here while waiting for transfer to complete.
-    }
-    transfer_busy = 1;
-
-  int tmp;
-  for(int i = 0; i < NR_OF_BLOCK; i++)
-  {
-    // Write enable
-    data[0] = 0x06;
-    my_rspi_err = R_RSPI_Write(my_rspi_handle, my_rspi_command, data, 1);
-    while (transfer_busy)
-    {
-        R_BSP_NOP(); // Application could do something useful here while waiting for transfer to complete.
-    }
-    transfer_busy = 1;
-
-    do
-    {
-      data[0] = 0x0F;
-      data[1] = 0xC0;
-      data[2] = 0;
-      my_rspi_err = R_RSPI_WriteRead(my_rspi_handle, my_rspi_command, &data[0], &status[0], 3);
-      while (transfer_busy)
-      {
-          R_BSP_NOP(); // Application could do something useful here while waiting for transfer to complete.
-      }
-      transfer_busy = 1;
-    }while(0 == (status[2] & 2));
-
-    // Bit lock disable
-    data[0] = 0x1F;
-    data[1] = 0xA0;
-    data[2] = 0x00;
-    my_rspi_err = R_RSPI_Write(my_rspi_handle, my_rspi_command, data, 3);
-    while (transfer_busy)
-    {
-        R_BSP_NOP(); // Application could do something useful here while waiting for transfer to complete.
-    }
-    transfer_busy = 1;
-
-    do
-    {
-      data[0] = 0x0F;
-      data[1] = 0xC0;
-      data[2] = 0;
-      my_rspi_err = R_RSPI_WriteRead(my_rspi_handle, my_rspi_command, &data[0], &status[0], 3);
-      while (transfer_busy)
-      {
-          R_BSP_NOP(); // Application could do something useful here while waiting for transfer to complete.
-      }
-      transfer_busy = 1;
-    }while(0 != (status[2] & 1));
-
-    //Erase block
-    tmp = i <<6;
-    data[0] = 0xD8;
-    data[1] = *(((uint8_t*)&tmp)+2);
-    data[2] = *(((uint8_t*)&tmp)+1);
-    data[3] = *((uint8_t*)&tmp);
-    my_rspi_err = R_RSPI_Write(my_rspi_handle, my_rspi_command, data, 4);
-
-    while (transfer_busy)
-    {
-        R_BSP_NOP(); // Application could do something useful here while waiting for transfer to complete.
-    }
-    transfer_busy = 1;
-
-    do
-    {
-      data[0] = 0x0F;
-      data[1] = 0xC0;
-      data[2] = 0;
-      my_rspi_err = R_RSPI_WriteRead(my_rspi_handle, my_rspi_command, &data[0], &status[0], 3);
-      while (transfer_busy)
-      {
-          R_BSP_NOP(); // Application could do something useful here while waiting for transfer to complete.
-      }
-      transfer_busy = 1;
-    }while(0 != (status[2] & 0x05));
-
-  }
-  R_RSPI_Close(my_rspi_handle);
+  g_irqFlag = 1;
 }
 
-/**********************************************************************************************************************
-* Function Name: my_rspi_callback
-* Description  : This is an example of an RSPI callback function.
-* Arguments    : p_data - pointer to RSPI event code data.
-* Return Value : None
-**********************************************************************************************************************/
-static void my_rspi_callback(void *p_data)
+void checkGPIO()
 {
-  transfer_busy = 0;
+  //Read interrupt flag register
+  i2c_rx[0] = I2C_Receive(0x07);
+  i2c_rx[1] = I2C_Receive(0x17);
+
+  switch(i2c_rx[0])
+  {
+    case 0x01:
+      printf("GPIOA 0\n");
+      break;
+
+    case 0x02:
+      printf("GPIOA 1\n");
+      break;
+
+    case 0x04:
+      printf("GPIOA 2\n");
+      break;
+
+    case 0x08:
+      printf("GPIOA 3\n");
+      break;
+
+    case 0x10:
+      printf("GPIOA 4\n");
+      break;
+
+    case 0x20:
+      printf("GPIOA 5\n");
+      break;
+
+    case 0x40:
+      printf("GPIOA 6\n");
+      break;
+
+    case 0x80:
+      printf("GPIOA 7\n");
+      break;
+
+    default:
+      break;
+  }
+
+  switch(i2c_rx[1])
+  {
+    case 0x01:
+      printf("GPIOB 0\n");
+      break;
+
+    case 0x02:
+      printf("GPIOB 1\n");
+      break;
+
+    case 0x04:
+      printf("GPIOB 2\n");
+      break;
+
+    case 0x08:
+      printf("GPIOB 3\n");
+      break;
+
+    case 0x10:
+      printf("GPIOB 4\n");
+      break;
+
+    case 0x20:
+      printf("GPIOB 5\n");
+      break;
+
+    case 0x40:
+      printf("GPIOB 6\n");
+      break;
+
+    case 0x80:
+      printf("GPIOB 7\n");
+      break;
+
+    default:
+      break;
+  }
+
+  //Clear interrupts; wait until there is no signal on pin.
+  do
+  {
+    i2c_rx[0] = I2C_Receive(0x09);
+    i2c_rx[1] = I2C_Receive(0x19);
+  }
+  while((i2c_rx[0] ^ 0xff) | (i2c_rx[1] ^ 0xff));
 
 }
+
+uint8_t I2C_Receive(uint8_t reg_add)
+{
+  uint8_t rx;
+
+  iic_info.cnt1st = 1;
+  iic_info.cnt2nd = 1;
+  iic_info.dev_sts = SCI_IIC_NO_INIT;
+  iic_info.p_data1st = &reg_add;
+  iic_info.p_data2nd = &rx;
+
+  ret = R_SCI_IIC_MasterReceive(&iic_info);
+  if(SCI_IIC_SUCCESS == ret)
+  {
+    while(SCI_IIC_FINISH != iic_info.dev_sts);
+  }
+
+  return rx;
+}
+
+void I2C_Send(uint8_t reg_add, uint8_t value)
+{
+  iic_info.cnt1st = 1;
+  iic_info.cnt2nd = 1;
+  iic_info.dev_sts = SCI_IIC_NO_INIT;
+  iic_info.p_data1st = &reg_add;
+  iic_info.p_data2nd = &value;
+
+  ret = R_SCI_IIC_MasterSend(&iic_info);
+  if(SCI_IIC_SUCCESS == ret)
+  {
+    while(SCI_IIC_FINISH != iic_info.dev_sts);
+  }
+
+}
+
+void callBack_read()
+{
+  volatile sci_iic_return_t ret;
+  sci_iic_mcu_status_t iic_status;
+  sci_iic_info_t iic_info_ch;
+  iic_info_ch.ch_no = 11;
+  ret = R_SCI_IIC_GetStatus(&iic_info_ch, &iic_status);
+  if(SCI_IIC_SUCCESS != ret)
+  {
+    /* Call error processing for the R_SCI_IIC_GetStatus()function*/
+  }
+  else
+  {
+    if(1 == iic_status.BIT.NACK)
+    {
+      /* Processing when a NACK is detected
+       by verifying the iic_status flag. */
+
+    }
+  }
+}
+
+void callBack_write()
+{
+  volatile sci_iic_return_t ret;
+  sci_iic_mcu_status_t iic_status;
+  sci_iic_info_t iic_info_ch;
+  iic_info_ch.ch_no = 11;
+  ret = R_SCI_IIC_GetStatus(&iic_info_ch, &iic_status);
+  if(SCI_IIC_SUCCESS != ret)
+  {
+    /* Call error processing for the R_SCI_IIC_GetStatus()function*/
+  }
+  else
+  {
+    if(1 == iic_status.BIT.NACK)
+    {
+      /* Processing when a NACK is detected
+       by verifying the iic_status flag. */
+
+    }
+  }
+}
+
 /* End of function my_rspi_callback. */
