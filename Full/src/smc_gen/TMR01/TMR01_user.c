@@ -22,7 +22,7 @@
  * Version      : 1.7.0
  * Device(s)    : R5F565NEDxFP
  * Description  : This file implements device driver for TMR01.
- * Creation Date: 2021-08-04
+ * Creation Date: 2021-08-10
  ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -73,7 +73,8 @@ void R_TMR01_Create_UserInit(void)
 void r_TMR01_cmia0_interrupt(void)
 {
   /* Start user code for r_TMR01_cmia0_interrupt. Do not edit comment generated here */
-  if(g_wav_file.data_size - 2 == g_current_byte)
+  //LED_Toggle();
+  if(g_wav_file.data_size - 2 < g_current_byte)
   {
     //end of file
     R_TMR01_Stop();
@@ -85,13 +86,14 @@ void r_TMR01_cmia0_interrupt(void)
   int fifo_status;
   if(g_wav_file.bps == 8)
   {
-    //data = g_file_data[g_counter] << 4;
-    fifo_status = FIFO_Read((uint8_t*) &data, 1);
-    if(fifo_status == FIFO_FULL)
-    {
-      __asm("nop");
-    }
-    data = data << 4;
+    data = g_file_data[g_counter] << 4;
+    /*fifo_status = FIFO_Read((uint8_t*) &data, 1);
+     if(fifo_status == FIFO_FULL)
+     {
+     __asm("nop");
+     }
+     data = data << 4;*/
+    g_counter += 1;
     count = 1;
     g_current_byte += 1;
   }
@@ -100,6 +102,12 @@ void r_TMR01_cmia0_interrupt(void)
     data = (((g_file_data[g_counter + 1] << 8) | g_file_data[g_counter]) >> 4) + 2048;
     count = 2;
     g_current_byte += 2;
+  }
+
+  if(FILE_SIZE == g_counter)
+  {
+    g_readBuffer = 1;
+    g_counter = 0;
   }
 
   DA.DADR1 = data;

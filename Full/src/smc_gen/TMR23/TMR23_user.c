@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for TMR23.
-* Creation Date: 2021-08-04
+* Creation Date: 2021-08-10
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -70,7 +70,7 @@ void R_TMR23_Create_UserInit(void)
 void r_TMR23_cmia2_interrupt(void)
 {
     /* Start user code for r_TMR23_cmia2_interrupt. Do not edit comment generated here */
-  TMR23.TCNT = 0;
+  //TMR23.TCNT = 0;
   g_counter++;
   /* End user code. Do not edit comment generated here */
 }

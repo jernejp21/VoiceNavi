@@ -22,7 +22,7 @@
 * Version      : 1.2.2
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements interrupt setting.
-* Creation Date: 2021-08-04
+* Creation Date: 2021-08-10
 ***********************************************************************************************************************/
 
 #ifndef SMC_INTERRUPT_H
@@ -103,7 +103,7 @@ Macro definitions
 #define ICU_ICU_IRQ10_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_IRQ11_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_IRQ12_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_ICU_IRQ13_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
+#define ICU_ICU_IRQ13_PRIORITY                     (_06_ICU_PRIORITY_LEVEL6)
 #define ICU_ICU_IRQ14_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_IRQ15_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_SCI3_RXI3_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)

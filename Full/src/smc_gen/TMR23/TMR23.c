@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for TMR23.
-* Creation Date: 2021-08-04
+* Creation Date: 2021-08-10
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -72,7 +72,7 @@ void R_TMR23_Create(void)
     TMR2.TCSR.BYTE = _00_TMR_AD_TRIGGER_DISABLE | _E0_TMR02_TCSR_DEFAULT;
 
     /* Set compare match value */ 
-    TMR23.TCORA = _E4E1_TMR23_COMP_MATCH_VALUE_A;
+    TMR23.TCORA = _003A_TMR23_COMP_MATCH_VALUE_A;
     TMR23.TCORB = _0074_TMR23_COMP_MATCH_VALUE_B;
 
     /* Configure TMR2 interrupts */ 

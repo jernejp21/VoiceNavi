@@ -22,7 +22,7 @@
 * Version      : 1.2.102
 * Device(s)    : R5F565NEDxFP
 * Description  : Initialization file for code generation configurations.
-* Creation Date: 2021-08-04
+* Creation Date: 2021-08-10
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -38,6 +38,7 @@ Includes
 #include "TMR01.h"
 #include "DAC.h"
 #include "TMR23.h"
+#include "EXT_IRQ.h"
 #include "r_smc_cgc.h"
 #include "r_smc_interrupt.h"
 /* Start user code for include. Do not edit comment generated here */
@@ -89,6 +90,7 @@ void R_Systeminit(void)
     R_TMR01_Create();
     R_DAC_Create();
     R_TMR23_Create();
+    R_EXT_IRQ_Create();
 
     /* Register undefined interrupt */
     R_BSP_InterruptWrite(BSP_INT_SRC_UNDEFINED_INTERRUPT,(bsp_int_cb_t)r_undefined_exception);

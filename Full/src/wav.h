@@ -1,5 +1,13 @@
-/*
- * Description here
+/**
+ * Voice Navi Firmware
+ *
+ * wav.h module is module for parsing WAVE (wav) file format.
+ * This file includes defines and structs, needed for wav file parsing.
+ *
+ * Author: Jernej Pangerc (Azur Test)
+ * Date: Aug 2021
+ *
+ * Copyright (C) 2021 Azur Test. All rights reserved
  */
 
 #ifndef __WAV_H
@@ -7,9 +15,14 @@
 
 #include <stdint.h>
 
+/* Change parameters if needed */
+#define MAX_NR_FILES 8 //Max number of files which can be stacked into single file to play
+#define FILE_NAME_LEN 13 //Man lenght of file name - including ".wav"
+
+/* Do not change parameters below */
 #define WAV_HEADER_SIZE 44  //WAVE file header size is 44 bytes.
 
-/* WAVE file header structure */
+/** WAVE file header structure */
 typedef struct wav_header
 {
 	char riff[4];  //Marks the file as a riff file.
@@ -25,26 +38,22 @@ typedef struct wav_header
 	uint16_t bps;  //Bits per sample
 	char data[4];  //"data" chunk header. Marks the beginning of the data section.
 	uint32_t data_size;  //Size of the data section.
-	uint32_t start_address;  //Start address of data section.
 }wav_header_t;
 
-/* File name structure */
-#define FILE_NAME_LEN 13
+/** File name structure */
 typedef struct file_name
 {
   char file_name[FILE_NAME_LEN];
 } file_name_t;
 
-/* File data structure */
-#define FILE_NAME_LEN 13
+/** File data structure */
 typedef struct file_meta_data
 {
   uint32_t file_size;
   uint32_t address;
 } file_meta_data_t;
 
-/* Playlist structure */
-#define MAX_NR_FILES 8
+/** Playlist structure */
 typedef struct playlist
 {
   uint8_t group;
@@ -53,6 +62,7 @@ typedef struct playlist
   uint8_t playlist_len;
 } playlist_t;
 
+/** Global functions */
 void WAV_Open(wav_header_t*, uint8_t*);
 void placeSongsToTable(playlist_t*, char*);
 void placeNameToTable(char*, char*);

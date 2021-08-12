@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for TMR23.
-* Creation Date: 2021-08-04
+* Creation Date: 2021-08-10
 ***********************************************************************************************************************/
 
 #ifndef CFG_TMR23_H
@@ -41,7 +41,7 @@ Macro definitions (Register bit)
 Macro definitions
 ***********************************************************************************************************************/
 #define TMR2_PCLK_COUNTER_DIVISION                    (1024) 
-#define _E4E1_TMR23_COMP_MATCH_VALUE_A                (0xE4E1U)
+#define _003A_TMR23_COMP_MATCH_VALUE_A                (0x003AU)
 #define _0074_TMR23_COMP_MATCH_VALUE_B                (0x0074U)
 
 /***********************************************************************************************************************

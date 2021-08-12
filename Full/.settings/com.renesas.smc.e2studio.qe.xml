@@ -5,15 +5,18 @@
     </Segment>
     <Segment id="Pin">
         <Setting id="EMLE" value="EMLE"/>
+        <Setting id="PC6" value="IRQ13"/>
+        <Setting id="PA6" value="MOSIA"/>
+        <Setting id="PB7" value="SSDA11"/>
+        <Setting id="PA5" value="RSPCKA"/>
+        <Setting id="PB6" value="SSCL11"/>
+        <Setting id="PA7" value="MISOA"/>
         <Setting id="USB0_DM" value="USB0_DM"/>
         <Setting id="P36" value="EXTAL"/>
         <Setting id="USB0_DP" value="USB0_DP"/>
         <Setting id="P05" value="DA1"/>
-        <Setting id="PA6" value="MOSIA"/>
-        <Setting id="PA5" value="RSPCKA"/>
         <Setting id="P37" value="XTAL"/>
         <Setting id="MD" value="FINED"/>
-        <Setting id="PA7" value="MISOA"/>
     </Segment>
     <Segment id="Device">
         <Setting id="Series" value="RX600"/>
@@ -39,15 +42,17 @@
     </Segment>
     <Segment id="Component">
         <Setting id="r_bsp" value="FIT"/>
-        <Setting id="r_cmt_rx" value="FIT"/>
         <Setting id="r_tfat_rx" value="FIT"/>
         <Setting id="r_tfat_driver_rx" value="FIT"/>
-        <Setting id="r_rspi_rx" value="FIT"/>
         <Setting id="DAC" value="CG"/>
-        <Setting id="TMR01" value="CG"/>
-        <Setting id="TMR23" value="CG"/>
+        <Setting id="r_sci_iic_rx" value="FIT"/>
         <Setting id="r_usb_hmsc" value="FIT"/>
         <Setting id="r_sys_time_rx" value="FIT"/>
+        <Setting id="EXT_IRQ" value="CG"/>
+        <Setting id="r_cmt_rx" value="FIT"/>
+        <Setting id="r_rspi_rx" value="FIT"/>
+        <Setting id="TMR01" value="CG"/>
+        <Setting id="TMR23" value="CG"/>
         <Setting id="r_usb_basic" value="FIT"/>
         <Setting id="r_memdrv_rx" value="FIT"/>
     </Segment>

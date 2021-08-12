@@ -7,28 +7,21 @@
  *  NOTE:THIS IS A TYPICAL EXAMPLE.
  *
  ***********************************************************************/
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
-#include "r_smc_entry.h"
-#include "r_usb_basic_if.h"
-#include "r_usb_hmsc_if.h"
-#include "r_tfat_drv_if_dev.h"
-#include "r_memdrv_rx_if.h"
+//5F1 board
 
 #include "globals.h"
-#include "wav.h"
-#include "NAND_flash.h"
 
 void main(void);
-void playFromPlaylist(uint8_t);
 
 int g_counter;
 int g_readBuffer;
 uint32_t g_file_size;
 uint32_t g_current_byte;
 int g_playing;
+int g_stopPlaying;
+
+int16_t (*mode)();
 
 char line[100];
 int startOfFileNames;
@@ -50,6 +43,13 @@ uint8_t spi_rx_buff[4];
 
 wav_header_t g_wav_file;
 
+volatile sci_iic_return_t ret;
+sci_iic_info_t iic_info;
+uint8_t i2c_rx[5];
+uint8_t i2c_tx[5];
+uint8_t i2c_address[1] = {I2C_ADDR};
+uint8_t i2c_reg_addr[1];
+
 void main(void)
 {
   char is_data_in_flash = 0;
@@ -60,12 +60,6 @@ void main(void)
   st_memdrv_info_t memdrv_info;
   nand_flash_status_t nand_status;
 
-  PORTE.PDR.BYTE = 0;
-  PORTE.PCR.BYTE = 0xFF;
-
-  PORTD.PDR.BIT.B6 = 1;
-  PORTD.PDR.BIT.B7 = 1;
-
   //SPI CS Pin
   PORTA.PDR.BIT.B4 = 1;  //Set pin as output
   PORTA.PODR.BIT.B4 = 1;  //Set pin HIGH
@@ -73,6 +67,8 @@ void main(void)
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
   // resetpgr.c in PowerON_Reset_PC function.
 
+  DIP_Init();
+  LED_Init();
   FIFO_Init();
   R_DAC1_Start();
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
@@ -104,8 +100,8 @@ void main(void)
 
         R_TMR23_Stop();
         g_counter = 1000;
-        nand_status = NAND_Erase();
-        NAND_CopyToFlash();
+        //nand_status = NAND_Erase();
+        //NAND_CopyToFlash();
         is_data_in_flash = 1;
         break;
 
@@ -127,8 +123,10 @@ void main(void)
 
   /* Check if there is any data in flash. */
   //is_data_in_flash = check_if_data_in_flash()
+  is_data_in_flash = 1;
+
   /* If data in flash, prepare lookout tables. */
-  if(is_data_in_flash == 1)
+  if(is_data_in_flash)
   {
     NAND_Reset();
     NAND_ReadFromFlash(0, sizeof(flash_table), (uint8_t*) &flash_table[0]);
@@ -138,23 +136,64 @@ void main(void)
   }
   else
   {
-    while(1);  // No data in flash, look forever here.
+    while(1);  // No data in flash, loop forever here.
   }
 
+  /* Mode select */
+  uint8_t mode_select = DIP_ReadState();
+
+  switch(mode_select)
+  {
+    case 0:
+      mode = normalPlay;
+      break;
+
+    case 1:
+      mode = lastInputPlay;
+      break;
+
+    case 2:
+      mode = priorityPlay;
+      break;
+
+    case 3:
+      mode = inputPlay;
+      break;
+
+    case 4:
+      break;
+
+    case 5:
+      mode = binary128ch;
+      break;
+
+    case 6:
+      mode = binary255_positive;
+      break;
+
+    case 7:
+      mode = binary255_negative;
+      break;
+  }
+  //mode = normalPlay;
+  //mode = lastInputPlay;
+  //mode = priorityPlay;
+  mode = inputPlay;
+
+  I2C_Init();
+  R_EXT_IRQ_IRQ13_Start();
+
+  /* Wait for interrupt from GPIO pins to start playing */
   while(1)
   {
-    uint8_t xor = 5;  //PORTE.PIDR.BYTE ^ 0xFF;  //Unset bit will be 1, other bits will be 0.
-    int counter = -1;
-
-    while(xor)
+    if(g_isIRQ)
     {
-      xor = xor >> 1;
-      counter++;
-    }
-
-    if(counter != -1)
-    {
-      playFromPlaylist((uint8_t) counter);
+      int16_t song = mode();
+      if(-1 != song)
+      {
+        g_stopPlaying = 0;
+        playFromPlaylist(song);
+      }
     }
   }
 
@@ -173,50 +212,61 @@ void playFromPlaylist(uint8_t playNr)
   int repetitions = 0;
   int fifo_status = FIFO_OK;
 
-  for(playNr = 0; playNr < 255; playNr++)
+  LED_BusyOn();
+  while(g_output_music[playNr].repeat > repetitions)
   {
-    while(g_output_music[playNr].repeat > repetitions)
+    while(g_output_music[playNr].playlist_len > trackNr)
     {
-      while(g_output_music[playNr].playlist_len > trackNr)
+      DA.DADR1 = 2048;
+      fileToPlay = g_output_music[playNr].file_nr[index];
+      fileAddress = flash_table[fileToPlay].address;
+
+      NAND_ReadFromFlash(fileAddress, WAV_HEADER_SIZE, g_file_data);
+      //FIFO_Init();
+
+      WAV_Open(&g_wav_file, g_file_data);
+      fileAddress += WAV_HEADER_SIZE;
+      NAND_ReadFromFlash(fileAddress, sizeof(g_file_data), g_file_data);
+      g_counter = 0;
+      g_current_byte = 0;
+      //g_stopPlaying = 0;
+
+      g_playing = 1;
+      R_TMR01_Set_Frequency(g_wav_file.sample_rate);
+
+      R_TMR01_Start();
+      while(g_playing)
       {
-        DA.DADR1 = 2048;
-        fileToPlay = g_output_music[playNr].file_nr[index];
-        fileAddress = flash_table[fileToPlay].address;
-
-        NAND_ReadFromFlash(fileAddress, WAV_HEADER_SIZE, g_file_data);
-        FIFO_Init();
-
-        WAV_Open(&g_wav_file, g_file_data);
-        fileAddress += WAV_HEADER_SIZE;
-        NAND_ReadFromFlash(fileAddress, sizeof(g_file_data), g_file_data);
-        g_counter = 0;
-
-        g_playing = 1;
-        R_TMR01_Set_Frequency(g_wav_file.sample_rate);
-
-        R_TMR01_Start();
-        while(g_playing)
+        //if(FIFO_head - fiffo_test == FIFO_tail)
+        if(g_readBuffer)
         {
-          if(FIFO_head - fiffo_test == FIFO_tail)
-          {
-            g_readBuffer = 0;
-            fileAddress += sizeof(g_file_data);
-            NAND_ReadFromFlash(fileAddress, sizeof(g_file_data), g_file_data);
-          }
+          g_readBuffer = 0;
+          fileAddress += sizeof(g_file_data);
+          NAND_ReadFromFlash(fileAddress, sizeof(g_file_data), g_file_data);
         }
-        FIFO_Init();
-        DA.DADR1 = 2048;
 
-        trackNr++;
-        index++;
+        mode();
       }
 
-      trackNr = 0;
-      index = 0;
-      repetitions++;
+      if(g_stopPlaying)
+      {
+        LED_BusyOff();
+        return;
+      }
+
+      FIFO_Init();
+      DA.DADR1 = 2048;
+
+      trackNr++;
+      index++;
     }
-    repetitions = 0;
+
+    trackNr = 0;
+    index = 0;
+    repetitions++;
   }
+
+  LED_BusyOff();
 }
 
 uint8_t FIFO_buffer[FIFO_SIZE];
@@ -260,4 +310,140 @@ int FIFO_Read(uint8_t *old, uint16_t size)
   }
 
   return FIFO_OK;  // No errors
+}
+
+void I2C_Init()
+{
+
+  /* GPIO Mux Reset pin */
+  PORT5.PDR.BIT.B0 = 1;  //Set pin as output
+  PORT5.PODR.BIT.B0 = 0;  //Set pin LOW
+  R_BSP_SoftwareDelay(5, BSP_DELAY_MILLISECS);
+  PORT5.PODR.BIT.B0 = 1;  //Set pin HIGH
+
+  i2c_reg_addr[0] = 0x0A;
+  i2c_rx[0] = 255;
+
+  iic_info.callbackfunc = &callBack_read;
+  iic_info.ch_no = 11;
+  iic_info.cnt1st = 1;
+  iic_info.cnt2nd = 2;
+  iic_info.dev_sts = SCI_IIC_NO_INIT;
+  iic_info.p_data1st = i2c_reg_addr;
+  iic_info.p_data2nd = i2c_rx;
+  iic_info.p_slv_adr = i2c_address;
+
+  ret = R_SCI_IIC_Open(&iic_info);
+
+  //IOCON
+  I2C_Send(0x0A, 0xC2);  //INT is active HIGH
+
+  //IODIRA
+  I2C_Send(0x00, 0xFF);
+  //IOPOLA
+  I2C_Send(0x01, 0);
+  //GPINTENA
+  I2C_Send(0x02, 0xFF);
+  //DEFVALA
+  I2C_Send(0x03, 0xFF);
+  //INTCONA
+  I2C_Send(0x04, 0xFF);
+  //GPPUA
+  I2C_Send(0x06, 0xFF);
+
+  //IODIRB
+  I2C_Send(0x10, 0xFF);
+  //IOPOLB
+  I2C_Send(0x11, 0);
+  //GPINTENB
+  I2C_Send(0x12, 0xFF);
+  //DEFVALB
+  I2C_Send(0x13, 0xFF);
+  //INTCONB
+  I2C_Send(0x14, 0xFF);
+  //GPPUB
+  I2C_Send(0x16, 0xFF);
+
+  //Clear interrupts
+  I2C_Receive(0x09);
+  I2C_Receive(0x19);
+}
+
+uint8_t I2C_Receive(uint8_t reg_add)
+{
+  uint8_t rx;
+
+  iic_info.cnt1st = 1;
+  iic_info.cnt2nd = 1;
+  iic_info.dev_sts = SCI_IIC_NO_INIT;
+  iic_info.p_data1st = &reg_add;
+  iic_info.p_data2nd = &rx;
+
+  ret = R_SCI_IIC_MasterReceive(&iic_info);
+  if(SCI_IIC_SUCCESS == ret)
+  {
+    while(SCI_IIC_FINISH != iic_info.dev_sts);
+  }
+
+  return rx;
+}
+
+void I2C_Send(uint8_t reg_add, uint8_t value)
+{
+  iic_info.cnt1st = 1;
+  iic_info.cnt2nd = 1;
+  iic_info.dev_sts = SCI_IIC_NO_INIT;
+  iic_info.p_data1st = &reg_add;
+  iic_info.p_data2nd = &value;
+
+  ret = R_SCI_IIC_MasterSend(&iic_info);
+  if(SCI_IIC_SUCCESS == ret)
+  {
+    while(SCI_IIC_FINISH != iic_info.dev_sts);
+  }
+
+}
+
+void callBack_read()
+{
+  volatile sci_iic_return_t ret;
+  sci_iic_mcu_status_t iic_status;
+  sci_iic_info_t iic_info_ch;
+  iic_info_ch.ch_no = 11;
+  ret = R_SCI_IIC_GetStatus(&iic_info_ch, &iic_status);
+  if(SCI_IIC_SUCCESS != ret)
+  {
+    /* Call error processing for the R_SCI_IIC_GetStatus()function*/
+  }
+  else
+  {
+    if(1 == iic_status.BIT.NACK)
+    {
+      /* Processing when a NACK is detected
+       by verifying the iic_status flag. */
+
+    }
+  }
+}
+
+void callBack_write()
+{
+  volatile sci_iic_return_t ret;
+  sci_iic_mcu_status_t iic_status;
+  sci_iic_info_t iic_info_ch;
+  iic_info_ch.ch_no = 11;
+  ret = R_SCI_IIC_GetStatus(&iic_info_ch, &iic_status);
+  if(SCI_IIC_SUCCESS != ret)
+  {
+    /* Call error processing for the R_SCI_IIC_GetStatus()function*/
+  }
+  else
+  {
+    if(1 == iic_status.BIT.NACK)
+    {
+      /* Processing when a NACK is detected
+       by verifying the iic_status flag. */
+
+    }
+  }
 }

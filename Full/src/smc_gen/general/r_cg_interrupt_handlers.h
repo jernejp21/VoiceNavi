@@ -22,7 +22,7 @@
 * Version      : 1.2.102
 * Device(s)    : R5F565NEDxFP
 * Description  : This file declares interrupt handlers.
-* Creation Date: 2021-08-04
+* Creation Date: 2021-08-10
 ***********************************************************************************************************************/
 
 #ifndef INTERRUPT_HANDLERS_H
@@ -47,6 +47,9 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
+/* ICU IRQ13 */
+void r_EXT_IRQ_irq13_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(ICU,IRQ13))));
+
 /* TMR0 CMIA0 */
 void r_TMR01_cmia0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB146))));
 

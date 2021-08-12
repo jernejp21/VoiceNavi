@@ -306,7 +306,7 @@
         <Item currentVect="74" id="ICU_IRQ10" priority="15" usedState="Not Use"/>
         <Item currentVect="75" id="ICU_IRQ11" priority="15" usedState="Not Use"/>
         <Item currentVect="76" id="ICU_IRQ12" priority="15" usedState="Not Use"/>
-        <Item currentVect="77" id="ICU_IRQ13" priority="15" usedState="Not Use"/>
+        <Item currentVect="77" id="ICU_IRQ13" priority="6" usedState="Used"/>
         <Item currentVect="78" id="ICU_IRQ14" priority="15" usedState="Not Use"/>
         <Item currentVect="79" id="ICU_IRQ15" priority="15" usedState="Not Use"/>
         <Item currentVect="80" id="SCI3_RXI3" priority="15" usedState="Not Use"/>
@@ -485,7 +485,9 @@
     <tool id="Pins" version="1.0.1.0">
         <pinItem allocation="2" comments="" direction="None" id="EMLE" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="11" comments="" direction="None" id="XTAL" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="46" comments="" direction="None" id="IRQ13" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="65$B" comments="" direction="None" id="RSPCKA" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="54" comments="" direction="None" id="SSCL11" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="63$B" comments="" direction="None" id="MISOA" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="13" comments="" direction="None" id="EXTAL" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="7" comments="" direction="None" id="FINED" isUsedBySoftware="true" locked="false" status="0"/>
@@ -493,6 +495,7 @@
         <pinItem allocation="36" comments="" direction="None" id="USB0_DM" isUsedBySoftware="false" locked="false" status="4"/>
         <pinItem allocation="37" comments="" direction="None" id="USB0_DP" isUsedBySoftware="false" locked="false" status="4"/>
         <pinItem allocation="64$B" comments="" direction="None" id="MOSIA" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="53" comments="" direction="None" id="SSDA11" isUsedBySoftware="true" locked="false" status="0"/>
         <pinnumItem comment="PMOD1-RST" id="29"/>
         <pinnumItem comment="PMOD1-IRQ" id="31"/>
         <pinnumItem comment="PMOD1-IO0" id="49"/>
@@ -927,7 +930,7 @@
                     <item id="ClearedResetHigh" input="" vlaue="0"/>
                 </option>
                 <option enabled="true" id="CompareMatchAValue" selection="CompareMatchAValue">
-                    <item id="CompareMatchAValue" input="1000" vlaue="58593"/>
+                    <item id="CompareMatchAValue" input="1" vlaue="58"/>
                 </option>
                 <option enabled="true" id="MatchValueOptionA" selection="ms">
                     <item id="ms" input="" vlaue="0"/>
@@ -1033,6 +1036,809 @@
                         <item enabled="true" id="16bitMode"/>
                     </option>
                 </context>
+            </allocator>
+            <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
+        </configuration>
+        <configuration inuse="true" name="r_sci_iic_rx">
+            <component description="Dependency : r_bsp version(s) 5.61&#10; The SCI simple I2C mode fit module provides a method to transmit and receive data between the master and slave devices using the serial communications interface (SCI). The SCI simple I2C mode is in compliance with single master mode of the NXP I2C-bus (Inter-IC-Bus) interface.  " detailDescription="Simple IIC Driver." display="r_sci_iic_rx" id="r_sci_iic_rx2.47" version="2.47">
+                <gridItem id="SSCL0" selectedIndex="0"/>
+                <gridItem id="SSDA0" selectedIndex="0"/>
+                <gridItem id="SCI0" selectedIndex="0"/>
+                <gridItem id="SSCL1" selectedIndex="0"/>
+                <gridItem id="SSDA1" selectedIndex="0"/>
+                <gridItem id="SCI1" selectedIndex="0"/>
+                <gridItem id="SSCL2" selectedIndex="0"/>
+                <gridItem id="SSDA2" selectedIndex="0"/>
+                <gridItem id="SCI2" selectedIndex="0"/>
+                <gridItem id="SSCL3" selectedIndex="0"/>
+                <gridItem id="SSDA3" selectedIndex="0"/>
+                <gridItem id="SCI3" selectedIndex="0"/>
+                <gridItem id="SSCL4" selectedIndex="0"/>
+                <gridItem id="SSDA4" selectedIndex="0"/>
+                <gridItem id="SCI4" selectedIndex="0"/>
+                <gridItem id="SSCL5" selectedIndex="0"/>
+                <gridItem id="SSDA5" selectedIndex="0"/>
+                <gridItem id="SCI5" selectedIndex="0"/>
+                <gridItem id="SSCL6" selectedIndex="0"/>
+                <gridItem id="SSDA6" selectedIndex="0"/>
+                <gridItem id="SCI6" selectedIndex="0"/>
+                <gridItem id="SSCL7" selectedIndex="0"/>
+                <gridItem id="SSDA7" selectedIndex="0"/>
+                <gridItem id="SCI7" selectedIndex="0"/>
+                <gridItem id="SSCL8" selectedIndex="0"/>
+                <gridItem id="SSDA8" selectedIndex="0"/>
+                <gridItem id="SCI8" selectedIndex="0"/>
+                <gridItem id="SSCL9" selectedIndex="0"/>
+                <gridItem id="SSDA9" selectedIndex="0"/>
+                <gridItem id="SCI9" selectedIndex="0"/>
+                <gridItem id="SSCL10" selectedIndex="0"/>
+                <gridItem id="SSDA10" selectedIndex="0"/>
+                <gridItem id="SCI10" selectedIndex="0"/>
+                <gridItem id="SSCL11" selectedIndex="1"/>
+                <gridItem id="SSDA11" selectedIndex="1"/>
+                <gridItem id="SCI11" selectedIndex="1"/>
+                <gridItem id="SSCL12" selectedIndex="0"/>
+                <gridItem id="SSDA12" selectedIndex="0"/>
+                <gridItem id="SCI12" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_PARAM_CHECKING_ENABLE" selectedIndex="2"/>
+                <gridItem id="SCI_IIC_CFG_CH0_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH1_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH2_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH3_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH4_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH5_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH6_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH7_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH8_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH9_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH10_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH11_INCLUDED" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH12_INCLUDED" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH0_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH1_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH2_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH3_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH4_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH5_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH6_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH7_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH8_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH9_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH10_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH11_BITRATE_BPS" selectedIndex="100000"/>
+                <gridItem id="SCI_IIC_CFG_CH12_BITRATE_BPS" selectedIndex="384000"/>
+                <gridItem id="SCI_IIC_CFG_CH0_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH1_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH2_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH3_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH4_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH5_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH6_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH7_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH8_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH9_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH10_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH11_INT_PRIORITY" selectedIndex="2"/>
+                <gridItem id="SCI_IIC_CFG_CH12_INT_PRIORITY" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH0_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH1_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH2_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH3_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH4_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH5_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH6_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH7_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH8_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH9_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH10_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH11_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH12_DIGITAL_FILTER" selectedIndex="1"/>
+                <gridItem id="SCI_IIC_CFG_CH0_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH1_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH2_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH3_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH4_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH5_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH6_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH7_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH8_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH9_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH10_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH11_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH12_FILTER_CLOCK" selectedIndex="0"/>
+                <gridItem id="SCI_IIC_CFG_CH0_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH1_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH2_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH3_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH4_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH5_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH6_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH7_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH8_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH9_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH10_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH11_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_CH12_SSDA_DELAY_SELECT" selectedIndex="18"/>
+                <gridItem id="SCI_IIC_CFG_BUS_CHECK_COUNTER" selectedIndex="1000"/>
+                <gridItem id="SCI_IIC_CFG_PORT_SETTING_PROCESSING" selectedIndex="1"/>
+            </component>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+        </configuration>
+        <configuration id="085adadb-3202-41a9-a783-fce6256aff8c" inuse="true" name="EXT_IRQ">
+            <allocatable id="ICU">
+                <allocatable id="IRQ0">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ1">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ2">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ3">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ4">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ5">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ6">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ7">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ8">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ9">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ10">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ11">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ12">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ13">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Enable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Both">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level6">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ14">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="IRQ15">
+                    <isocket id="IrqFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                    <option enabled="true" id="EnableIrq" selection="Disable">
+                        <item id="Enable" input="" vlaue="0"/>
+                        <item id="Disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqType" selection="Low">
+                        <item id="Low" input="" vlaue="0"/>
+                        <item id="Falling" input="" vlaue="0"/>
+                        <item id="Rising" input="" vlaue="0"/>
+                        <item id="Both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="IrqFlt" selection="NoFlt">
+                        <item id="NoFlt" input="" vlaue="0"/>
+                        <item id="Div1" input="" vlaue="0"/>
+                        <item id="Div8" input="" vlaue="0"/>
+                        <item id="Div32" input="" vlaue="0"/>
+                        <item id="Div64" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="IrqPriority" selection="Level15">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                        <item id="Level4" input="" vlaue="0"/>
+                        <item id="Level5" input="" vlaue="0"/>
+                        <item id="Level6" input="" vlaue="0"/>
+                        <item id="Level7" input="" vlaue="0"/>
+                        <item id="Level8" input="" vlaue="0"/>
+                        <item id="Level9" input="" vlaue="0"/>
+                        <item id="Level10" input="" vlaue="0"/>
+                        <item id="Level11" input="" vlaue="0"/>
+                        <item id="Level12" input="" vlaue="0"/>
+                        <item id="Level13" input="" vlaue="0"/>
+                        <item id="Level14" input="" vlaue="0"/>
+                        <item id="Level15" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <isocket id="NmiFilterClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                <option enabled="true" id="EnableSwInt" selection="Disable">
+                    <item id="Enable" input="" vlaue="0"/>
+                    <item id="Disable" input="" vlaue="0"/>
+                </option>
+                <option enabled="false" id="SwIntPriority" selection="Level15">
+                    <item id="Level0" input="" vlaue="0"/>
+                    <item id="Level1" input="" vlaue="0"/>
+                    <item id="Level2" input="" vlaue="0"/>
+                    <item id="Level3" input="" vlaue="0"/>
+                    <item id="Level4" input="" vlaue="0"/>
+                    <item id="Level5" input="" vlaue="0"/>
+                    <item id="Level6" input="" vlaue="0"/>
+                    <item id="Level7" input="" vlaue="0"/>
+                    <item id="Level8" input="" vlaue="0"/>
+                    <item id="Level9" input="" vlaue="0"/>
+                    <item id="Level10" input="" vlaue="0"/>
+                    <item id="Level11" input="" vlaue="0"/>
+                    <item id="Level12" input="" vlaue="0"/>
+                    <item id="Level13" input="" vlaue="0"/>
+                    <item id="Level14" input="" vlaue="0"/>
+                    <item id="Level15" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="EnableSwInt2" selection="Disable">
+                    <item id="Enable" input="" vlaue="0"/>
+                    <item id="Disable" input="" vlaue="0"/>
+                </option>
+                <option enabled="false" id="SwInt2Priority" selection="Level15">
+                    <item id="Level0" input="" vlaue="0"/>
+                    <item id="Level1" input="" vlaue="0"/>
+                    <item id="Level2" input="" vlaue="0"/>
+                    <item id="Level3" input="" vlaue="0"/>
+                    <item id="Level4" input="" vlaue="0"/>
+                    <item id="Level5" input="" vlaue="0"/>
+                    <item id="Level6" input="" vlaue="0"/>
+                    <item id="Level7" input="" vlaue="0"/>
+                    <item id="Level8" input="" vlaue="0"/>
+                    <item id="Level9" input="" vlaue="0"/>
+                    <item id="Level10" input="" vlaue="0"/>
+                    <item id="Level11" input="" vlaue="0"/>
+                    <item id="Level12" input="" vlaue="0"/>
+                    <item id="Level13" input="" vlaue="0"/>
+                    <item id="Level14" input="" vlaue="0"/>
+                    <item id="Level15" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="EnableNmi" selection="Disable">
+                    <item id="Enable" input="" vlaue="0"/>
+                    <item id="Disable" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="NmiType" selection="Falling">
+                    <item id="Falling" input="" vlaue="0"/>
+                    <item id="Rising" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="NmiFlt" selection="NoFlt">
+                    <item id="NoFlt" input="" vlaue="0"/>
+                    <item id="Div1" input="" vlaue="0"/>
+                    <item id="Div8" input="" vlaue="0"/>
+                    <item id="Div32" input="" vlaue="0"/>
+                    <item id="Div64" input="" vlaue="0"/>
+                </option>
+            </allocatable>
+            <component description="Interrupt Controller configures the interrupt requests generated by ICU: Software interrupt, NMI pin interrupt and IRQ External pin interrupts." detailDescription="" display="Interrupt Controller" id="com.renesas.smc.tools.swcomponent.codegenerator.icu" version="2.0.1"/>
+            <allocator channelLevel0="" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Interrupt Controller" display="ICU" id="com.renesas.smc.tools.swcomponent.codegenerator.icu.rx651.icu" type="ICU">
+                <context/>
             </allocator>
             <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
         </configuration>

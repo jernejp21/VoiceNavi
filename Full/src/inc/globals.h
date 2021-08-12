@@ -9,7 +9,20 @@
 #ifndef __GLOBALS_H
 #define __GLOBALS_H
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "r_smc_entry.h"
+#include "r_usb_basic_if.h"
+#include "r_usb_hmsc_if.h"
+#include "r_tfat_drv_if_dev.h"
+#include "r_memdrv_rx_if.h"
+#include "r_sci_iic_rx_if.h"
+
+#include "../NAND_flash.h"
 #include "../wav.h"
+#include "../play_modes.h"
 
 #define FILE_SIZE (3000)
 
@@ -27,6 +40,22 @@ typedef enum fifo
   FIFO_FULL = 2,
 }fifo_t;
 
+#define I2C_ADDR 0x21
+#define I2C_READ ((I2C_ADDR << 1) | 0x01)
+#define I2C_WRITE ((I2C_ADDR << 1) | 0x00)
+void callBack_read();
+void callBack_write();
+void I2C_Send(uint8_t reg_add, uint8_t value);
+uint8_t I2C_Receive(uint8_t reg_add);
+void I2C_Init();
+
+void playFromPlaylist(uint8_t);
+
+void LED_BusyOn();
+void LED_BusyOff();
+void LED_Init();
+void LED_Toggle();
+
 extern int g_counter;
 extern int g_readBuffer;
 extern uint8_t g_file_data[FILE_SIZE];
@@ -36,5 +65,7 @@ extern uint32_t g_current_byte;
 extern int g_playing;
 extern playlist_t g_output_music[255];
 extern file_meta_data_t g_file_meta_data[255];
+extern uint8_t g_isIRQ;
+extern int g_stopPlaying;
 
 #endif //__GLOBALS_H

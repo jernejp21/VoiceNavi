@@ -1,3 +1,17 @@
+/**
+ * Voice Navi Firmware
+ *
+ * NAND_flash.c module is module for interacting with NAND flash.
+ * It erases, reads and writes to flash.
+ * This is not general purpose NAND flash library, it is specific
+ * to this use case!
+ *
+ * Author: Jernej Pangerc (Azur Test)
+ * Date: Aug 2021
+ *
+ * Copyright (C) 2021 Azur Test. All rights reserved
+ */
+
 #include <string.h>
 
 #include "r_tfat_driver_rx_if.h"
@@ -259,7 +273,7 @@ void NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
     PORTA.PODR.BIT.B4 = 1;  //CS HIGH
 
     /* Write to FIFO */
-    FIFO_Write(p_data, read_size);
+    //FIFO_Write(p_data, read_size);
     /* Prepare for next read if needed */
     row_address++;
     column_address = 0;

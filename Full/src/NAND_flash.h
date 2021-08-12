@@ -1,5 +1,15 @@
-/*
- * Description here
+/**
+ * Voice Navi Firmware
+ *
+ * NAND_flash module is module for interacting with NAND flash.
+ * It erases, reads and writes to flash.
+ * This is not general purpose NAND flash library, it is specific
+ * to this use case!
+ *
+ * Author: Jernej Pangerc (Azur Test)
+ * Date: Aug 2021
+ *
+ * Copyright (C) 2021 Azur Test. All rights reserved
  */
 
 #ifndef __NAND_FLASH_H
@@ -58,6 +68,7 @@ typedef enum nand_flash_status
   NAND_ERASE_NOK,
 } nand_flash_status_t;
 
+/** Global functions */
 int NAND_CheckBlock();
 void NAND_Reset(void);
 nand_flash_status_t NAND_Erase(void);
