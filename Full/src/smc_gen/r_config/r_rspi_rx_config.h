@@ -54,9 +54,9 @@ Configuration Options
 #define RSPI_CFG_DUMMY_TXDATA (0x0)
 
 /* Enable the RSPI channels to use in this build. (0) = not used. (1) = used. */
-#define RSPI_CFG_USE_CHAN0  (1)
+#define RSPI_CFG_USE_CHAN0  (0)
 #define RSPI_CFG_USE_CHAN1  (0)
-#define RSPI_CFG_USE_CHAN2  (0)
+#define RSPI_CFG_USE_CHAN2  (1)
 
 /* Set interrupt priority levels for each channel present.
  * Priority is shared by all interrupt sources in a channel.

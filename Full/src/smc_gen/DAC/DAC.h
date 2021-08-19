@@ -22,7 +22,7 @@
 * Version      : 1.8.4
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for DAC.
-* Creation Date: 2021-08-10
+* Creation Date: 2021-08-12
 ***********************************************************************************************************************/
 
 #ifndef CFG_DAC_H

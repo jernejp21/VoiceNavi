@@ -70,7 +70,7 @@ DEVICE DRIVER CHANEL NUMBER
 *************************************************************************************************/
 /*  Please set one macro definition. */
 /*      MEMDRV_DRVR_CH0 - MEMDRV_DRVR_CH15  */
-#define MEMDRV_CFG_DEV0_MODE_DRVR_CH      (MEMDRV_DRVR_CH0)
+#define MEMDRV_CFG_DEV0_MODE_DRVR_CH      (MEMDRV_DRVR_CH2)
 #define MEMDRV_CFG_DEV1_MODE_DRVR_CH      (MEMDRV_DRVR_CH0)
 
 /************************************************************************************************

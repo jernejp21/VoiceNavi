@@ -10,7 +10,8 @@
  */
 
 #include "globals.h"
-#define STOP 7
+#define STOP 0x01
+#define STB 0x02
 
 uint8_t gpioa_prev;
 uint8_t gpiob_prev;
@@ -190,7 +191,7 @@ int16_t inputPlay()
     {
       if(gpioa != gpioa_prev)
       {
-        if((0 ==(gpioa % 2)) || (gpioa == 1))
+        if((0 == (gpioa % 2)) || (gpioa == 1))
         {
           ret = gpioa;
           gpioa_prev = gpioa;
@@ -225,6 +226,44 @@ int16_t inputPlay()
 
 int16_t binary128ch()
 {
+  uint8_t gpioa;
+  uint8_t gpiob;
+  int16_t ret = -1;
+
+  gpioa = I2C_Receive(0x07);
+  gpiob = I2C_Receive(0x17);
+
+  /* Correct switches order according to HW design */
+  gpioa = (gpioa >> 4) | (gpioa << 4);
+
+  I2C_Receive(0x09);  //Clear INT flags
+  I2C_Receive(0x19);  //Clear INT flags
+
+  if(g_isIRQ)
+  {
+    if(0 != (gpiob & STB))
+    {
+      if(gpioa == 0)
+      {
+        //stop
+        ret = -1;
+      }
+      else
+      {
+        //Put song to fifo.
+        ret = gpioa;
+      }
+    }
+
+    if(0 != (gpiob & STOP))
+    {
+      R_TMR01_Stop();
+      g_playing = 0;
+      g_stopPlaying = 1;
+      ret = -1;
+    }
+  }
+
   return -1;
 }
 

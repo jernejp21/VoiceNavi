@@ -22,7 +22,7 @@
 * Version      : 2.0.1
 * Device(s)    : R5F565NEDxFP
 * Description  : This file implements device driver for EXT_IRQ.
-* Creation Date: 2021-08-10
+* Creation Date: 2021-08-12
 ***********************************************************************************************************************/
 
 #ifndef CFG_EXT_IRQ_H

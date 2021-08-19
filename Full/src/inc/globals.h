@@ -40,6 +40,10 @@ typedef enum fifo
   FIFO_FULL = 2,
 }fifo_t;
 
+#define NAND_CS PORTD.PODR.BIT.B4
+#define NAND_CS_HIGH (NAND_CS = 1)
+#define NAND_CS_LOW (NAND_CS = 0)
+
 #define I2C_ADDR 0x21
 #define I2C_READ ((I2C_ADDR << 1) | 0x01)
 #define I2C_WRITE ((I2C_ADDR << 1) | 0x00)

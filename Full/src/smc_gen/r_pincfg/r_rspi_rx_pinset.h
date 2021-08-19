@@ -22,7 +22,7 @@
 * Device(s)    : R5F565NEDxFP
 * Tool-Chain   : RXC toolchain
 * Description  : Setting of port and mpc registers
-* Creation Date: 2021-08-10
+* Creation Date: 2021-08-12
 ***********************************************************************************************************************/
 
 #ifndef R_RSPI_RX_H
@@ -36,6 +36,6 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 
-void R_RSPI_PinSet_RSPI0();
+void R_RSPI_PinSet_RSPI2();
 
 #endif

@@ -61,8 +61,9 @@ void main(void)
   nand_flash_status_t nand_status;
 
   //SPI CS Pin
-  PORTA.PDR.BIT.B4 = 1;  //Set pin as output
-  PORTA.PODR.BIT.B4 = 1;  //Set pin HIGH
+  PORTD.PDR.BIT.B4 = 1;  //Set pin as output
+  //PORTD.PODR.BIT.B4 = 1;  //Set pin HIGH
+  NAND_CS_HIGH;
 
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
   // resetpgr.c in PowerON_Reset_PC function.

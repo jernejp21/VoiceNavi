@@ -22,7 +22,7 @@
 * Device(s)    : R5F565NEDxFP
 * Tool-Chain   : RXC toolchain
 * Description  : Setting of port and mpc registers
-* Creation Date: 2021-08-10
+* Creation Date: 2021-08-12
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -36,26 +36,26 @@ Global variables and functions
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* Function Name: R_RSPI_PinSet_RSPI0
+* Function Name: R_RSPI_PinSet_RSPI2
 * Description  : This function initializes pins for r_rspi_rx module
 * Arguments    : none
 * Return Value : none
 ***********************************************************************************************************************/
-void R_RSPI_PinSet_RSPI0()
+void R_RSPI_PinSet_RSPI2()
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
 
-    /* Set RSPCKA pin */
-    MPC.PA5PFS.BYTE = 0x0DU;
-    PORTA.PMR.BIT.B5 = 1U;
+    /* Set RSPCKC pin */
+    MPC.PD3PFS.BYTE = 0x0DU;
+    PORTD.PMR.BIT.B3 = 1U;
 
-    /* Set MOSIA pin */
-    MPC.PA6PFS.BYTE = 0x0DU;
-    PORTA.PMR.BIT.B6 = 1U;
+    /* Set MOSIC pin */
+    MPC.PD1PFS.BYTE = 0x0DU;
+    PORTD.PMR.BIT.B1 = 1U;
 
-    /* Set MISOA pin */
-    MPC.PA7PFS.BYTE = 0x0DU;
-    PORTA.PMR.BIT.B7 = 1U;
+    /* Set MISOC pin */
+    MPC.PD2PFS.BYTE = 0x0DU;
+    PORTD.PMR.BIT.B2 = 1U;
 
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
 }
