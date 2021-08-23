@@ -22,6 +22,8 @@
 #include "globals.h"
 
 FATFS fs;
+DIR dir;
+FILINFO filno;
 FIL file;
 FIL file1;
 FRESULT fr;
@@ -116,7 +118,26 @@ void NAND_CopyToFlash()
   nand_flash_status_t flash_status;
 
   fr = f_mount(&fs, "", 0);
-  fr = f_open(&file, (const TCHAR*) &g_msc_file, (FA_OPEN_ALWAYS | FA_READ));
+  if(FR_OK != fr)
+  {
+    //Error if FAT is not present on USB.
+    ERROR_FileSystem();
+  }
+
+  fr = f_findfirst(&dir, &filno, "", "*.wpj");
+  if(FR_OK != fr)
+  {
+    //Error if .wpj file is not present.
+    ERROR_FileSystem();
+  }
+
+  fr = f_open(&file, (const TCHAR*) &filno.fname, (FA_OPEN_ALWAYS | FA_READ));
+  if(FR_OK != fr)
+  {
+    //Error if .wpj file cannot be opened (bad file system or bad file).
+    ERROR_FileSystem();
+  }
+
   startOfFileNames = 0;
   startOfPlaylist = 0;
   while(f_gets((TCHAR*) &line, sizeof(line), &file))
@@ -149,12 +170,12 @@ void NAND_CopyToFlash()
 
     if(startOfFileNames)
     {
-      /*if(strncmp(line, "7,008", 5) != 0)
-      {
-        continue;
-      }*/
-      placeNameToTable((char*) &file_name.file_name, (char*) &line);
+      WAV_PlaceNameToTable((char*) &file_name.file_name, (char*) &line);
       fr = f_open(&file1, &file_name.file_name[0], FA_READ);
+      if(FR_NO_FILE == fr)
+      {
+        ERROR_WAVEFile();
+      }
       fr = f_read(&file1, &wav_buffer[0], sizeof(wav_buffer), &size);
       WAV_Open(&wav_file, &wav_buffer[0]);
       flash_table[cnt].address = flash_address;
@@ -162,11 +183,12 @@ void NAND_CopyToFlash()
 
       do
       {
+        LED_USBToggle();
         flash_status = nand_copy_to_flash(flash_address, sizeof(wav_buffer), wav_buffer);
         flash_address += size;
         if(NAND_WRITE_NOK == flash_status)
         {
-          break;
+          ERROR_FlashECS();
         }
         fr = f_read(&file1, &wav_buffer[0], sizeof(wav_buffer), &size);
       }
@@ -175,13 +197,17 @@ void NAND_CopyToFlash()
       /* Copy last part of read file to flash */
       flash_status = nand_copy_to_flash(flash_address, size, wav_buffer);
       flash_address += size;
+      if(NAND_WRITE_NOK == flash_status)
+      {
+        ERROR_FlashECS();
+      }
       f_close(&file1);
       cnt++;
     }
 
     if(startOfPlaylist)
     {
-      placeSongsToTable((playlist_t*) &g_output_music[cnt], (char*) &line);
+      WAV_PlaceSongsToTable((playlist_t*) &g_output_music[cnt], (char*) &line);
       cnt++;
       if(cnt > 254)
       {
@@ -191,11 +217,30 @@ void NAND_CopyToFlash()
   }
   f_close(&file);
 
+  //Mark that data is in flash
+  uint8_t data[4] = {0xEF, 0xBE, 0xAD, 0xDE};  //0xdeadbeef in little endian
+  flash_status = nand_copy_to_flash(0, sizeof(data), data);
+  if(NAND_WRITE_NOK == flash_status)
+  {
+    ERROR_FlashECS();
+  }
+
   //Copy file table to NAND flash
-  flash_status = nand_copy_to_flash(0, sizeof(flash_table), (uint8_t*) &flash_table[0]);
+  flash_status = nand_copy_to_flash(NAND_PAGE_SIZE, sizeof(flash_table), (uint8_t*) &flash_table[0]);
+  if(NAND_WRITE_NOK == flash_status)
+  {
+    ERROR_FlashECS();
+  }
 
   //Copy playlist table to NAND flash
   flash_status = nand_copy_to_flash(NAND_PAGE_SIZE * 3, sizeof(g_output_music), (uint8_t*) &g_output_music[0]);
+  if(NAND_WRITE_NOK == flash_status)
+  {
+    ERROR_FlashECS();
+  }
+
+  /* After finishing wiriting to flash, lock flash for write protection */
+  nand_lock_flash();
 
 }
 
@@ -285,6 +330,15 @@ void NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
 
 int NAND_CheckDataInFlash()
 {
+  uint8_t data[4];
+  uint32_t cast_data;
+  NAND_ReadFromFlash(0, sizeof(data), data);
+  cast_data = *(uint32_t*) &data;
+
+  if(0xDEADBEEF == cast_data)
+  {
+    return 1;
+  }
 
   return 0;
 }
@@ -554,4 +608,42 @@ void nand_wait_operation_complete()
     NAND_CS_HIGH;  //CS HIGH
   }
   while(0 != (rx_buff[0] & NAND_STATUS_OIP));
+
+  if(0 != (rx_buff[0] & (NAND_STATUS_ECCS0 | NAND_STATUS_ECCS1)))
+  {
+    ERROR_FlashECS();
+  }
+}
+
+void nand_lock_flash()
+{
+  st_memdrv_info_t memdrv_info;
+  uint8_t tx_buff[4];
+  uint8_t rx_buff[4];
+
+  memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
+
+  /* 1. Write Disable */
+  tx_buff[0] = NAND_WRITE_DISABLE;
+  memdrv_info.cnt = 1;
+  memdrv_info.p_data = tx_buff;
+
+  NAND_CS_LOW;  //CS LOW
+  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+  NAND_CS_HIGH;  //CS HIGH
+
+  R_BSP_SoftwareDelay(NAND_DELAY_TIME, NAND_DELAY_UNIT);
+
+  /* 2. Enable block lock bits */
+  tx_buff[0] = NAND_SET_FEATURE;
+  tx_buff[1] = NAND_BLOCK_LOCK_REG;
+  tx_buff[2] = 0xFF;  //Set block lock bits to 1, whole flash space is locked.
+  memdrv_info.cnt = 3;
+  memdrv_info.p_data = tx_buff;
+
+  NAND_CS_LOW;  //CS LOW
+  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+  NAND_CS_HIGH;  //CS HIGH
+
+  nand_wait_operation_complete();
 }

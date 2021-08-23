@@ -7,29 +7,29 @@ MEMORY
 }
 SECTIONS
 {
-	.exvectors 0xFFFFFF80 : AT(0xFFFFFF80)
+	.exvectors 0xFFFFFF80: AT(0xFFFFFF80)
 	{
 		"_exvectors_start" = .;
 		KEEP(*(.exvectors))
-		"_exvectors_end" = .;
+	"_exvectors_end" = .;
 	} >ROM
-	.fvectors 0xFFFFFFFC : AT(0xFFFFFFFC)
+	.fvectors 0xFFFFFFFC: AT(0xFFFFFFFC)
 	{
 		KEEP(*(.fvectors))
-	} >ROM
-	.text 0xFFE00000 : AT(0xFFE00000)
+	} > ROM
+	.text 0xFFE00000: AT(0xFFE00000)
 	{
 		*(.text)
 		*(.text.*)
 		*(P)
 		etext = .;
-	} >ROM
-	.rvectors ALIGN(4) :
+	} > ROM
+	.rvectors ALIGN(4):
 	{
 		_rvectors_start = .;
 		INCLUDE ..\src\smc_gen\r_bsp\mcu\all\linker_script_rvectors.inc
 		_rvectors_end = .;
-	} >ROM
+	} > ROM
 	.init :
 	{
 		KEEP(*(.init))
@@ -44,16 +44,16 @@ SECTIONS
 		KEEP(*(.fini_array))
 		KEEP(*(SORT(.fini_array.*)))
 		__fini_array_end = .;
-	} >ROM
+	} > ROM
 	.fini :
 	{
 		KEEP(*(.fini))
-	} >ROM
+	} > ROM
 	.got :
 	{
 		*(.got)
 		*(.got.plt)
-	} >ROM
+	} > ROM
 	.rodata :
 	{
 		*(.rodata)
@@ -62,19 +62,19 @@ SECTIONS
 		*(C_2)
 		*(C)
 		_erodata = .;
-	} >ROM
+	} > ROM
 	.eh_frame_hdr :
 	{
 		*(.eh_frame_hdr)
-	} >ROM
+	} > ROM
 	.eh_frame :
 	{
 		*(.eh_frame)
-	} >ROM
+	} > ROM
 	.jcr :
 	{
 		*(.jcr)
-	} >ROM
+	} > ROM
 	.tors :
 	{
 		__CTOR_LIST__ = .;
@@ -90,7 +90,7 @@ SECTIONS
 		__DTOR_END__ = .;
 		. = ALIGN(2);
 		_mdata = .;
-	} >ROM
+	} > ROM
 	.data : AT(_mdata)
 	{
 		_data = .;
@@ -100,11 +100,11 @@ SECTIONS
 		*(D_1)
 		*(D_2)
 		_edata = .;
-	} >RAM
+	} > RAM
 	.gcc_exc :
 	{
 		*(.gcc_exc)
-	} >RAM
+	} > RAM
 	.bss :
 	{
 		_bss = .;
@@ -116,39 +116,39 @@ SECTIONS
 		*(B_2)
 		_ebss = .;
 		_end = .;
-	} >RAM
-	.ofs1 0xFE7F5D00 : AT(0xFE7F5D00)
+	} > RAM
+	.ofs1 0xFE7F5D00: AT(0xFE7F5D00)
 	{
 		KEEP(*(.ofs1))
-	} >OFS
-	.ofs2 0xFE7F5D10 : AT(0xFE7F5D10)
+	} > OFS
+	.ofs2 0xFE7F5D10: AT(0xFE7F5D10)
 	{
 		KEEP(*(.ofs2))
-	} >OFS
-	.ofs3 0xFE7F5D20 : AT(0xFE7F5D20)
+	} > OFS
+	.ofs3 0xFE7F5D20: AT(0xFE7F5D20)
 	{
 		KEEP(*(.ofs3))
-	} >OFS
-	.ofs4 0xFE7F5D40 : AT(0xFE7F5D40)
+	} > OFS
+	.ofs4 0xFE7F5D40: AT(0xFE7F5D40)
 	{
 		KEEP(*(.ofs4))
-	} >OFS
-	.ofs5 0xFE7F5D48 : AT(0xFE7F5D48)
+	} > OFS
+	.ofs5 0xFE7F5D48: AT(0xFE7F5D48)
 	{
 		KEEP(*(.ofs5))
-	} >OFS
-	.ofs6 0xFE7F5D50 : AT(0xFE7F5D50)
+	} > OFS
+	.ofs6 0xFE7F5D50: AT(0xFE7F5D50)
 	{
 		KEEP(*(.ofs6))
-	} >OFS
-	.ofs7 0xFE7F5D64 : AT(0xFE7F5D64)
+	} > OFS
+	.ofs7 0xFE7F5D64: AT(0xFE7F5D64)
 	{
 		KEEP(*(.ofs7))
-	} >OFS
-	.ofs8 0xFE7F5D70 : AT(0xFE7F5D70)
+	} > OFS
+	.ofs8 0xFE7F5D70: AT(0xFE7F5D70)
 	{
 		KEEP(*(.ofs8))
-	} >OFS
+	} > OFS
 	.r_bsp_NULL :
 	{
 		. += 0x100;

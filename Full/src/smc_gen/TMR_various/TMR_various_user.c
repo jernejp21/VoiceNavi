@@ -18,67 +18,67 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_cg_r12da.h
-* Version      : 1.2.102
+* File Name    : TMR_various_user.c
+* Version      : 1.7.0
 * Device(s)    : R5F5651EHxFP
-* Description  : General header file for R12DA peripheral.
+* Description  : This file implements device driver for TMR_various.
 * Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
-#ifndef DA_H
-#define DA_H
-
 /***********************************************************************************************************************
-Macro definitions (Register bit)
+Pragma directive
 ***********************************************************************************************************************/
-/* 
-    D/A Control Register (DACR)
-*/
-/* D/A Enable (DAE) */
-#define _00_DA_DISABLE                    (0x00U) /* D/A conversion of channels 0 and 1 is controlled individually */
-#define _20_DA_ENABLE                     (0x20U) /* D/A conversion of channels 0 and 1 is enabled collectively */
-/* D/A Output Enable 0 (DAOE0) */
-#define _00_DA0_DISABLE                   (0x00U) /* Analog output of channel 0 (DA0) is disabled */
-#define _40_DA0_ENABLE                    (0x40U) /* D/A conversion of channel 0 is enabled */
-/* D/A Output Enable 1 (DAOE1) */
-#define _00_DA1_DISABLE                   (0x00U) /* Analog output of channel 1 (DA1) is disabled */
-#define _80_DA1_ENABLE                    (0x80U) /* D/A conversion of channel 1 is enabled */
-/* DACR default value */
-#define _1F_DA_DACR_DEFAULT               (0x1FU) /* Write default value of DACR */
-
-/*
-    DADRm Format Select Register (DADPR)
-*/
-/* DADRm Format Select (DPSEL) */
-#define _00_DA_DPSEL_R                    (0x00U) /* Data is flush with the right end of the D/A data register */
-#define _80_DA_DPSEL_L                    (0x80U) /* Data is flush with the left end of the D/A data register */
-
-/*
-    D/A-A/D Synchronous Start Control Register (DAADSCR)
-*/
-/* D/A-A/D Synchronous Conversion (DAADST) */
-#define _00_DA_DAADSYNC_DISABLE           (0x00U)  /* D/A converter does not synchronize with A/D converter */
-#define _80_DA_DAADSYNC_ENABLE            (0x80U)  /* D/A converter synchronizes with A/D converter operation */
-
-/*
-    D/A A/D Synchronous Unit Select Register (DAADUSR)
-*/
-/* A/D Unit 1 Select (AMADSEL1) */
-#define _00_DA_DAADSYNC_UNIT1_DISABLE     (0x00U)  /* S12AD unit 1 is not selected for D/A A/D Synchronous */
-#define _02_DA_DAADSYNC_UNIT1_ENABLE      (0x02U)  /* S12AD unit 1 is selected for D/A A/D Synchronous */
-
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Typedef definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Global functions
-***********************************************************************************************************************/
-/* Start user code for function. Do not edit comment generated here */
+/* Start user code for pragma. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-#endif
 
+/***********************************************************************************************************************
+Includes
+***********************************************************************************************************************/
+#include "r_cg_macrodriver.h"
+#include "TMR_various.h"
+/* Start user code for include. Do not edit comment generated here */
+#include "globals.h"
+/* End user code. Do not edit comment generated here */
+#include "r_cg_userdefine.h"
+
+/***********************************************************************************************************************
+Global variables and functions
+***********************************************************************************************************************/
+/* Start user code for global. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: R_TMR_various_Create_UserInit
+* Description  : This function adds user code after initializing TMR
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_TMR_various_Create_UserInit(void)
+{
+    /* Start user code for user init. Do not edit comment generated here */
+    /* End user code. Do not edit comment generated here */
+}
+
+/***********************************************************************************************************************
+* Function Name: r_TMR_various_cmia2_interrupt
+* Description  : This function is CMIA2 interrupt service routine
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void r_TMR_various_cmia2_interrupt(void)
+{
+    /* Start user code for r_TMR_various_cmia2_interrupt. Do not edit comment generated here */
+  g_counter++;
+    /* End user code. Do not edit comment generated here */
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+void R_TMR_various_Set_Frequency(uint32_t millis)
+{
+  // Timer clock is 58594 Hz
+  TMR23.TCORA = (uint16_t) (58594 / 1000 * millis);
+
+}
+/* End user code. Do not edit comment generated here */

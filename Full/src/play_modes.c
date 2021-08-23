@@ -30,7 +30,7 @@ int16_t normalPlay()
 
   if(0 != (gpiob & STOP))
   {
-    R_TMR01_Stop();
+    R_TMR_play_Stop();
     g_playing = 0;
     g_stopPlaying = 1;
     ret = -1;
@@ -43,7 +43,7 @@ int16_t normalPlay()
   {
     if(0 != (gpiob & STOP))
     {
-      R_TMR01_Stop();
+      R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
     }
@@ -85,7 +85,7 @@ int16_t lastInputPlay()
     }
     else
     {
-      R_TMR01_Stop();
+      R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
       ret = gpioa;
@@ -93,7 +93,7 @@ int16_t lastInputPlay()
 
     if(0 != (gpiob & STOP))
     {
-      R_TMR01_Stop();
+      R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
       ret = -1;
@@ -137,7 +137,7 @@ int16_t priorityPlay()
         ret = gpioa & (1 << bit);
         if(ret)
         {
-          R_TMR01_Stop();
+          R_TMR_play_Stop();
           g_playing = 0;
           g_stopPlaying = 1;
           break;
@@ -148,7 +148,7 @@ int16_t priorityPlay()
     /* If STOP, stop immediately */
     if(0 != (gpiob & STOP))
     {
-      R_TMR01_Stop();
+      R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
       ret = -1;
@@ -181,7 +181,7 @@ int16_t inputPlay()
     /* If STOP, stop immediately */
     if(0 != (gpiob & STOP))
     {
-      R_TMR01_Stop();
+      R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
       ret = -1;
@@ -196,7 +196,7 @@ int16_t inputPlay()
           ret = gpioa;
           gpioa_prev = gpioa;
 
-          R_TMR01_Stop();
+          R_TMR_play_Stop();
           g_playing = 0;
           g_stopPlaying = 1;
         }
@@ -209,7 +209,7 @@ int16_t inputPlay()
   }
   else
   {
-    R_TMR01_Stop();
+    R_TMR_play_Stop();
     g_playing = 0;
     g_stopPlaying = 1;
     gpiob_prev = 0;
@@ -257,7 +257,7 @@ int16_t binary128ch()
 
     if(0 != (gpiob & STOP))
     {
-      R_TMR01_Stop();
+      R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
       ret = -1;
@@ -275,38 +275,4 @@ int16_t binary255_positive()
 int16_t binary255_negative()
 {
   return -1;
-}
-
-void LED_Init()
-{
-  PORTD.PDR.BIT.B6 = 1;
-  PORTD.PDR.BIT.B7 = 1;
-
-  PORTD.PODR.BIT.B6 = 1;
-  PORTD.PODR.BIT.B7 = 1;
-}
-
-void LED_BusyOn()
-{
-  PORTD.PODR.BIT.B6 = 0;
-}
-
-void LED_BusyOff()
-{
-  PORTD.PODR.BIT.B6 = 1;
-}
-
-void LED_Toggle()
-{
-  PORTD.PODR.BIT.B7 ^= 1;
-}
-
-void DIP_Init()
-{
-  PORTA.PDR.BYTE = 0;
-}
-
-uint8_t DIP_ReadState()
-{
-  return PORTA.PIDR.BYTE;
 }

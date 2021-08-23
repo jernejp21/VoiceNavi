@@ -23,6 +23,7 @@
 #include "../NAND_flash.h"
 #include "../wav.h"
 #include "../play_modes.h"
+#include "../Errors.h"
 
 #define FILE_SIZE (3000)
 
@@ -44,9 +45,13 @@ typedef enum fifo
 #define NAND_CS_HIGH (NAND_CS = 1)
 #define NAND_CS_LOW (NAND_CS = 0)
 
-#define I2C_ADDR 0x21
-#define I2C_READ ((I2C_ADDR << 1) | 0x01)
-#define I2C_WRITE ((I2C_ADDR << 1) | 0x00)
+#define I2C_GPIO_ADDR 0x21
+#define I2C_GPIO_READ ((I2C_GPIO_ADDR << 1) | 0x01)
+#define I2C_GPIO_WRITE ((I2C_GPIO_ADDR << 1) | 0x00)
+
+#define I2C_POTENT_ADDR 0x28
+#define I2C_POTENT_READ ((I2C_POTENT_ADDR << 1) | 0x01)
+#define I2C_POTENT_WRITE ((I2C_POTENT_ADDR << 1) | 0x00)
 void callBack_read();
 void callBack_write();
 void I2C_Send(uint8_t reg_add, uint8_t value);
@@ -55,10 +60,14 @@ void I2C_Init();
 
 void playFromPlaylist(uint8_t);
 
-void LED_BusyOn();
-void LED_BusyOff();
-void LED_Init();
-void LED_Toggle();
+typedef enum modeSelect
+{
+  WAV_5A2 = 3,
+  WAV_5F2 = 2,
+  WAV_5F1 = 1,
+  WAV_5F9IH = 0,
+}modeSelect_t;
+modeSelect_t PIN_BoardSelection();
 
 extern int g_counter;
 extern int g_readBuffer;

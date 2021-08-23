@@ -20,9 +20,9 @@
 /***********************************************************************************************************************
 * File Name    : r_smc_interrupt.h
 * Version      : 1.2.2
-* Device(s)    : R5F565NEDxFP
+* Device(s)    : R5F5651EHxFP
 * Description  : This file implements interrupt setting.
-* Creation Date: 2021-08-12
+* Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
 #ifndef SMC_INTERRUPT_H
@@ -208,7 +208,7 @@ Macro definitions
 #define ICU_CAN1_RXM1_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_CAN1_TXM1_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_USB0_USBI0_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_S12AD_S12ADI_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
+#define ICU_S12AD_S12ADI_PRIORITY                  (_03_ICU_PRIORITY_LEVEL3)
 #define ICU_S12AD_S12GBADI_PRIORITY                (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_S12AD_S12GCADI_PRIORITY                (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_S12AD1_S12ADI1_PRIORITY                (_0F_ICU_PRIORITY_LEVEL15)

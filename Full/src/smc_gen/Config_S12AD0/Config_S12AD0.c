@@ -18,10 +18,10 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : DAC.c
-* Version      : 1.8.4
+* File Name    : Config_S12AD0.c
+* Version      : 2.2.1
 * Device(s)    : R5F5651EHxFP
-* Description  : This file implements device driver for DAC.
+* Description  : This file implements device driver for Config_S12AD0.
 * Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
@@ -35,7 +35,7 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "DAC.h"
+#include "Config_S12AD0.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -47,67 +47,163 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_DAC_Create
-* Description  : This function initializes the DA converter
+* Function Name: R_Config_S12AD0_Create
+* Description  : This function initializes the S12AD0 channel
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void R_DAC_Create(void)
+void R_Config_S12AD0_Create(void)
 {
-    /* Cancel DA stop state in LPC */
-    MSTP(DA) = 0U;
+    /* Cancel S12AD0 module stop state */
+    MSTP(S12AD) = 0U;
 
-    /* Set DA format select register */
-    DA.DADPR.BYTE = _00_DA_DPSEL_R;
+    /* Disable and clear interrupt flags of S12AD0 module */
+    S12AD.ADCSR.BIT.ADIE = 0U;
+    S12AD.ADCMPCR.BIT.CMPAIE = 0U;
+    S12AD.ADCMPCR.BIT.CMPBIE = 0U;
+    IEN(PERIB, INTB186) = 0U;
 
-    /* Set D/A-A/D synchronous control register */
-    DA.DAADSCR.BYTE = _00_DA_DAADSYNC_DISABLE;
+    /* Set S12AD0 control registers */
+    S12AD.ADCSR.WORD = _0000_AD_DBLTRIGGER_DISABLE | _0000_AD_SYNCASYNCTRG_DISABLE | _0000_AD_SINGLE_SCAN_MODE;
+    S12AD.ADDISCR.BYTE = _00_AD_DISCONECT_UNUSED;
 
-    /* Set DA1 pin */
-    PORT0.PMR.BYTE &= 0xDFU;
-    PORT0.PDR.BYTE &= 0xDFU;
-    MPC.P05PFS.BIT.ASEL = 1U;
+    /* Set channels and sampling time */
+    S12AD.ADSSTR6 = _0B_AD0_SAMPLING_STATE_6;
+    S12AD.ADSSTR7 = _0B_AD0_SAMPLING_STATE_7;
+    S12AD.ADANSA0.WORD = _0040_AD_ANx06_USED | _0080_AD_ANx07_USED;
+    S12AD.ADCER.WORD = _0000_AD_RESOLUTION_12BIT | _0000_AD_AUTO_CLEARING_DISABLE | _0000_AD_SELFTDIAGST_DISABLE | 
+                       _0000_AD_RIGHT_ALIGNMENT;
+    S12AD.ADCSR.WORD |= _1000_AD_SCAN_END_INTERRUPT_ENABLE;
+    S12AD.ADADC.BYTE = _03_AD_4_TIME_CONVERSION | _80_AD_AVERAGE_MODE;
 
-    R_DAC_Create_UserInit();
+    /* Set compare control register */
+    S12AD.ADCMPCR.WORD = _0000_AD_WINDOWB_DISABLE | _0000_AD_WINDOWA_DISABLE | _0000_AD_WINDOWFUNCTION_DISABLE;
+
+    /* Set interrupt and priority level */
+    ICU.SLIBR186.BYTE = 0x40U;
+    IPR(PERIB, INTB186) = _03_AD_PRIORITY_LEVEL3;
+
+    /* Set AN006 pin */
+    PORT4.PMR.BYTE &= 0xBFU;
+    PORT4.PDR.BYTE &= 0xBFU;
+    MPC.P46PFS.BYTE = 0x80U;
+
+    /* Set AN007 pin */
+    PORT4.PMR.BYTE &= 0x7FU;
+    PORT4.PDR.BYTE &= 0x7FU;
+    MPC.P47PFS.BYTE = 0x80U;
+
+    R_Config_S12AD0_Create_UserInit();
 }
 
 /***********************************************************************************************************************
-* Function Name: R_DAC1_Start
-* Description  : This function enables the DA1 converter
+* Function Name: R_Config_S12AD0_Start
+* Description  : This function starts the AD0 converter
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void R_DAC1_Start(void)
+void R_Config_S12AD0_Start(void)
 {
-    DA.DACR.BIT.DAE = 0U;
-    DA.DACR.BIT.DAOE1 = 1U;
+    IR(PERIB, INTB186) = 0U;
+    IEN(PERIB, INTB186) = 1U;
+    S12AD.ADCSR.BIT.ADST = 1U;
 }
 
 /***********************************************************************************************************************
-* Function Name: R_DAC1_Stop
-* Description  : This function stops the DA1 converter
+* Function Name: R_Config_S12AD0_Stop
+* Description  : This function stops the AD0 converter
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void R_DAC1_Stop(void)
+void R_Config_S12AD0_Stop(void)
 {
-    DA.DACR.BIT.DAOE1 = 0U;
+    S12AD.ADCSR.BIT.ADST = 0U;
+    IR(PERIB, INTB186) = 0U;
+    IEN(PERIB, INTB186) = 0U;
 }
 
 /***********************************************************************************************************************
-* Function Name: R_DAC1_Set_ConversionValue
-* Description  : This function sets the DA1 converter value
-* Arguments    : reg_value -
-*                    value of conversion
+* Function Name: R_Config_S12AD0_Get_ValueResult
+* Description  : This function gets result from the AD0 converter
+* Arguments    : channel -
+*                    channel of data register to be read
+*                buffer -
+*                    buffer pointer
 * Return Value : None
 ***********************************************************************************************************************/
 
-void R_DAC1_Set_ConversionValue(uint16_t reg_value)
+void R_Config_S12AD0_Get_ValueResult(ad_channel_t channel, uint16_t * const buffer)
 {
-    DA.DADR1 = (uint16_t)(reg_value & 0x0FFFU);
+    switch (channel)
+    {
+        case ADSELFDIAGNOSIS:
+        {
+            *buffer = (uint16_t)(S12AD.ADRD.WORD);
+            break;
+        }
+        case ADCHANNEL0:
+        {
+            *buffer = (uint16_t)(S12AD.ADDR0);
+            break;
+        }
+        case ADCHANNEL1:
+        {
+            *buffer = (uint16_t)(S12AD.ADDR1);
+            break;
+        }
+        case ADCHANNEL2:
+        {
+            *buffer = (uint16_t)(S12AD.ADDR2);
+            break;
+        }
+        case ADCHANNEL3:
+        {
+            *buffer = (uint16_t)(S12AD.ADDR3);
+            break;
+        }
+        case ADCHANNEL4:
+        {
+            *buffer = (uint16_t)(S12AD.ADDR4);
+            break;
+        }
+        case ADCHANNEL5:
+        {
+            *buffer = (uint16_t)(S12AD.ADDR5);
+            break;
+        }
+        case ADCHANNEL6:
+        {
+            *buffer = (uint16_t)(S12AD.ADDR6);
+            break;
+        }
+        case ADCHANNEL7:
+        {
+            *buffer = (uint16_t)(S12AD.ADDR7);
+            break;
+        }
+        case ADDATADUPLICATION:
+        {
+            *buffer = (uint16_t)(S12AD.ADDBLDR.WORD);
+            break;
+        }
+        case ADDATADUPLICATIONA:
+        {
+            *buffer = (uint16_t)(S12AD.ADDBLDRA);
+            break;
+        }
+        case ADDATADUPLICATIONB:
+        {
+            *buffer = (uint16_t)(S12AD.ADDBLDRB);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 }
 
 /* Start user code for adding. Do not edit comment generated here */

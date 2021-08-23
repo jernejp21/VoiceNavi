@@ -18,67 +18,119 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_cg_r12da.h
-* Version      : 1.2.102
+* File Name    : PORT_config_user.c
+* Version      : 2.1.3
 * Device(s)    : R5F5651EHxFP
-* Description  : General header file for R12DA peripheral.
+* Description  : This file implements device driver for PORT_config.
 * Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
-#ifndef DA_H
-#define DA_H
-
 /***********************************************************************************************************************
-Macro definitions (Register bit)
+Pragma directive
 ***********************************************************************************************************************/
-/* 
-    D/A Control Register (DACR)
-*/
-/* D/A Enable (DAE) */
-#define _00_DA_DISABLE                    (0x00U) /* D/A conversion of channels 0 and 1 is controlled individually */
-#define _20_DA_ENABLE                     (0x20U) /* D/A conversion of channels 0 and 1 is enabled collectively */
-/* D/A Output Enable 0 (DAOE0) */
-#define _00_DA0_DISABLE                   (0x00U) /* Analog output of channel 0 (DA0) is disabled */
-#define _40_DA0_ENABLE                    (0x40U) /* D/A conversion of channel 0 is enabled */
-/* D/A Output Enable 1 (DAOE1) */
-#define _00_DA1_DISABLE                   (0x00U) /* Analog output of channel 1 (DA1) is disabled */
-#define _80_DA1_ENABLE                    (0x80U) /* D/A conversion of channel 1 is enabled */
-/* DACR default value */
-#define _1F_DA_DACR_DEFAULT               (0x1FU) /* Write default value of DACR */
-
-/*
-    DADRm Format Select Register (DADPR)
-*/
-/* DADRm Format Select (DPSEL) */
-#define _00_DA_DPSEL_R                    (0x00U) /* Data is flush with the right end of the D/A data register */
-#define _80_DA_DPSEL_L                    (0x80U) /* Data is flush with the left end of the D/A data register */
-
-/*
-    D/A-A/D Synchronous Start Control Register (DAADSCR)
-*/
-/* D/A-A/D Synchronous Conversion (DAADST) */
-#define _00_DA_DAADSYNC_DISABLE           (0x00U)  /* D/A converter does not synchronize with A/D converter */
-#define _80_DA_DAADSYNC_ENABLE            (0x80U)  /* D/A converter synchronizes with A/D converter operation */
-
-/*
-    D/A A/D Synchronous Unit Select Register (DAADUSR)
-*/
-/* A/D Unit 1 Select (AMADSEL1) */
-#define _00_DA_DAADSYNC_UNIT1_DISABLE     (0x00U)  /* S12AD unit 1 is not selected for D/A A/D Synchronous */
-#define _02_DA_DAADSYNC_UNIT1_ENABLE      (0x02U)  /* S12AD unit 1 is selected for D/A A/D Synchronous */
-
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Typedef definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Global functions
-***********************************************************************************************************************/
-/* Start user code for function. Do not edit comment generated here */
+/* Start user code for pragma. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-#endif
 
+/***********************************************************************************************************************
+Includes
+***********************************************************************************************************************/
+#include "r_cg_macrodriver.h"
+#include "PORT_config.h"
+/* Start user code for include. Do not edit comment generated here */
+#include "globals.h"
+/* End user code. Do not edit comment generated here */
+#include "r_cg_userdefine.h"
+
+/***********************************************************************************************************************
+Global variables and functions
+***********************************************************************************************************************/
+/* Start user code for global. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: R_PORT_config_Create_UserInit
+* Description  : This function adds user code after initializing PORT
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_PORT_config_Create_UserInit(void)
+{
+    /* Start user code for user init. Do not edit comment generated here */
+  LED_PowOff();
+  LED_BusyOff();
+  LED_USBOff();
+  LED_AlarmOff();
+    /* End user code. Do not edit comment generated here */
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+void LED_BusyOn()
+{
+  PORT5.PODR.BIT.B2 = 0;
+}
+
+void LED_BusyOff()
+{
+  PORT5.PODR.BIT.B2 = 1;
+}
+
+void LED_BusyToggle()
+{
+  PORT5.PODR.BIT.B2 ^= 1;
+}
+
+void LED_PowOn()
+{
+  PORT5.PODR.BIT.B3 = 0;
+}
+
+void LED_PowOff()
+{
+  PORT5.PODR.BIT.B3 = 1;
+}
+
+void LED_USBOn()
+{
+  PORT5.PODR.BIT.B1 = 0;
+}
+
+void LED_USBOff()
+{
+  PORT5.PODR.BIT.B1 = 1;
+}
+
+void LED_USBToggle()
+{
+  PORT5.PODR.BIT.B1 ^= 1;
+}
+
+void LED_AlarmOn()
+{
+  PORT5.PODR.BIT.B4 = 0;
+}
+
+void LED_AlarmOff()
+{
+  PORT5.PODR.BIT.B4 = 1;
+}
+
+void LED_Toggle()
+{
+  PORT5.PODR.BIT.B3 ^= 1;
+}
+
+uint8_t DIP_ReadState()
+{
+  return PORTA.PIDR.BYTE;
+}
+
+modeSelect_t PIN_BoardSelection()
+{
+  modeSelect_t ret;
+  ret = PORT4.PIDR.BIT.B2; //MS1
+  ret |= (1 << PORT4.PIDR.BIT.B3); //MS2
+
+  return ret;
+}
+/* End user code. Do not edit comment generated here */

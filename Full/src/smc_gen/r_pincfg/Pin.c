@@ -20,9 +20,9 @@
 /***********************************************************************************************************************
 * File Name    : Pin.c
 * Version      : 1.0.2
-* Device(s)    : R5F565NEDxFP
+* Device(s)    : R5F5651EHxFP
 * Description  : This file implements SMC pin code generation.
-* Creation Date: 2021-08-12
+* Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -55,6 +55,16 @@ Global variables and functions
 void R_Pins_Create(void)
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
+
+    /* Set AN006 pin */
+    MPC.P46PFS.BYTE = 0x80U;
+    PORT4.PMR.BYTE &= 0xBFU;
+    PORT4.PDR.BYTE &= 0xBFU;
+
+    /* Set AN007 pin */
+    MPC.P47PFS.BYTE = 0x80U;
+    PORT4.PMR.BYTE &= 0x7FU;
+    PORT4.PDR.BYTE &= 0x7FU;
 
     /* Set DA1 pin */
     MPC.P05PFS.BYTE = 0x80U;

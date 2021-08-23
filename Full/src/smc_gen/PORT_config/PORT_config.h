@@ -18,20 +18,20 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : TMR23.h
-* Version      : 1.7.0
-* Device(s)    : R5F565NEDxFP
-* Description  : This file implements device driver for TMR23.
-* Creation Date: 2021-08-12
+* File Name    : PORT_config.h
+* Version      : 2.1.3
+* Device(s)    : R5F5651EHxFP
+* Description  : This file implements device driver for PORT_config.
+* Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
-#ifndef CFG_TMR23_H
-#define CFG_TMR23_H
+#ifndef CFG_PORT_config_H
+#define CFG_PORT_config_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_tmr.h"
+#include "r_cg_port.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)
@@ -40,9 +40,6 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-#define TMR2_PCLK_COUNTER_DIVISION                    (1024) 
-#define _003A_TMR23_COMP_MATCH_VALUE_A                (0x003AU)
-#define _0074_TMR23_COMP_MATCH_VALUE_B                (0x0074U)
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -51,10 +48,21 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
-void R_TMR23_Create(void);
-void R_TMR23_Create_UserInit(void);
-void R_TMR23_Start(void);
-void R_TMR23_Stop(void);
+void R_PORT_config_Create(void);
+void R_PORT_config_Create_UserInit(void);
 /* Start user code for function. Do not edit comment generated here */
+void LED_BusyOn();
+void LED_BusyOff();
+void LED_BusyToggle();
+void LED_PowOn();
+void LED_PowOff();
+void LED_USBOn();
+void LED_USBOff();
+void LED_USBToggle();
+void LED_AlarmOn();
+void LED_AlarmOff();
+void LED_Init();
+void LED_Toggle();
+uint8_t DIP_ReadState();
 /* End user code. Do not edit comment generated here */
 #endif

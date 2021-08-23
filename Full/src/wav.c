@@ -94,7 +94,7 @@ void WAV_Open(wav_header_t *header, uint8_t *address)
  * Parameters: dest - pointer to destination array
  *             source - pointer to file line array
  */
-void placeNameToTable(char *dest, char *source)
+void WAV_PlaceNameToTable(char *dest, char *source)
 {
   uint8_t startCopy = 0;
 
@@ -124,7 +124,7 @@ void placeNameToTable(char *dest, char *source)
  * Parameters: dest - pointer to destination array
  *             source - pointer to file line array
  */
-void placeSongsToTable(playlist_t *dest, char *source)
+void WAV_PlaceSongsToTable(playlist_t *dest, char *source)
 {
   int commaCount = 0;
   uint8_t decimal = 1;

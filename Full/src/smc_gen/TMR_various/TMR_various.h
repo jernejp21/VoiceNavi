@@ -18,102 +18,44 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : TMR01.c
+* File Name    : TMR_various.h
 * Version      : 1.7.0
-* Device(s)    : R5F565NEDxFP
-* Description  : This file implements device driver for TMR01.
-* Creation Date: 2021-08-12
+* Device(s)    : R5F5651EHxFP
+* Description  : This file implements device driver for TMR_various.
+* Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
-/***********************************************************************************************************************
-Pragma directive
-***********************************************************************************************************************/
-/* Start user code for pragma. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
+#ifndef CFG_TMR_various_H
+#define CFG_TMR_various_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_macrodriver.h"
-#include "TMR01.h"
-/* Start user code for include. Do not edit comment generated here */
+#include "r_cg_tmr.h"
+
+/***********************************************************************************************************************
+Macro definitions (Register bit)
+***********************************************************************************************************************/
+
+/***********************************************************************************************************************
+Macro definitions
+***********************************************************************************************************************/
+#define TMR2_PCLK_COUNTER_DIVISION                    (1024) 
+#define _003A_TMR23_COMP_MATCH_VALUE_A                (0x003AU)
+#define _0074_TMR23_COMP_MATCH_VALUE_B                (0x0074U)
+
+/***********************************************************************************************************************
+Typedef definitions
+***********************************************************************************************************************/
+
+/***********************************************************************************************************************
+Global functions
+***********************************************************************************************************************/
+void R_TMR_various_Create(void);
+void R_TMR_various_Create_UserInit(void);
+void R_TMR_various_Start(void);
+void R_TMR_various_Stop(void);
+/* Start user code for function. Do not edit comment generated here */
+void R_TMR_various_Set_Frequency(uint32_t freq_hz);
 /* End user code. Do not edit comment generated here */
-#include "r_cg_userdefine.h"
-
-/***********************************************************************************************************************
-Global variables and functions
-***********************************************************************************************************************/
-/* Start user code for global. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
-
-/***********************************************************************************************************************
-* Function Name: R_TMR01_Create
-* Description  : This function initializes the TMR0 channel
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-
-void R_TMR01_Create(void)
-{
-    /* Disable TMR0 interrupts */
-    IEN(PERIB, INTB146) = 0U;
-
-    /* Cancel TMR module stop state */
-    MSTP(TMR01) = 0U; 
-
-    /* Set timer counter control setting */
-    TMR0.TCCR.BYTE = _18_TMR_CLK_TMR1_OVRF | _00_TMR_CLK_DISABLED;
-
-    /* Set counter clear and interrupt */
-    TMR0.TCR.BYTE = _40_TMR_CMIA_INT_ENABLE | _08_TMR_CNT_CLR_COMP_MATCH_A | _00_TMR_CMIB_INT_DISABLE | 
-                    _00_TMR_OVI_INT_DISABLE;
-
-    /* Set A/D trigger and output */
-    TMR0.TCSR.BYTE = _00_TMR_AD_TRIGGER_DISABLE | _E0_TMR02_TCSR_DEFAULT;
-
-    /* Set compare match value */ 
-    TMR01.TCORA = _0001_TMR01_COMP_MATCH_VALUE_A;
-    TMR01.TCORB = _0001_TMR01_COMP_MATCH_VALUE_B;
-
-    /* Configure TMR0 interrupts */ 
-    ICU.SLIBR146.BYTE = 0x03U;
-    IPR(PERIB, INTB146) = _0F_TMR_PRIORITY_LEVEL15;
-
-    R_TMR01_Create_UserInit();
-}
-
-/***********************************************************************************************************************
-* Function Name: R_TMR01_Start
-* Description  : This function starts the TMR0 channel
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-
-void R_TMR01_Start(void)
-{
-    /*Enable TMR0 interrupt*/
-    IR(PERIB, INTB146) = 0U;
-    IEN(PERIB, INTB146) = 1U;
-
-    /*Start counting*/
-    TMR1.TCCR.BYTE = _08_TMR_CLK_SRC_PCLK | _00_TMR_PCLK_DIV_1;
-}
-
-/***********************************************************************************************************************
-* Function Name: R_TMR01_Stop
-* Description  : This function stop the TMR0 channel
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-
-void R_TMR01_Stop(void)
-{
-    /*Enable TMR0 interrupt*/ 
-    IEN(PERIB, INTB146) = 0U;
-
-    /*Stop counting*/ 
-    TMR1.TCCR.BYTE = _00_TMR_CLK_DISABLED;
-}
-
-/* Start user code for adding. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
+#endif

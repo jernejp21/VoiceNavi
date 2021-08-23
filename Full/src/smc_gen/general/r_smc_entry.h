@@ -20,9 +20,9 @@
 /***********************************************************************************************************************
 * File Name    : r_smc_entry.h
 * Version      : 1.2.102
-* Device(s)    : R5F565NEDxFP
+* Device(s)    : R5F5651EHxFP
 * Description  : SMC platform header file.
-* Creation Date: 2021-08-12
+* Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
 #ifndef SMC_ENTRY_H
@@ -32,10 +32,12 @@
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "TMR01.h"
 #include "DAC.h"
-#include "TMR23.h"
 #include "EXT_IRQ.h"
+#include "PORT_config.h"
+#include "Config_S12AD0.h"
+#include "TMR_play.h"
+#include "TMR_various.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)

@@ -77,5 +77,6 @@ void NAND_ReadFromFlash(uint32_t, uint32_t, uint8_t*);
 int NAND_CheckDataInFlash(void);
 nand_flash_status_t nand_copy_to_flash(uint32_t, uint32_t, uint8_t*);
 void nand_wait_operation_complete(void);
+void nand_lock_flash(void);
 
 #endif //__NAND_FLASH_H

@@ -18,11 +18,11 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : TMR01_user.c
+* File Name    : TMR_various.c
 * Version      : 1.7.0
-* Device(s)    : R5F565NEDxFP
-* Description  : This file implements device driver for TMR01.
-* Creation Date: 2021-08-12
+* Device(s)    : R5F5651EHxFP
+* Description  : This file implements device driver for TMR_various.
+* Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -35,9 +35,8 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "TMR01.h"
+#include "TMR_various.h"
 /* Start user code for include. Do not edit comment generated here */
-#include "globals.h"
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 
@@ -45,81 +44,76 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
-int16_t data;
-int count;
-//int fiffo_test = 1;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_TMR01_Create_UserInit
-* Description  : This function adds user code after initializing TMR
+* Function Name: R_TMR_various_Create
+* Description  : This function initializes the TMR2 channel
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void R_TMR01_Create_UserInit(void)
+void R_TMR_various_Create(void)
 {
-    /* Start user code for user init. Do not edit comment generated here */
-  /* End user code. Do not edit comment generated here */
+    /* Disable TMR2 interrupts */
+    IEN(PERIB, INTB152) = 0U;
+
+    /* Cancel TMR module stop state */
+    MSTP(TMR23) = 0U; 
+
+    /* Set timer counter control setting */
+    TMR2.TCCR.BYTE = _18_TMR_CLK_TMR1_OVRF | _00_TMR_CLK_DISABLED;
+
+    /* Set counter clear and interrupt */
+    TMR2.TCR.BYTE = _40_TMR_CMIA_INT_ENABLE | _08_TMR_CNT_CLR_COMP_MATCH_A | _00_TMR_CMIB_INT_DISABLE | 
+                    _00_TMR_OVI_INT_DISABLE;
+
+    /* Set A/D trigger and output */
+    TMR2.TCSR.BYTE = _00_TMR_AD_TRIGGER_DISABLE | _E0_TMR02_TCSR_DEFAULT;
+
+    /* Set compare match value */ 
+    TMR23.TCORA = _003A_TMR23_COMP_MATCH_VALUE_A;
+    TMR23.TCORB = _0074_TMR23_COMP_MATCH_VALUE_B;
+
+    /* Configure TMR2 interrupts */ 
+    ICU.SLIBR152.BYTE = 0x09U;
+    IPR(PERIB, INTB152) = _03_TMR_PRIORITY_LEVEL3;
+
+    R_TMR_various_Create_UserInit();
 }
 
 /***********************************************************************************************************************
-* Function Name: r_TMR01_cmia0_interrupt
-* Description  : This function is CMIA0 interrupt service routine
+* Function Name: R_TMR_various_Start
+* Description  : This function starts the TMR2 channel
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void r_TMR01_cmia0_interrupt(void)
+void R_TMR_various_Start(void)
 {
-    /* Start user code for r_TMR01_cmia0_interrupt. Do not edit comment generated here */
-  //LED_Toggle();
-  if(g_wav_file.data_size - 2 < g_current_byte)
-  {
-    //end of file
-    R_TMR01_Stop();
-    g_playing = 0;
-    g_current_byte = 0;
-    return;
-  }
+    /*Enable TMR2 interrupt*/
+    IR(PERIB, INTB152) = 0U;
+    IEN(PERIB, INTB152) = 1U;
 
-  int fifo_status;
-  if(g_wav_file.bps == 8)
-  {
-    data = g_file_data[g_counter] << 4;
-    /*fifo_status = FIFO_Read((uint8_t*) &data, 1);
-     if(fifo_status == FIFO_FULL)
-     {
-     __asm("nop");
-     }
-     data = data << 4;*/
-    g_counter += 1;
-    count = 1;
-    g_current_byte += 1;
-  }
-  else
-  {
-    data = (((g_file_data[g_counter + 1] << 8) | g_file_data[g_counter]) >> 4) + 2048;
-    count = 2;
-    g_current_byte += 2;
-  }
+    /*Start counting*/
+    TMR3.TCCR.BYTE = _08_TMR_CLK_SRC_PCLK | _05_TMR_PCLK_DIV_1024;
+}
 
-  if(FILE_SIZE == g_counter)
-  {
-    g_readBuffer = 1;
-    g_counter = 0;
-  }
+/***********************************************************************************************************************
+* Function Name: R_TMR_various_Stop
+* Description  : This function stop the TMR2 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
 
-  DA.DADR1 = data;
+void R_TMR_various_Stop(void)
+{
+    /*Enable TMR2 interrupt*/ 
+    IEN(PERIB, INTB152) = 0U;
 
-  /* End user code. Do not edit comment generated here */
+    /*Stop counting*/ 
+    TMR3.TCCR.BYTE = _00_TMR_CLK_DISABLED;
 }
 
 /* Start user code for adding. Do not edit comment generated here */
-void R_TMR01_Set_Frequency(uint32_t freq_hz)
-{
-  // Timer clock is 60000 kHz
-  TMR01.TCORA = (uint16_t) (60000000 / freq_hz);
-
-}
 /* End user code. Do not edit comment generated here */

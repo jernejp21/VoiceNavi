@@ -20,9 +20,9 @@
 /***********************************************************************************************************************
 * File Name    : r_cg_interrupt_handlers.h
 * Version      : 1.2.102
-* Device(s)    : R5F565NEDxFP
+* Device(s)    : R5F5651EHxFP
 * Description  : This file declares interrupt handlers.
-* Creation Date: 2021-08-12
+* Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
 #ifndef INTERRUPT_HANDLERS_H
@@ -51,10 +51,13 @@ Global functions
 void r_EXT_IRQ_irq13_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(ICU,IRQ13))));
 
 /* TMR0 CMIA0 */
-void r_TMR01_cmia0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB146))));
+void r_TMR_play_cmia0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB146))));
 
 /* TMR2 CMIA2 */
-void r_TMR23_cmia2_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB152))));
+void r_TMR_various_cmia2_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB152))));
+
+/* S12AD S12ADI */
+void r_Config_S12AD0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB186))));
 
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */

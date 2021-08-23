@@ -18,62 +18,44 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : TMR23_user.c
+* File Name    : TMR_play.h
 * Version      : 1.7.0
-* Device(s)    : R5F565NEDxFP
-* Description  : This file implements device driver for TMR23.
-* Creation Date: 2021-08-12
+* Device(s)    : R5F5651EHxFP
+* Description  : This file implements device driver for TMR_play.
+* Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
-/***********************************************************************************************************************
-Pragma directive
-***********************************************************************************************************************/
-/* Start user code for pragma. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
+#ifndef CFG_TMR_play_H
+#define CFG_TMR_play_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_macrodriver.h"
-#include "TMR23.h"
-/* Start user code for include. Do not edit comment generated here */
-#include "globals.h"
-/* End user code. Do not edit comment generated here */
-#include "r_cg_userdefine.h"
+#include "r_cg_tmr.h"
 
 /***********************************************************************************************************************
-Global variables and functions
+Macro definitions (Register bit)
 ***********************************************************************************************************************/
-/* Start user code for global. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_TMR23_Create_UserInit
-* Description  : This function adds user code after initializing TMR
-* Arguments    : None
-* Return Value : None
+Macro definitions
 ***********************************************************************************************************************/
-
-void R_TMR23_Create_UserInit(void)
-{
-    /* Start user code for user init. Do not edit comment generated here */
-  /* End user code. Do not edit comment generated here */
-}
+#define TMR0_PCLK_COUNTER_DIVISION                    (1) 
+#define _0001_TMR01_COMP_MATCH_VALUE_A                (0x0001U)
+#define _0001_TMR01_COMP_MATCH_VALUE_B                (0x0001U)
 
 /***********************************************************************************************************************
-* Function Name: r_TMR23_cmia2_interrupt
-* Description  : This function is CMIA2 interrupt service routine
-* Arguments    : None
-* Return Value : None
+Typedef definitions
 ***********************************************************************************************************************/
 
-void r_TMR23_cmia2_interrupt(void)
-{
-    /* Start user code for r_TMR23_cmia2_interrupt. Do not edit comment generated here */
-  //TMR23.TCNT = 0;
-  g_counter++;
-  /* End user code. Do not edit comment generated here */
-}
-
-/* Start user code for adding. Do not edit comment generated here */
+/***********************************************************************************************************************
+Global functions
+***********************************************************************************************************************/
+void R_TMR_play_Create(void);
+void R_TMR_play_Create_UserInit(void);
+void R_TMR_play_Start(void);
+void R_TMR_play_Stop(void);
+/* Start user code for function. Do not edit comment generated here */
+void R_TMR_play_Set_Frequency(uint32_t);
 /* End user code. Do not edit comment generated here */
+#endif

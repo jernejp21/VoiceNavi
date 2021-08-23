@@ -20,9 +20,9 @@
 /***********************************************************************************************************************
 * File Name    : r_cg_hardware_setup.c
 * Version      : 1.2.102
-* Device(s)    : R5F565NEDxFP
+* Device(s)    : R5F5651EHxFP
 * Description  : Initialization file for code generation configurations.
-* Creation Date: 2021-08-12
+* Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -35,10 +35,12 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "TMR01.h"
 #include "DAC.h"
-#include "TMR23.h"
 #include "EXT_IRQ.h"
+#include "PORT_config.h"
+#include "Config_S12AD0.h"
+#include "TMR_play.h"
+#include "TMR_various.h"
 #include "r_smc_cgc.h"
 #include "r_smc_interrupt.h"
 /* Start user code for include. Do not edit comment generated here */
@@ -87,10 +89,12 @@ void R_Systeminit(void)
     R_CGC_Create();
 
     /* Set peripheral settings */
-    R_TMR01_Create();
+    R_PORT_config_Create();
     R_DAC_Create();
-    R_TMR23_Create();
     R_EXT_IRQ_Create();
+    R_Config_S12AD0_Create();
+    R_TMR_play_Create();
+    R_TMR_various_Create();
 
     /* Register undefined interrupt */
     R_BSP_InterruptWrite(BSP_INT_SRC_UNDEFINED_INTERRUPT,(bsp_int_cb_t)r_undefined_exception);

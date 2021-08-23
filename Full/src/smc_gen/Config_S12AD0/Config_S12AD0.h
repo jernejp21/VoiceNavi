@@ -18,20 +18,20 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : TMR01.h
-* Version      : 1.7.0
-* Device(s)    : R5F565NEDxFP
-* Description  : This file implements device driver for TMR01.
-* Creation Date: 2021-08-12
+* File Name    : Config_S12AD0.h
+* Version      : 2.2.1
+* Device(s)    : R5F5651EHxFP
+* Description  : This file implements device driver for Config_S12AD0.
+* Creation Date: 2021-08-23
 ***********************************************************************************************************************/
 
-#ifndef CFG_TMR01_H
-#define CFG_TMR01_H
+#ifndef CFG_Config_S12AD0_H
+#define CFG_Config_S12AD0_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_tmr.h"
+#include "r_cg_s12ad.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)
@@ -40,9 +40,8 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-#define TMR0_PCLK_COUNTER_DIVISION                    (1) 
-#define _0001_TMR01_COMP_MATCH_VALUE_A                (0x0001U)
-#define _0001_TMR01_COMP_MATCH_VALUE_B                (0x0001U)
+#define _0B_AD0_SAMPLING_STATE_6           (0x0BU)   /* ANx06 sampling time setting */
+#define _0B_AD0_SAMPLING_STATE_7           (0x0BU)   /* ANx07 sampling time setting */
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -51,11 +50,12 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
-void R_TMR01_Create(void);
-void R_TMR01_Create_UserInit(void);
-void R_TMR01_Start(void);
-void R_TMR01_Stop(void);
+void R_Config_S12AD0_Create(void);
+void R_Config_S12AD0_Create_UserInit(void);
+void R_Config_S12AD0_Start(void);
+void R_Config_S12AD0_Stop(void);
+void R_Config_S12AD0_Get_ValueResult(ad_channel_t channel, uint16_t * const buffer);
 /* Start user code for function. Do not edit comment generated here */
-void R_TMR01_Set_Frequency(uint32_t);
 /* End user code. Do not edit comment generated here */
 #endif
+

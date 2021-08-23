@@ -8,8 +8,7 @@
  *
  ***********************************************************************/
 
-//5F1 board
-
+//5A2 board
 #include "globals.h"
 
 void main(void);
@@ -22,18 +21,13 @@ int g_playing;
 int g_stopPlaying;
 
 int16_t (*mode)();
+modeSelect_t boardType;
 
 char line[100];
 int startOfFileNames;
 int startOfPlaylist;
 
-static FATFS fs; /* File system object structure */
-const static uint8_t g_msc_file[14] = "0:sample02.wpj";
-FIL file;
-FRESULT fr;
 uint8_t g_file_data[FILE_SIZE];
-uint8_t spi_test[FILE_SIZE];
-
 file_meta_data_t g_file_meta_data[255];
 playlist_t g_output_music[255];
 flash_custom_FAT_t flash_table[255];
@@ -47,7 +41,8 @@ volatile sci_iic_return_t ret;
 sci_iic_info_t iic_info;
 uint8_t i2c_rx[5];
 uint8_t i2c_tx[5];
-uint8_t i2c_address[1] = {I2C_ADDR};
+uint8_t i2c_gpio_address[1] = {I2C_GPIO_ADDR};
+uint8_t i2c_potent_address[1] = {I2C_POTENT_ADDR};
 uint8_t i2c_reg_addr[1];
 
 void main(void)
@@ -68,12 +63,11 @@ void main(void)
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
   // resetpgr.c in PowerON_Reset_PC function.
 
-  DIP_Init();
-  LED_Init();
+  LED_PowOn();
   FIFO_Init();
   R_DAC1_Start();
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
-  R_TMR23_Start();
+  boardType = PIN_BoardSelection();
 
   //Init USB Host Mass Storage Device controller
   ctrl.module = USB_IP0;
@@ -88,7 +82,12 @@ void main(void)
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
 
   R_MEMDRV_Open(0, &memdrv_info);
+  NAND_Reset();
   NAND_CheckBlock();
+
+  g_counter = 0;
+  R_TMR_various_Set_Frequency(1);
+  R_TMR_various_Start();
 
   /* With polling, check for 1s if USB is connected or not */
   while(g_counter < 1000)
@@ -99,11 +98,17 @@ void main(void)
     {
       case USB_STS_CONFIGURED:
 
-        R_TMR23_Stop();
+        R_TMR_various_Stop();
         g_counter = 1000;
-        //nand_status = NAND_Erase();
-        //NAND_CopyToFlash();
-        is_data_in_flash = 1;
+        LED_USBOn();
+        NAND_Reset();
+        nand_status = NAND_Erase();
+        if(NAND_ERASE_NOK == nand_status)
+        {
+          ERROR_FlashECS();
+        }
+        NAND_Reset();
+        NAND_CopyToFlash();
         break;
 
       case USB_STS_DETACH:
@@ -119,30 +124,30 @@ void main(void)
         break;
     }
   }
-  R_TMR23_Stop();
+  R_TMR_various_Stop();
+  LED_USBOff();
   g_counter = 0;
 
   /* Check if there is any data in flash. */
-  //is_data_in_flash = check_if_data_in_flash()
-  is_data_in_flash = 1;
+  is_data_in_flash = NAND_CheckDataInFlash();
 
   /* If data in flash, prepare lookout tables. */
   if(is_data_in_flash)
   {
     NAND_Reset();
-    NAND_ReadFromFlash(0, sizeof(flash_table), (uint8_t*) &flash_table[0]);
-    FIFO_Init();
+    //first 4 bytes signalise if data is in flash
+    NAND_ReadFromFlash(NAND_PAGE_SIZE, sizeof(flash_table), (uint8_t*) &flash_table[0]);
+    //flash_table[1].address = 0x177fe;  //bug fix for test.
     NAND_ReadFromFlash(NAND_PAGE_SIZE * 3, sizeof(g_output_music), (uint8_t*) &g_output_music[0]);
-    FIFO_Init();
   }
   else
   {
+    LED_AlarmOn();
     while(1);  // No data in flash, loop forever here.
   }
 
   /* Mode select */
   uint8_t mode_select = DIP_ReadState();
-
   switch(mode_select)
   {
     case 0:
@@ -162,27 +167,27 @@ void main(void)
       break;
 
     case 4:
-      break;
-
-    case 5:
       mode = binary128ch;
       break;
 
+    case 5:
+      break;
+
     case 6:
-      mode = binary255_positive;
+      mode = binary255_negative;
       break;
 
     case 7:
-      mode = binary255_negative;
+      mode = binary255_positive;
       break;
   }
-  //mode = normalPlay;
-  //mode = lastInputPlay;
-  //mode = priorityPlay;
-  mode = inputPlay;
 
   I2C_Init();
   R_EXT_IRQ_IRQ13_Start();
+
+  /* Enable audio amp */
+  PORT5.PDR.BIT.B5 = 1;
+  PORT5.PODR.BIT.B5 = 1;
 
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)
@@ -233,9 +238,9 @@ void playFromPlaylist(uint8_t playNr)
       //g_stopPlaying = 0;
 
       g_playing = 1;
-      R_TMR01_Set_Frequency(g_wav_file.sample_rate);
+      R_TMR_play_Set_Frequency(g_wav_file.sample_rate);
 
-      R_TMR01_Start();
+      R_TMR_play_Start();
       while(g_playing)
       {
         //if(FIFO_head - fiffo_test == FIFO_tail)
@@ -316,6 +321,7 @@ int FIFO_Read(uint8_t *old, uint16_t size)
 void I2C_Init()
 {
 
+  /* GPIO Mux Init */
   /* GPIO Mux Reset pin */
   PORT5.PDR.BIT.B0 = 1;  //Set pin as output
   PORT5.PODR.BIT.B0 = 0;  //Set pin LOW
@@ -332,9 +338,19 @@ void I2C_Init()
   iic_info.dev_sts = SCI_IIC_NO_INIT;
   iic_info.p_data1st = i2c_reg_addr;
   iic_info.p_data2nd = i2c_rx;
-  iic_info.p_slv_adr = i2c_address;
+  iic_info.p_slv_adr = i2c_potent_address;
 
   ret = R_SCI_IIC_Open(&iic_info);
+  /* Potentiometer init */
+  i2c_rx[0] = I2C_Receive(0x00);
+  //I2C_Send(2, 0x80);
+  //I2C_Send(0, 127);
+  i2c_rx[0] = I2C_Receive(0x00);
+
+  // Switch from Potentiometer address to GPIO address
+  R_SCI_IIC_Close(&iic_info);
+  iic_info.p_slv_adr = i2c_gpio_address;
+  R_SCI_IIC_Open(&iic_info);
 
   //IOCON
   I2C_Send(0x0A, 0xC2);  //INT is active HIGH
