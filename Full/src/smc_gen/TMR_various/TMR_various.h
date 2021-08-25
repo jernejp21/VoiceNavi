@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for TMR_various.
-* Creation Date: 2021-08-23
+* Creation Date: 2021-08-24
 ***********************************************************************************************************************/
 
 #ifndef CFG_TMR_various_H

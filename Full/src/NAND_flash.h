@@ -17,7 +17,7 @@
 
 /* This are device dependent values. Change if needed */
 #define NAND_NR_OF_BLOCKS 2048
-#define NAND_PAGE_SIZE 1024
+#define NAND_PAGE_SIZE 2048
 #define NAND_MAX_BAD_BLOCKS 40  //Size of all blocks minus min. number of valid blocks
 #define NAND_SPARE_AREA_SIZE 0x11  //Size of Spare Area 01
 #define NAND_SPARE_AREA_ADD 0x800  //Size of Spare 01 Column Address
@@ -73,10 +73,11 @@ int NAND_CheckBlock();
 void NAND_Reset(void);
 nand_flash_status_t NAND_Erase(void);
 void NAND_CopyToFlash(void);
-void NAND_ReadFromFlash(uint32_t, uint32_t, uint8_t*);
+nand_flash_status_t NAND_ReadFromFlash(uint32_t, uint32_t, uint8_t*);
 int NAND_CheckDataInFlash(void);
 nand_flash_status_t nand_copy_to_flash(uint32_t, uint32_t, uint8_t*);
-void nand_wait_operation_complete(void);
+nand_flash_status_t nand_wait_operation_complete(void);
 void nand_lock_flash(void);
+nand_flash_status_t nand_check_if_write_ok(uint8_t*, uint8_t*, uint32_t);
 
 #endif //__NAND_FLASH_H

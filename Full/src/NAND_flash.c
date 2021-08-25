@@ -114,7 +114,7 @@ void NAND_CopyToFlash()
 
   int cnt = 0;
   char *fileName_p;
-  uint32_t flash_address = NAND_PAGE_SIZE * 64;
+  uint32_t flash_address = 4096 * 1000;
   nand_flash_status_t flash_status;
 
   fr = f_mount(&fs, "", 0);
@@ -184,9 +184,11 @@ void NAND_CopyToFlash()
       do
       {
         LED_USBToggle();
-        flash_status = nand_copy_to_flash(flash_address, sizeof(wav_buffer), wav_buffer);
-        flash_address += size;
-        if(NAND_WRITE_NOK == flash_status)
+        flash_status = nand_copy_to_flash(flash_address, size, wav_buffer);
+        flash_status = NAND_ReadFromFlash(flash_address, size, flash_buffer);
+        flash_status = nand_check_if_write_ok(wav_buffer, flash_buffer, size);
+        flash_address += NAND_PAGE_SIZE;
+        if(NAND_READ_NOK == flash_status)
         {
           ERROR_FlashECS();
         }
@@ -196,7 +198,9 @@ void NAND_CopyToFlash()
 
       /* Copy last part of read file to flash */
       flash_status = nand_copy_to_flash(flash_address, size, wav_buffer);
-      flash_address += size;
+      flash_status = NAND_ReadFromFlash(flash_address, size, flash_buffer);
+      flash_status = nand_check_if_write_ok(wav_buffer, flash_buffer, size);
+      flash_address += NAND_PAGE_SIZE;
       if(NAND_WRITE_NOK == flash_status)
       {
         ERROR_FlashECS();
@@ -244,9 +248,9 @@ void NAND_CopyToFlash()
 
 }
 
-void NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
+nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
 {
-  //nand_flash_status_t ret = NAND_WRITE_OK;
+  nand_flash_status_t ret = NAND_WRITE_OK;
   uint16_t column_address;
   uint32_t row_address;
   st_memdrv_info_t memdrv_info;
@@ -262,7 +266,7 @@ void NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
   {
     if(0 == size)
     {
-      return;
+      return NAND_READ_OK;
     }
 
     if(size <= (NAND_PAGE_SIZE - column_address))
@@ -299,7 +303,11 @@ void NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
     NAND_CS_HIGH;  //CS HIGH
 
     /* 2. Wait until read operation finishes */
-    nand_wait_operation_complete();
+    ret = nand_wait_operation_complete();
+    if(NAND_READ_NOK == ret)
+    {
+      //return ret;
+    }
 
     /* 3. Read from Cache */
     tx_buff[0] = NAND_READ_FROM_CACHE;
@@ -584,7 +592,7 @@ nand_flash_status_t nand_copy_to_flash(uint32_t address, uint32_t size, uint8_t 
 
 }
 
-void nand_wait_operation_complete()
+nand_flash_status_t nand_wait_operation_complete()
 {
   st_memdrv_info_t memdrv_info;
   uint8_t tx_buff[4];
@@ -609,10 +617,7 @@ void nand_wait_operation_complete()
   }
   while(0 != (rx_buff[0] & NAND_STATUS_OIP));
 
-  if(0 != (rx_buff[0] & (NAND_STATUS_ECCS0 | NAND_STATUS_ECCS1)))
-  {
-    ERROR_FlashECS();
-  }
+  return NAND_READ_OK;
 }
 
 void nand_lock_flash()
@@ -646,4 +651,19 @@ void nand_lock_flash()
   NAND_CS_HIGH;  //CS HIGH
 
   nand_wait_operation_complete();
+}
+
+nand_flash_status_t nand_check_if_write_ok(uint8_t *w_buff, uint8_t *r_buff, uint32_t size)
+{
+  nand_flash_status_t ret = NAND_READ_OK;
+
+  for(uint32_t index = 0; index < size; index++)
+  {
+    if(*(w_buff + index) != *(r_buff + index))
+    {
+      ret = NAND_READ_NOK;
+    }
+  }
+
+  return ret;
 }

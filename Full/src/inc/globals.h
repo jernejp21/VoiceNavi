@@ -25,7 +25,7 @@
 #include "../play_modes.h"
 #include "../Errors.h"
 
-#define FILE_SIZE (3000)
+#define FILE_SIZE (2048)
 
 #define FIFO_ELEMENTS 6000
 #define FIFO_SIZE (FIFO_ELEMENTS + 1)

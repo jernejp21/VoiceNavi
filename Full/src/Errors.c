@@ -53,9 +53,9 @@ void ERROR_WAVEFile()
 void ERROR_FlashECS()
 {
   R_TMR_various_Set_Frequency(1);
-  g_counter = 0;
-  R_TMR_various_Start();
-  LED_USBOff();
+  //g_counter = 0;
+  //R_TMR_various_Start();
+  LED_AlarmOn();
 
   /*while(1)
   {
