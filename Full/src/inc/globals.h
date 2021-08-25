@@ -19,6 +19,7 @@
 #include "r_tfat_drv_if_dev.h"
 #include "r_memdrv_rx_if.h"
 #include "r_sci_iic_rx_if.h"
+#include "r_cmt_rx_if.h"
 
 #include "../NAND_flash.h"
 #include "../wav.h"
@@ -57,6 +58,7 @@ void callBack_write();
 void I2C_Send(uint8_t reg_add, uint8_t value);
 uint8_t I2C_Receive(uint8_t reg_add);
 void I2C_Init();
+void I2C_Periodic();
 
 void playFromPlaylist(uint8_t);
 

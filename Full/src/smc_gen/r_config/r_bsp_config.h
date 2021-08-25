@@ -656,7 +656,7 @@ Configuration Options
          Please be careful that this setting is the initial value of the interrupt priority register(IPR).
          It is possible to dynamically change the IPR.
 */
-#define BSP_CFG_SWINT_IPR_INITIAL_VALUE     (0x1)
+#define BSP_CFG_SWINT_IPR_INITIAL_VALUE     (0x3)
 
 /* This macro is used for serial terminal on the board selected by smart configurator.
    0 = SCI UART Terminal is disabled.

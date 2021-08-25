@@ -144,7 +144,7 @@
  *  1                   : lowest
  *  15                  : highest
  */
-#define USB_CFG_INTERRUPT_PRIORITY  (1)
+#define USB_CFG_INTERRUPT_PRIORITY  (6)
 
 /******************************************************************************/
 /** Settings in USB Host Mode                                                 */

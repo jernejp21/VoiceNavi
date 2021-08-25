@@ -131,7 +131,7 @@
     #define SCI_IIC_CFG_CH8_INT_PRIORITY  (2)
     #define SCI_IIC_CFG_CH9_INT_PRIORITY  (2)
     #define SCI_IIC_CFG_CH10_INT_PRIORITY (2)
-    #define SCI_IIC_CFG_CH11_INT_PRIORITY (3)
+    #define SCI_IIC_CFG_CH11_INT_PRIORITY (6)
     #define SCI_IIC_CFG_CH12_INT_PRIORITY (2)
 
 /* Digital noise filter (NFEN bit).

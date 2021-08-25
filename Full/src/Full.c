@@ -12,6 +12,7 @@
 #include "globals.h"
 
 void main(void);
+void CNT_USB_CntCallback();
 
 int g_counter;
 int g_readBuffer;
@@ -45,15 +46,20 @@ uint8_t i2c_gpio_address[1] = {I2C_GPIO_ADDR};
 uint8_t i2c_potent_address[1] = {I2C_POTENT_ADDR};
 uint8_t i2c_reg_addr[1];
 
+/* Used inside main. Declared here so we don't fill up stack. */
+char is_data_in_flash = 0;
+usb_ctrl_t ctrl;
+usb_cfg_t cfg;
+usb_err_t usb_err;
+uint16_t event;
+st_memdrv_info_t memdrv_info;
+nand_flash_status_t nand_status;
+uint32_t cmt_channel;
+int usb_cnt;
+
+/* main start */
 void main(void)
 {
-  char is_data_in_flash = 0;
-  usb_ctrl_t ctrl;
-  usb_cfg_t cfg;
-  usb_err_t usb_err;
-  uint16_t event;
-  st_memdrv_info_t memdrv_info;
-  nand_flash_status_t nand_status;
 
   //SPI CS Pin
   PORTD.PDR.BIT.B4 = 1;  //Set pin as output
@@ -86,11 +92,11 @@ void main(void)
   NAND_CheckBlock();
 
   g_counter = 0;
-  R_TMR_various_Set_Frequency(1);
-  R_TMR_various_Start();
+  R_CMT_CreatePeriodic(2, &CNT_USB_CntCallback, &cmt_channel);
+  usb_cnt = 0;
 
   /* With polling, check for 1s if USB is connected or not */
-  while(g_counter < 1000)
+  while(usb_cnt < 2)
   {
     event = R_USB_GetEvent(&ctrl);  // Get event code
 
@@ -98,8 +104,8 @@ void main(void)
     {
       case USB_STS_CONFIGURED:
 
-        R_TMR_various_Stop();
-        g_counter = 1000;
+        R_CMT_Stop(cmt_channel);
+        usb_cnt = 2;
         LED_USBOn();
         NAND_Reset();
         nand_status = NAND_Erase();
@@ -124,7 +130,7 @@ void main(void)
         break;
     }
   }
-  R_TMR_various_Stop();
+  R_CMT_Stop(cmt_channel);
   LED_USBOff();
   g_counter = 0;
 
@@ -183,11 +189,14 @@ void main(void)
   }
 
   I2C_Init();
-  R_EXT_IRQ_IRQ13_Start();
+  //R_EXT_IRQ_IRQ13_Start();
 
   /* Enable audio amp */
   PORT5.PDR.BIT.B5 = 1;
   PORT5.PODR.BIT.B5 = 1;
+
+  /* Periodic timer ~45 ms. Used for I2C communication */
+  R_CMT_CreatePeriodic(22, &I2C_Periodic, &cmt_channel);
 
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)
@@ -343,14 +352,12 @@ void I2C_Init()
   ret = R_SCI_IIC_Open(&iic_info);
   /* Potentiometer init */
   i2c_rx[0] = I2C_Receive(0x00);
-  //I2C_Send(2, 0x80);
-  //I2C_Send(0, 127);
+  I2C_Send(2, 0x80);
+  I2C_Send(0, 70);
   i2c_rx[0] = I2C_Receive(0x00);
 
   // Switch from Potentiometer address to GPIO address
-  R_SCI_IIC_Close(&iic_info);
   iic_info.p_slv_adr = i2c_gpio_address;
-  R_SCI_IIC_Open(&iic_info);
 
   //IOCON
   I2C_Send(0x0A, 0xC2);  //INT is active HIGH
@@ -463,4 +470,22 @@ void callBack_write()
 
     }
   }
+}
+
+void CNT_USB_CntCallback()
+{
+  usb_cnt++;
+}
+
+void I2C_Periodic()
+{
+  R_BSP_InterruptsEnable();
+  /* Send volume data to potentiometer */
+  iic_info.p_slv_adr = i2c_potent_address;
+  i2c_rx[0] = I2C_Receive(0x00);
+
+  /* Read gpioa, gpiob from GPIO mux */
+  iic_info.p_slv_adr = i2c_gpio_address;
+  i2c_rx[1] = I2C_Receive(0x09);
+  i2c_rx[2] = I2C_Receive(0x19);
 }

@@ -22,7 +22,7 @@
 * Device(s)    : R5F5651EHxFP
 * Tool-Chain   : RXC toolchain
 * Description  : Setting of port and mpc registers
-* Creation Date: 2021-08-24
+* Creation Date: 2021-08-25
 ***********************************************************************************************************************/
 
 #ifndef R_RSPI_RX_H

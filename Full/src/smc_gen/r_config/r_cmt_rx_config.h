@@ -33,7 +33,7 @@
 Configuration Options
 ***********************************************************************************************************************/
 /* The interrupt priority level to be used for CMT interrupts. */
-#define CMT_RX_CFG_IPR         (5)
+#define CMT_RX_CFG_IPR         (4)
 
 #if (BSP_CFG_RTOS_USED == 4) && (BSP_CFG_RENESAS_RTOS_USED == 0) /* RI600V4 */
 #define _RI_TRACE_TIMER 1 /* RI600V4 uses CMT1 channel for the trace feature.*/

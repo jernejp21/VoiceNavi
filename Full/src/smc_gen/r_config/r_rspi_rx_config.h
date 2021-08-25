@@ -63,7 +63,7 @@ Configuration Options
  * Values must be in the range 0 (interrupt disabled) to 15 (highest)*/
 #define RSPI_CFG_IR_PRIORITY_CHAN0 (3)
 #define RSPI_CFG_IR_PRIORITY_CHAN1 (3)
-#define RSPI_CFG_IR_PRIORITY_CHAN2 (3)
+#define RSPI_CFG_IR_PRIORITY_CHAN2 (6)
 
 /******************************************************************************
 ENABLE DEBUGGING INFORMATION

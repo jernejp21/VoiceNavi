@@ -22,7 +22,7 @@
 * Version      : 1.2.2
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements interrupt setting.
-* Creation Date: 2021-08-24
+* Creation Date: 2021-08-25
 ***********************************************************************************************************************/
 
 #ifndef SMC_INTERRUPT_H
@@ -62,8 +62,8 @@ Macro definitions
 #define ICU_RAM_RAMERR_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_FCU_FIFERR_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_FCU_FRDYI_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_ICU_SWINT2_PRIORITY                    (_01_ICU_PRIORITY_LEVEL1)
-#define ICU_ICU_SWINT_PRIORITY                     (_01_ICU_PRIORITY_LEVEL1)
+#define ICU_ICU_SWINT2_PRIORITY                    (_03_ICU_PRIORITY_LEVEL3)
+#define ICU_ICU_SWINT_PRIORITY                     (_03_ICU_PRIORITY_LEVEL3)
 #define ICU_CMT0_CMI0_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_CMT1_CMI1_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_CMTW0_CMWI0_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
@@ -132,8 +132,8 @@ Macro definitions
 #define ICU_SCI10_TXI10_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_GROUPBE0_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_GROUPBL2_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_RSPI2_SPRI2_PRIORITY                   (_03_ICU_PRIORITY_LEVEL3)
-#define ICU_RSPI2_SPTI2_PRIORITY                   (_03_ICU_PRIORITY_LEVEL3)
+#define ICU_RSPI2_SPRI2_PRIORITY                   (_06_ICU_PRIORITY_LEVEL6)
+#define ICU_RSPI2_SPTI2_PRIORITY                   (_06_ICU_PRIORITY_LEVEL6)
 #define ICU_ICU_GROUPBL0_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_GROUPBL1_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_GROUPAL0_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
@@ -208,7 +208,7 @@ Macro definitions
 #define ICU_CAN1_RXM1_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_CAN1_TXM1_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_USB0_USBI0_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_S12AD_S12ADI_PRIORITY                  (_03_ICU_PRIORITY_LEVEL3)
+#define ICU_S12AD_S12ADI_PRIORITY                  (_01_ICU_PRIORITY_LEVEL1)
 #define ICU_S12AD_S12GBADI_PRIORITY                (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_S12AD_S12GCADI_PRIORITY                (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_S12AD1_S12ADI1_PRIORITY                (_0F_ICU_PRIORITY_LEVEL15)

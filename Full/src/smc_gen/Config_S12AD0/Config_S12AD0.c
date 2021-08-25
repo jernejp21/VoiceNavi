@@ -22,7 +22,7 @@
 * Version      : 2.2.1
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for Config_S12AD0.
-* Creation Date: 2021-08-24
+* Creation Date: 2021-08-25
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -82,7 +82,7 @@ void R_Config_S12AD0_Create(void)
 
     /* Set interrupt and priority level */
     ICU.SLIBR186.BYTE = 0x40U;
-    IPR(PERIB, INTB186) = _03_AD_PRIORITY_LEVEL3;
+    IPR(PERIB, INTB186) = _01_AD_PRIORITY_LEVEL1;
 
     /* Set AN006 pin */
     PORT4.PMR.BYTE &= 0xBFU;
