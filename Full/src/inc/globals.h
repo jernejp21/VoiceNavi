@@ -59,6 +59,8 @@ void I2C_Send(uint8_t reg_add, uint8_t value);
 uint8_t I2C_Receive(uint8_t reg_add);
 void I2C_Init();
 void I2C_Periodic();
+uint8_t g_i2c_gpio_rx[2];
+uint8_t g_i2c_gpio_tx[2];
 
 void playFromPlaylist(uint8_t);
 
@@ -70,6 +72,8 @@ typedef enum modeSelect
   WAV_5F9IH = 0,
 }modeSelect_t;
 modeSelect_t PIN_BoardSelection();
+
+extern uint16_t g_volume[2];
 
 extern int g_counter;
 extern int g_readBuffer;

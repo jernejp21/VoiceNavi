@@ -5,18 +5,24 @@
     </Segment>
     <Segment id="Pin">
         <Setting id="EMLE" value="EMLE"/>
-        <Setting id="P36" value="EXTAL"/>
         <Setting id="PC6" value="IRQ13"/>
         <Setting id="PB7" value="SSDA11"/>
         <Setting id="PB6" value="SSCL11"/>
+        <Setting id="P30" value="TDI"/>
+        <Setting id="P31" value="TMS"/>
+        <Setting id="P34" value="TRST#"/>
+        <Setting id="P47" value="AN007"/>
+        <Setting id="P36" value="EXTAL"/>
+        <Setting id="P46" value="AN006"/>
+        <Setting id="P27" value="TCK"/>
+        <Setting id="P26" value="TDO"/>
         <Setting id="P37" value="XTAL"/>
-        <Setting id="MD" value="FINED"/>
     </Segment>
     <Segment id="Device">
         <Setting id="Series" value="RX600"/>
-        <Setting id="Group" value="RX65N"/>
+        <Setting id="Group" value="RX651"/>
         <Setting id="Board" value="TargetBoardRX65N (V1.00)"/>
-        <Setting id="PartNo" value="R5F565NEDxFP"/>
+        <Setting id="PartNo" value="R5F5651EHxFP"/>
         <Setting id="PinCount" value="100"/>
     </Segment>
     <Segment id="Clock">
@@ -37,8 +43,10 @@
     <Segment id="Component">
         <Setting id="r_bsp" value="FIT"/>
         <Setting id="r_cmt_rx" value="FIT"/>
+        <Setting id="Config_S12AD0" value="CG"/>
         <Setting id="r_sci_iic_rx" value="FIT"/>
         <Setting id="Config_ICU" value="CG"/>
         <Setting id="r_sys_time_rx" value="FIT"/>
+        <Setting id="Config_DMAC0" value="CG"/>
     </Segment>
 </QE>

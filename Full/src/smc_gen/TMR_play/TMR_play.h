@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for TMR_play.
-* Creation Date: 2021-08-25
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
 #ifndef CFG_TMR_play_H

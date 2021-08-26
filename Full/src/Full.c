@@ -20,6 +20,8 @@ uint32_t g_file_size;
 uint32_t g_current_byte;
 int g_playing;
 int g_stopPlaying;
+__attribute__((aligned))
+uint16_t g_volume[2];
 
 int16_t (*mode)();
 modeSelect_t boardType;
@@ -40,8 +42,8 @@ wav_header_t g_wav_file;
 
 volatile sci_iic_return_t ret;
 sci_iic_info_t iic_info;
-uint8_t i2c_rx[5];
-uint8_t i2c_tx[5];
+uint8_t g_i2c_gpio_rx[2];
+uint8_t g_i2c_gpio_tx[2];
 uint8_t i2c_gpio_address[1] = {I2C_GPIO_ADDR};
 uint8_t i2c_potent_address[1] = {I2C_POTENT_ADDR};
 uint8_t i2c_reg_addr[1];
@@ -153,8 +155,8 @@ void main(void)
   }
 
   /* Mode select */
-  uint8_t mode_select = DIP_ReadState();
-  switch(mode_select)
+  uint8_t _mode_select = DIP_ReadState();
+  switch(_mode_select)
   {
     case 0:
       mode = normalPlay;
@@ -197,17 +199,20 @@ void main(void)
 
   /* Periodic timer ~45 ms. Used for I2C communication */
   R_CMT_CreatePeriodic(22, &I2C_Periodic, &cmt_channel);
+  R_DMAC0_Start();
+  R_ADC0_Start();
+
 
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)
   {
     if(g_isIRQ)
     {
-      int16_t song = mode();
-      if(-1 != song)
+      int16_t _song = mode();
+      if(-1 != _song)
       {
         g_stopPlaying = 0;
-        playFromPlaylist(song);
+        playFromPlaylist(_song);
       }
     }
   }
@@ -219,29 +224,29 @@ int fiffo_test = 1000;
 
 void playFromPlaylist(uint8_t playNr)
 {
-  int index = 0;
-  int fileToPlay;
-  UINT size;
-  uint32_t fileAddress;
-  int trackNr = 0;
-  int repetitions = 0;
-  int fifo_status = FIFO_OK;
+  int _index = 0;
+  int _fileToPlay;
+  UINT _size;
+  uint32_t _fileAddress;
+  int _trackNr = 0;
+  int _repetitions = 0;
+  int _fifo_status = FIFO_OK;
 
   LED_BusyOn();
-  while(g_output_music[playNr].repeat > repetitions)
+  while(g_output_music[playNr].repeat > _repetitions)
   {
-    while(g_output_music[playNr].playlist_len > trackNr)
+    while(g_output_music[playNr].playlist_len > _trackNr)
     {
       DA.DADR1 = 2048;
-      fileToPlay = g_output_music[playNr].file_nr[index];
-      fileAddress = flash_table[fileToPlay].address;
+      _fileToPlay = g_output_music[playNr].file_nr[_index];
+      _fileAddress = flash_table[_fileToPlay].address;
 
-      NAND_ReadFromFlash(fileAddress, WAV_HEADER_SIZE, g_file_data);
+      NAND_ReadFromFlash(_fileAddress, WAV_HEADER_SIZE, g_file_data);
       //FIFO_Init();
 
       WAV_Open(&g_wav_file, g_file_data);
-      fileAddress += WAV_HEADER_SIZE;
-      NAND_ReadFromFlash(fileAddress, sizeof(g_file_data), g_file_data);
+      _fileAddress += WAV_HEADER_SIZE;
+      NAND_ReadFromFlash(_fileAddress, sizeof(g_file_data), g_file_data);
       g_counter = 0;
       g_current_byte = 0;
       //g_stopPlaying = 0;
@@ -256,8 +261,8 @@ void playFromPlaylist(uint8_t playNr)
         if(g_readBuffer)
         {
           g_readBuffer = 0;
-          fileAddress += sizeof(g_file_data);
-          NAND_ReadFromFlash(fileAddress, sizeof(g_file_data), g_file_data);
+          _fileAddress += sizeof(g_file_data);
+          NAND_ReadFromFlash(_fileAddress, sizeof(g_file_data), g_file_data);
         }
 
         mode();
@@ -272,13 +277,13 @@ void playFromPlaylist(uint8_t playNr)
       FIFO_Init();
       DA.DADR1 = 2048;
 
-      trackNr++;
-      index++;
+      _trackNr++;
+      _index++;
     }
 
-    trackNr = 0;
-    index = 0;
-    repetitions++;
+    _trackNr = 0;
+    _index = 0;
+    _repetitions++;
   }
 
   LED_BusyOff();
@@ -338,7 +343,7 @@ void I2C_Init()
   PORT5.PODR.BIT.B0 = 1;  //Set pin HIGH
 
   i2c_reg_addr[0] = 0x0A;
-  i2c_rx[0] = 255;
+  g_i2c_gpio_rx[0] = 255;
 
   iic_info.callbackfunc = &callBack_read;
   iic_info.ch_no = 11;
@@ -346,15 +351,12 @@ void I2C_Init()
   iic_info.cnt2nd = 2;
   iic_info.dev_sts = SCI_IIC_NO_INIT;
   iic_info.p_data1st = i2c_reg_addr;
-  iic_info.p_data2nd = i2c_rx;
+  iic_info.p_data2nd = g_i2c_gpio_rx;
   iic_info.p_slv_adr = i2c_potent_address;
 
   ret = R_SCI_IIC_Open(&iic_info);
   /* Potentiometer init */
-  i2c_rx[0] = I2C_Receive(0x00);
   I2C_Send(2, 0x80);
-  I2C_Send(0, 70);
-  i2c_rx[0] = I2C_Receive(0x00);
 
   // Switch from Potentiometer address to GPIO address
   iic_info.p_slv_adr = i2c_gpio_address;
@@ -395,13 +397,13 @@ void I2C_Init()
 
 uint8_t I2C_Receive(uint8_t reg_add)
 {
-  uint8_t rx;
+  uint8_t _rx;
 
   iic_info.cnt1st = 1;
   iic_info.cnt2nd = 1;
   iic_info.dev_sts = SCI_IIC_NO_INIT;
   iic_info.p_data1st = &reg_add;
-  iic_info.p_data2nd = &rx;
+  iic_info.p_data2nd = &_rx;
 
   ret = R_SCI_IIC_MasterReceive(&iic_info);
   if(SCI_IIC_SUCCESS == ret)
@@ -409,7 +411,7 @@ uint8_t I2C_Receive(uint8_t reg_add)
     while(SCI_IIC_FINISH != iic_info.dev_sts);
   }
 
-  return rx;
+  return _rx;
 }
 
 void I2C_Send(uint8_t reg_add, uint8_t value)
@@ -482,10 +484,10 @@ void I2C_Periodic()
   R_BSP_InterruptsEnable();
   /* Send volume data to potentiometer */
   iic_info.p_slv_adr = i2c_potent_address;
-  i2c_rx[0] = I2C_Receive(0x00);
+  I2C_Send(0, g_volume[0]);
 
   /* Read gpioa, gpiob from GPIO mux */
   iic_info.p_slv_adr = i2c_gpio_address;
-  i2c_rx[1] = I2C_Receive(0x09);
-  i2c_rx[2] = I2C_Receive(0x19);
+  g_i2c_gpio_rx[1] = I2C_Receive(0x09);
+  g_i2c_gpio_rx[2] = I2C_Receive(0x19);
 }

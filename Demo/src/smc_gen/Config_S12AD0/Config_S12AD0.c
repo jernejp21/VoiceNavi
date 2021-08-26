@@ -19,10 +19,10 @@
 
 /***********************************************************************************************************************
 * File Name    : Config_S12AD0.c
-* Version      : 2.2.1
+* Version      : 1.10.1
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for Config_S12AD0.
-* Creation Date: 2021-08-25
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -65,24 +65,25 @@ void R_Config_S12AD0_Create(void)
     IEN(PERIB, INTB186) = 0U;
 
     /* Set S12AD0 control registers */
-    S12AD.ADCSR.WORD = _0000_AD_DBLTRIGGER_DISABLE | _0000_AD_SYNCASYNCTRG_DISABLE | _0000_AD_SINGLE_SCAN_MODE;
     S12AD.ADDISCR.BYTE = _00_AD_DISCONECT_UNUSED;
+    S12AD.ADCSR.WORD = _0000_AD_SYNCASYNCTRG_DISABLE | _1000_AD_SCAN_END_INTERRUPT_ENABLE | 
+                       _4000_AD_CONTINUOUS_SCAN_MODE;
+    S12AD.ADCER.WORD = _0004_AD_RESOLUTION_8BIT | _0000_AD_AUTO_CLEARING_DISABLE | _0000_AD_SELFTDIAGST_DISABLE | 
+                       _0000_AD_RIGHT_ALIGNMENT;
+    S12AD.ADADC.BYTE = _03_AD_4_TIME_CONVERSION | _80_AD_AVERAGE_MODE;
 
     /* Set channels and sampling time */
-    S12AD.ADSSTR6 = _0B_AD0_SAMPLING_STATE_6;
-    S12AD.ADSSTR7 = _0B_AD0_SAMPLING_STATE_7;
     S12AD.ADANSA0.WORD = _0040_AD_ANx06_USED | _0080_AD_ANx07_USED;
-    S12AD.ADCER.WORD = _0000_AD_RESOLUTION_12BIT | _0000_AD_AUTO_CLEARING_DISABLE | _0000_AD_SELFTDIAGST_DISABLE | 
-                       _0000_AD_RIGHT_ALIGNMENT;
-    S12AD.ADCSR.WORD |= _1000_AD_SCAN_END_INTERRUPT_ENABLE;
-    S12AD.ADADC.BYTE = _03_AD_4_TIME_CONVERSION | _80_AD_AVERAGE_MODE;
+    S12AD.ADADS0.WORD = _0040_AD_ANx06_ADD_USED | _0080_AD_ANx07_ADD_USED;
+    S12AD.ADSSTR6 = _3C_AD0_SAMPLING_STATE_6;
+    S12AD.ADSSTR7 = _3C_AD0_SAMPLING_STATE_7;
 
     /* Set compare control register */
     S12AD.ADCMPCR.WORD = _0000_AD_WINDOWB_DISABLE | _0000_AD_WINDOWA_DISABLE | _0000_AD_WINDOWFUNCTION_DISABLE;
 
     /* Set interrupt and priority level */
     ICU.SLIBR186.BYTE = 0x40U;
-    IPR(PERIB, INTB186) = _01_AD_PRIORITY_LEVEL1;
+    IPR(PERIB, INTB186) = 1;
 
     /* Set AN006 pin */
     PORT4.PMR.BYTE &= 0xBFU;
@@ -113,7 +114,7 @@ void R_Config_S12AD0_Start(void)
 
 /***********************************************************************************************************************
 * Function Name: R_Config_S12AD0_Stop
-* Description  : This function stops the AD0 converter
+* Description  : This function stop the AD0 converter
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
@@ -121,8 +122,8 @@ void R_Config_S12AD0_Start(void)
 void R_Config_S12AD0_Stop(void)
 {
     S12AD.ADCSR.BIT.ADST = 0U;
-    IR(PERIB, INTB186) = 0U;
     IEN(PERIB, INTB186) = 0U;
+    IR(PERIB, INTB186) = 0U;
 }
 
 /***********************************************************************************************************************

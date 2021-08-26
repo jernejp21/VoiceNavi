@@ -22,7 +22,7 @@
 * Version      : 1.2.102
 * Device(s)    : R5F5651EHxFP
 * Description  : Initialization file for code generation configurations.
-* Creation Date: 2021-08-25
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -38,9 +38,10 @@ Includes
 #include "DAC.h"
 #include "EXT_IRQ.h"
 #include "PORT_config.h"
-#include "Config_S12AD0.h"
 #include "TMR_play.h"
 #include "TMR_various.h"
+#include "DMAC0.h"
+#include "ADC0.h"
 #include "r_smc_cgc.h"
 #include "r_smc_interrupt.h"
 /* Start user code for include. Do not edit comment generated here */
@@ -92,9 +93,10 @@ void R_Systeminit(void)
     R_PORT_config_Create();
     R_DAC_Create();
     R_EXT_IRQ_Create();
-    R_Config_S12AD0_Create();
     R_TMR_play_Create();
     R_TMR_various_Create();
+    R_DMAC0_Create();
+    R_ADC0_Create();
 
     /* Register undefined interrupt */
     R_BSP_InterruptWrite(BSP_INT_SRC_UNDEFINED_INTERRUPT,(bsp_int_cb_t)r_undefined_exception);

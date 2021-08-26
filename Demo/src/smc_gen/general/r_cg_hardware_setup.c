@@ -20,9 +20,9 @@
 /***********************************************************************************************************************
 * File Name    : r_cg_hardware_setup.c
 * Version      : 1.2.102
-* Device(s)    : R5F565NEDxFP
+* Device(s)    : R5F5651EHxFP
 * Description  : Initialization file for code generation configurations.
-* Creation Date: 2021-08-05
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -36,6 +36,8 @@ Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
 #include "Config_ICU.h"
+#include "Config_DMAC0.h"
+#include "Config_S12AD0.h"
 #include "r_smc_cgc.h"
 #include "r_smc_interrupt.h"
 /* Start user code for include. Do not edit comment generated here */
@@ -85,6 +87,8 @@ void R_Systeminit(void)
 
     /* Set peripheral settings */
     R_Config_ICU_Create();
+    R_Config_DMAC0_Create();
+    R_Config_S12AD0_Create();
 
     /* Register undefined interrupt */
     R_BSP_InterruptWrite(BSP_INT_SRC_UNDEFINED_INTERRUPT,(bsp_int_cb_t)r_undefined_exception);

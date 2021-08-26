@@ -19,10 +19,10 @@
 
 /***********************************************************************************************************************
 * File Name    : Config_S12AD0.h
-* Version      : 2.2.1
+* Version      : 1.10.1
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for Config_S12AD0.
-* Creation Date: 2021-08-25
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
 #ifndef CFG_Config_S12AD0_H
@@ -40,8 +40,8 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-#define _0B_AD0_SAMPLING_STATE_6           (0x0BU)   /* ANx06 sampling time setting */
-#define _0B_AD0_SAMPLING_STATE_7           (0x0BU)   /* ANx07 sampling time setting */
+#define _3C_AD0_SAMPLING_STATE_6           (0x3CU) /* ANx06 sampling time setting */
+#define _3C_AD0_SAMPLING_STATE_7           (0x3CU) /* ANx07 sampling time setting */
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -58,4 +58,3 @@ void R_Config_S12AD0_Get_ValueResult(ad_channel_t channel, uint16_t * const buff
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #endif
-

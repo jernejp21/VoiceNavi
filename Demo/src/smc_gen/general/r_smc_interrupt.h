@@ -20,9 +20,9 @@
 /***********************************************************************************************************************
 * File Name    : r_smc_interrupt.h
 * Version      : 1.2.2
-* Device(s)    : R5F565NEDxFP
+* Device(s)    : R5F5651EHxFP
 * Description  : This file implements interrupt setting.
-* Creation Date: 2021-08-05
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
 #ifndef SMC_INTERRUPT_H
@@ -62,8 +62,8 @@ Macro definitions
 #define ICU_RAM_RAMERR_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_FCU_FIFERR_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_FCU_FRDYI_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_ICU_SWINT2_PRIORITY                    (_0A_ICU_PRIORITY_LEVEL10)
-#define ICU_ICU_SWINT_PRIORITY                     (_0A_ICU_PRIORITY_LEVEL10)
+#define ICU_ICU_SWINT2_PRIORITY                    (_05_ICU_PRIORITY_LEVEL5)
+#define ICU_ICU_SWINT_PRIORITY                     (_05_ICU_PRIORITY_LEVEL5)
 #define ICU_CMT0_CMI0_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_CMT1_CMI1_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_CMTW0_CMWI0_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
@@ -142,7 +142,7 @@ Macro definitions
 #define ICU_SCI11_TXI11_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_SCI12_RXI12_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_SCI12_TXI12_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_DMAC_DMAC0I_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
+#define ICU_DMAC_DMAC0I_PRIORITY                   (_0A_ICU_PRIORITY_LEVEL10)
 #define ICU_DMAC_DMAC1I_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_DMAC_DMAC2I_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_DMAC_DMAC3I_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)

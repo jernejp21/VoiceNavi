@@ -20,9 +20,9 @@
 /***********************************************************************************************************************
 * File Name    : r_cg_userdefine.h
 * Version      : 1.2.102
-* Device(s)    : R5F565NEDxFP
+* Device(s)    : R5F5651EHxFP
 * Description  : User header file for code generation.
-* Creation Date: 2021-08-05
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
 #ifndef CG_USER_DEF_H
@@ -56,6 +56,8 @@ Typedef definitions
 Global functions
 ***********************************************************************************************************************/
 /* Start user code for function. Do not edit comment generated here */
+__attribute__((aligned))
+extern uint16_t g_buff[2];
 /* End user code. Do not edit comment generated here */
 #endif
 

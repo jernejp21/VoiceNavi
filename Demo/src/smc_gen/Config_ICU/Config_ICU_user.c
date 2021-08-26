@@ -20,9 +20,9 @@
 /***********************************************************************************************************************
 * File Name    : Config_ICU_user.c
 * Version      : 2.0.1
-* Device(s)    : R5F565NEDxFP
+* Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for Config_ICU.
-* Creation Date: 2021-08-05
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -66,6 +66,11 @@ void R_Config_ICU_Create_UserInit(void)
 * Return Value : None
 ***********************************************************************************************************************/
 
+void r_Config_ICU_irq13_interrupt(void)
+{
+    /* Start user code for r_Config_ICU_irq13_interrupt. Do not edit comment generated here */
+    /* End user code. Do not edit comment generated here */
+}
 
 /* Start user code for adding. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */

@@ -18,59 +18,46 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_S12AD0_user.c
-* Version      : 2.2.1
+* File Name    : DMAC0.h
+* Version      : 1.6.2
 * Device(s)    : R5F5651EHxFP
-* Description  : This file implements device driver for Config_S12AD0.
-* Creation Date: 2021-08-25
+* Description  : This file implements device driver for DMAC0.
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
-/***********************************************************************************************************************
-Pragma directive
-***********************************************************************************************************************/
-/* Start user code for pragma. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
+#ifndef CFG_DMAC0_H
+#define CFG_DMAC0_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_macrodriver.h"
-#include "Config_S12AD0.h"
-/* Start user code for include. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
-#include "r_cg_userdefine.h"
+#include "r_cg_dmac.h"
 
 /***********************************************************************************************************************
-Global variables and functions
+Macro definitions (Register bit)
 ***********************************************************************************************************************/
-/* Start user code for global. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Config_S12AD0_Create_UserInit
-* Description  : This function adds user code after initializing the S12AD0 channel
-* Arguments    : None
-* Return Value : None
+Macro definitions
 ***********************************************************************************************************************/
-
-void R_Config_S12AD0_Create_UserInit(void)
-{
-    /* Start user code for user init. Do not edit comment generated here */
-    /* End user code. Do not edit comment generated here */
-}
+#define _BA_DMAC0_ACTIVATION_SOURCE                             (0xBAU) /* Activation source select */
+#define _00000000_DMAC0_SRC_ADDR                                (0x00000000UL) /* Source address */
+#define _00000000_DMAC0_DST_ADDR                                (0x00000000UL) /* Destination address */
+#define _00000000_DMAC0_DMCRA_COUNT                             (0x00000000UL) /* Transfer count */
+#define _0200_DMAC0_SRC_EXT_RPT_AREA                            (0x0200U) /* Source address extended repeat area */
+#define _0002_DMAC0_DST_EXT_RPT_AREA                            (0x0002U) /* Destination address extended repeat area */
 
 /***********************************************************************************************************************
-* Function Name: r_Config_S12AD0_interrupt
-* Description  : This function is S12ADI interrupt service routine
-* Arguments    : None
-* Return Value : None
+Typedef definitions
 ***********************************************************************************************************************/
 
-void r_Config_S12AD0_interrupt(void)
-{
-    /* Start user code for r_Config_S12AD0_interrupt. Do not edit comment generated here */
-    /* End user code. Do not edit comment generated here */
-}
-
-/* Start user code for adding. Do not edit comment generated here */
+/***********************************************************************************************************************
+Global functions
+***********************************************************************************************************************/
+void R_DMAC0_Create(void);
+void R_DMAC0_Create_UserInit(void);
+void R_DMAC0_Start(void);
+void R_DMAC0_Stop(void);
+/* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
+#endif

@@ -20,9 +20,9 @@
 /***********************************************************************************************************************
 * File Name    : Config_ICU.h
 * Version      : 2.0.1
-* Device(s)    : R5F565NEDxFP
+* Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for Config_ICU.
-* Creation Date: 2021-08-05
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
 #ifndef CFG_Config_ICU_H

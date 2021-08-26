@@ -22,7 +22,7 @@
 * Version      : 1.2.102
 * Device(s)    : R5F5651EHxFP
 * Description  : This file declares interrupt handlers.
-* Creation Date: 2021-08-25
+* Creation Date: 2021-08-26
 ***********************************************************************************************************************/
 
 #ifndef INTERRUPT_HANDLERS_H
@@ -57,7 +57,7 @@ void r_TMR_play_cmia0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT
 void r_TMR_various_cmia2_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB152))));
 
 /* S12AD S12ADI */
-void r_Config_S12AD0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB186))));
+void r_ADC0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB186))));
 
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */

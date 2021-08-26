@@ -120,7 +120,7 @@ Configuration Options
    F            = true            = Encryption module included, SDHI/SDSI module included
    H            = true            = Encryption module included, SDHI/SDSI module included, dual-bank structure
 */
-#define BSP_CFG_MCU_PART_ENCRYPTION_INCLUDED   (false) /* Generated value. Do not edit this manually */
+#define BSP_CFG_MCU_PART_ENCRYPTION_INCLUDED   (true) /* Generated value. Do not edit this manually */
 
 /* ROM, RAM, and Data Flash Capacity.
    Character(s) = Value for macro = ROM Size/Ram Size/Data Flash Size
@@ -656,7 +656,7 @@ Configuration Options
          Please be careful that this setting is the initial value of the interrupt priority register(IPR).
          It is possible to dynamically change the IPR.
 */
-#define BSP_CFG_SWINT_IPR_INITIAL_VALUE     (0xA)
+#define BSP_CFG_SWINT_IPR_INITIAL_VALUE     (0x5)
 
 /* This macro is used for serial terminal on the board selected by smart configurator.
    0 = SCI UART Terminal is disabled.
