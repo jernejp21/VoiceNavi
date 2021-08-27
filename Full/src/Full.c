@@ -507,4 +507,13 @@ void I2C_Periodic()
   iic_info.p_slv_adr = i2c_gpio_address;
   g_i2c_gpio_rx[0] = I2C_Receive(0x09);
   g_i2c_gpio_rx[1] = I2C_Receive(0x19);
+
+  if(g_isIRQTriggered)
+  {
+    g_isIRQ = 1;
+  }
+  else
+  {
+    g_isIRQ = 0;
+  }
 }

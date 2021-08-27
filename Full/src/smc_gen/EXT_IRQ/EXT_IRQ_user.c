@@ -45,6 +45,7 @@ Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
 uint8_t g_isIRQ;
+uint8_t g_isIRQTriggered;
 
 /* End user code. Do not edit comment generated here */
 
@@ -73,7 +74,7 @@ void r_EXT_IRQ_irq13_interrupt(void)
     /* Start user code for r_EXT_IRQ_irq13_interrupt. Do not edit comment generated here */
 
   //On edge detection, read value. If high INT is enabled, if low INT is cleared.
-  g_isIRQ = PORTC.PIDR.BIT.B6;
+  g_isIRQTriggered = PORTC.PIDR.BIT.B6;
   //normalPlay();
 
   /* End user code. Do not edit comment generated here */

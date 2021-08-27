@@ -121,7 +121,7 @@ int16_t priorityPlay()
 
   /* Correct switches order according to HW design */
   gpioa = bitOrder(gpioa);
-  gpiob = bitOrder(gpiob);
+  gpiob ^= 0xFF;  //Convert to positive logic.
 
   //I2C_Receive(0x09);  //Clear INT flags
   //I2C_Receive(0x19);  //Clear INT flags

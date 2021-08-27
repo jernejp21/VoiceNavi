@@ -80,6 +80,7 @@ extern int g_playing;
 extern playlist_t g_output_music[255];
 extern file_meta_data_t g_file_meta_data[255];
 extern uint8_t g_isIRQ;
+extern uint8_t g_isIRQTriggered;
 extern int g_stopPlaying;
 
 #endif //__GLOBALS_H
