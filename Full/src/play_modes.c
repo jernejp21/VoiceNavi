@@ -21,9 +21,12 @@ int16_t normalPlay()
   uint8_t gpioa;
   uint8_t gpiob;
   int16_t ret = -1;
+  //gpio_t gpio_union;
 
   gpioa = I2C_Receive(0x07);
   gpiob = I2C_Receive(0x17);
+
+  //gpio_union.BYTE = I2C_Receive(0x07);
 
   /* Correct switches order according to HW design */
   gpioa = (gpioa >> 4) | (gpioa << 4);
@@ -113,14 +116,15 @@ int16_t priorityPlay()
   uint8_t prio_order;
   int16_t ret = -1;
 
-  gpioa = I2C_Receive(0x07);
-  gpiob = I2C_Receive(0x17);
+  gpioa = g_i2c_gpio_rx[0];
+  gpiob = g_i2c_gpio_rx[1];
 
   /* Correct switches order according to HW design */
-  gpioa = (gpioa >> 4) | (gpioa << 4);
+  gpioa = bitOrder(gpioa);
+  gpiob = bitOrder(gpiob);
 
-  I2C_Receive(0x09);  //Clear INT flags
-  I2C_Receive(0x19);  //Clear INT flags
+  //I2C_Receive(0x09);  //Clear INT flags
+  //I2C_Receive(0x19);  //Clear INT flags
 
   if(g_isIRQ)
   {
@@ -153,10 +157,10 @@ int16_t priorityPlay()
       g_stopPlaying = 1;
       ret = -1;
     }
-  }
 
-  gpioa_prev = gpioa;
-  gpiob_prev = gpiob;
+    gpioa_prev = gpioa;
+    gpiob_prev = gpiob;
+  }
 
   return ret;
 }
@@ -275,4 +279,19 @@ int16_t binary255_positive()
 int16_t binary255_negative()
 {
   return -1;
+}
+
+uint8_t bitOrder(uint8_t order)
+{
+  uint8_t new_order = 0;
+
+  order ^= 0xFF;  //Reverse all bits, to show only active gpios.
+
+  new_order = order >> 4;
+  new_order |= (order & 0x01) << 7;
+  new_order |= (order & 0x02) << 6;
+  new_order |= (order & 0x04) << 5;
+  new_order |= (order & 0x08) << 4;
+
+  return new_order;
 }

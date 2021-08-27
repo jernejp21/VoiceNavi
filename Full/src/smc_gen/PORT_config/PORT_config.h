@@ -22,7 +22,7 @@
 * Version      : 2.1.3
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for PORT_config.
-* Creation Date: 2021-08-26
+* Creation Date: 2021-08-27
 ***********************************************************************************************************************/
 
 #ifndef CFG_PORT_config_H
@@ -64,5 +64,11 @@ void LED_AlarmOff();
 void LED_Init();
 void LED_Toggle();
 uint8_t DIP_ReadState();
+void PIN_ShutdownSet();
+void PIN_ShutdownReset();
+void PIN_RstSet();
+void PIN_RstReset();
+uint8_t PIN_6dBGet();
+uint8_t PIN_14dBGet();
 /* End user code. Do not edit comment generated here */
 #endif

@@ -37,10 +37,8 @@ int FIFO_Write(uint8_t*, uint16_t);
 int FIFO_Read(uint8_t*, uint16_t);
 typedef enum fifo
 {
-  FIFO_OK = 0,
-  FIFO_EMPTY = 1,
-  FIFO_FULL = 2,
-}fifo_t;
+  FIFO_OK = 0, FIFO_EMPTY = 1, FIFO_FULL = 2,
+} fifo_t;
 
 #define NAND_CS PORTD.PODR.BIT.B4
 #define NAND_CS_HIGH (NAND_CS = 1)
@@ -66,11 +64,8 @@ void playFromPlaylist(uint8_t);
 
 typedef enum modeSelect
 {
-  WAV_5A2 = 3,
-  WAV_5F2 = 2,
-  WAV_5F1 = 1,
-  WAV_5F9IH = 0,
-}modeSelect_t;
+  WAV_5A2 = 3, WAV_5F2 = 2, WAV_5F1 = 1, WAV_5F9IH = 0,
+} modeSelect_t;
 modeSelect_t PIN_BoardSelection();
 
 extern uint16_t g_volume[2];

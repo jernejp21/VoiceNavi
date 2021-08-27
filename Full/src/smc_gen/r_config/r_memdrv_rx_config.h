@@ -89,11 +89,11 @@ TRANSFER RATE
         e.g. (1) The transfer rate is RSPI Bit Rate Register (SPBR) for using RX RSPI driver.
         e.g. (2) The transfer rate is QSPI Bit Rate Register (SPBR) for using RX QSPI driver. */
 
-#define MEMDRV_CFG_DEV0_BR                (1000000)
+#define MEMDRV_CFG_DEV0_BR                (5000000)
                                         /* Device 0 Transfer rate for command transmission.     */
-#define MEMDRV_CFG_DEV0_BR_WRITE_DATA     (1000000)
+#define MEMDRV_CFG_DEV0_BR_WRITE_DATA     (5000000)
                                         /* Device 0 Transfer rate for data transmission.        */
-#define MEMDRV_CFG_DEV0_BR_READ_DATA      (1000000)
+#define MEMDRV_CFG_DEV0_BR_READ_DATA      (5000000)
                                         /* Device 0 Transfer rate for data reception.           */
 
 #define MEMDRV_CFG_DEV1_BR                (1000000)

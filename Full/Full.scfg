@@ -721,9 +721,9 @@
                 <gridItem id="MEMDRV_CFG_DEV1_MODE_DRVR_CH" selectedIndex="0"/>
                 <gridItem id="MEMDRV_CFG_DEV0_TYPE" selectedIndex="1"/>
                 <gridItem id="MEMDRV_CFG_DEV1_TYPE" selectedIndex="0"/>
-                <gridItem id="MEMDRV_CFG_DEV0_BR" selectedIndex="1000000"/>
-                <gridItem id="MEMDRV_CFG_DEV0_BR_WRITE_DATA" selectedIndex="1000000"/>
-                <gridItem id="MEMDRV_CFG_DEV0_BR_READ_DATA" selectedIndex="1000000"/>
+                <gridItem id="MEMDRV_CFG_DEV0_BR" selectedIndex="5000000"/>
+                <gridItem id="MEMDRV_CFG_DEV0_BR_WRITE_DATA" selectedIndex="5000000"/>
+                <gridItem id="MEMDRV_CFG_DEV0_BR_READ_DATA" selectedIndex="5000000"/>
                 <gridItem id="MEMDRV_CFG_DEV1_BR" selectedIndex="1000000"/>
                 <gridItem id="MEMDRV_CFG_DEV1_BR_WRITE_DATA" selectedIndex="1000000"/>
                 <gridItem id="MEMDRV_CFG_DEV1_BR_READ_DATA" selectedIndex="1000000"/>
@@ -3805,7 +3805,7 @@
                 <option enabled="true" id="OffsetAmount" selection="OffsetAmountValue">
                     <item id="OffsetAmountValue" input="0x00000000" vlaue="0"/>
                 </option>
-                <option enabled="false" id="IntTransferEnd" selection="Disable">
+                <option enabled="true" id="IntTransferEnd" selection="Disable">
                     <item id="Enable" input="" vlaue="0"/>
                     <item id="Disable" input="" vlaue="0"/>
                 </option>

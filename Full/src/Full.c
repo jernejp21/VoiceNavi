@@ -68,6 +68,8 @@ void main(void)
   //PORTD.PODR.BIT.B4 = 1;  //Set pin HIGH
   NAND_CS_HIGH;
 
+  uint8_t test = PORTD.PDR.BIT.B4;
+
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
   // resetpgr.c in PowerON_Reset_PC function.
 
@@ -191,11 +193,10 @@ void main(void)
   }
 
   I2C_Init();
-  //R_EXT_IRQ_IRQ13_Start();
+  R_EXT_IRQ_IRQ13_Start();
 
   /* Enable audio amp */
-  PORT5.PDR.BIT.B5 = 1;
-  PORT5.PODR.BIT.B5 = 1;
+  PIN_ShutdownSet();
 
   /* Periodic timer ~45 ms. Used for I2C communication */
   R_CMT_CreatePeriodic(22, &I2C_Periodic, &cmt_channel);
@@ -260,9 +261,11 @@ void playFromPlaylist(uint8_t playNr)
         //if(FIFO_head - fiffo_test == FIFO_tail)
         if(g_readBuffer)
         {
+          LED_USBOn();
           g_readBuffer = 0;
           _fileAddress += sizeof(g_file_data);
           NAND_ReadFromFlash(_fileAddress, sizeof(g_file_data), g_file_data);
+          LED_USBOff();
         }
 
         mode();
@@ -482,12 +485,26 @@ void CNT_USB_CntCallback()
 void I2C_Periodic()
 {
   R_BSP_InterruptsEnable();
+  uint8_t volume;
+
+  volume = (uint8_t)(g_volume[0] >> 1); //g_volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
+
+  // Activated when 0.
+  if(0 == PIN_6dBGet())
+  {
+    volume = volume / 2;
+  }
+  else if(0 == PIN_14dBGet())
+  {
+    volume = volume / 5;
+  }
+
   /* Send volume data to potentiometer */
   iic_info.p_slv_adr = i2c_potent_address;
-  I2C_Send(0, g_volume[0]);
+  I2C_Send(0, volume);
 
   /* Read gpioa, gpiob from GPIO mux */
   iic_info.p_slv_adr = i2c_gpio_address;
-  g_i2c_gpio_rx[1] = I2C_Receive(0x09);
-  g_i2c_gpio_rx[2] = I2C_Receive(0x19);
+  g_i2c_gpio_rx[0] = I2C_Receive(0x09);
+  g_i2c_gpio_rx[1] = I2C_Receive(0x19);
 }

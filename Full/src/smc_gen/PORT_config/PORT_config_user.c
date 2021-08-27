@@ -22,7 +22,7 @@
 * Version      : 2.1.3
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for PORT_config.
-* Creation Date: 2021-08-26
+* Creation Date: 2021-08-27
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -133,4 +133,35 @@ modeSelect_t PIN_BoardSelection()
 
   return ret;
 }
+
+void PIN_ShutdownSet()
+{
+  PORT5.PODR.BIT.B5 = 1;
+}
+
+void PIN_ShutdownReset()
+{
+  PORT5.PODR.BIT.B5 = 0;
+}
+
+void PIN_RstSet()
+{
+  PORT5.PODR.BIT.B0 = 1;
+}
+
+void PIN_RstReset()
+{
+  PORT5.PODR.BIT.B0 = 0;
+}
+
+uint8_t PIN_6dBGet()
+{
+  return PORTC.PIDR.BIT.B2;
+}
+
+uint8_t PIN_14dBGet()
+{
+  return PORTC.PIDR.BIT.B0;
+}
+
 /* End user code. Do not edit comment generated here */
