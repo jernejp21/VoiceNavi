@@ -68,7 +68,8 @@ void PIN_ShutdownSet();
 void PIN_ShutdownReset();
 void PIN_RstSet();
 void PIN_RstReset();
-uint8_t PIN_6dBGet();
-uint8_t PIN_14dBGet();
+uint8_t PIN_Get6dB();
+uint8_t PIN_Get14dB();
+uint8_t PIN_GetExtIRQ();
 /* End user code. Do not edit comment generated here */
 #endif

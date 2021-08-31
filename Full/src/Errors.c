@@ -13,9 +13,9 @@
 
 void ERROR_FileSystem()
 {
-  R_TMR_various_Set_Frequency(1);
+  //R_TMR_various_Set_Frequency(1);
   g_counter = 0;
-  R_TMR_various_Start();
+  //R_TMR_various_Start();
   LED_USBOff();
 
   while(1)
@@ -35,9 +35,9 @@ void ERROR_FileSystem()
 
 void ERROR_WAVEFile()
 {
-  R_TMR_various_Set_Frequency(1);
+  //R_TMR_various_Set_Frequency(1);
   g_counter = 0;
-  R_TMR_various_Start();
+  //R_TMR_various_Start();
   LED_USBOff();
 
   while(1)
@@ -52,17 +52,17 @@ void ERROR_WAVEFile()
 
 void ERROR_FlashECS()
 {
-  R_TMR_various_Set_Frequency(1);
+  //R_TMR_various_Set_Frequency(1);
   //g_counter = 0;
   //R_TMR_various_Start();
   LED_AlarmOn();
 
   /*while(1)
-  {
-    if(g_counter == 500)
-    {
-      g_counter = 0;
-      LED_USBToggle();
-    }
-  }*/
+   {
+   if(g_counter == 500)
+   {
+   g_counter = 0;
+   LED_USBToggle();
+   }
+   }*/
 }

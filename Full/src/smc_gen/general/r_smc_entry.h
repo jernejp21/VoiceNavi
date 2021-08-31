@@ -33,10 +33,7 @@ Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
 #include "DAC.h"
-#include "EXT_IRQ.h"
 #include "PORT_config.h"
-#include "TMR_play.h"
-#include "TMR_various.h"
 #include "DMAC0.h"
 #include "ADC0.h"
 #include "DMAC1.h"

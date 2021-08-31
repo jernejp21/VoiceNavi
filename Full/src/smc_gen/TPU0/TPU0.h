@@ -58,5 +58,6 @@ void R_TPU0_Create_UserInit(void);
 void R_TPU0_Start(void);
 void R_TPU0_Stop(void);
 /* Start user code for function. Do not edit comment generated here */
+void R_TPU0_SetFrequency(uint32_t);
 /* End user code. Do not edit comment generated here */
 #endif

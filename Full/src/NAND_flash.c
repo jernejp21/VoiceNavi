@@ -29,7 +29,6 @@ FIL file1;
 FRESULT fr;
 UINT size;
 
-const uint8_t g_msc_file[15] = "0:sample02.wpj";
 uint8_t flash_buffer[NAND_PAGE_SIZE];
 uint8_t wav_buffer[NAND_PAGE_SIZE];
 char line[100];
@@ -62,9 +61,9 @@ int NAND_CheckBlock()
 
     /* 1. Page Read to Cache */
     tx_buff[0] = NAND_PAGE_READ;
-    tx_buff[1] = *((uint8_t*) &addr + 2);
-    tx_buff[2] = *((uint8_t*) &addr + 1);
-    tx_buff[3] = *((uint8_t*) &addr);
+    tx_buff[1] = *((uint8_t*)&addr + 2);
+    tx_buff[2] = *((uint8_t*)&addr + 1);
+    tx_buff[3] = *((uint8_t*)&addr);
     memdrv_info.cnt = 4;
     memdrv_info.p_data = tx_buff;
 
@@ -77,8 +76,8 @@ int NAND_CheckBlock()
 
     /* 3. Read from Cache */
     tx_buff[0] = NAND_READ_FROM_CACHE;
-    tx_buff[1] = *((uint8_t*) &column_address + 1);
-    tx_buff[2] = *((uint8_t*) &column_address);
+    tx_buff[1] = *((uint8_t*)&column_address + 1);
+    tx_buff[2] = *((uint8_t*)&column_address);
     tx_buff[3] = 0;  //dummy byte
     memdrv_info.cnt = 4;
     memdrv_info.p_data = tx_buff;
@@ -131,7 +130,7 @@ void NAND_CopyToFlash()
     ERROR_FileSystem();
   }
 
-  fr = f_open(&file, (const TCHAR*) &filno.fname, (FA_OPEN_ALWAYS | FA_READ));
+  fr = f_open(&file, (const TCHAR*)&filno.fname, (FA_OPEN_ALWAYS | FA_READ));
   if(FR_OK != fr)
   {
     //Error if .wpj file cannot be opened (bad file system or bad file).
@@ -140,7 +139,7 @@ void NAND_CopyToFlash()
 
   startOfFileNames = 0;
   startOfPlaylist = 0;
-  while(f_gets((TCHAR*) &line, sizeof(line), &file))
+  while(f_gets((TCHAR*)&line, sizeof(line), &file))
   {
     /* Section #2 in wpj file represents file name order.
      * 0,file1.wav
@@ -170,7 +169,7 @@ void NAND_CopyToFlash()
 
     if(startOfFileNames)
     {
-      WAV_PlaceNameToTable((char*) &file_name.file_name, (char*) &line);
+      WAV_PlaceNameToTable((char*)&file_name.file_name, (char*)&line);
       fr = f_open(&file1, &file_name.file_name[0], FA_READ);
       if(FR_NO_FILE == fr)
       {
@@ -211,7 +210,7 @@ void NAND_CopyToFlash()
 
     if(startOfPlaylist)
     {
-      WAV_PlaceSongsToTable((playlist_t*) &g_output_music[cnt], (char*) &line);
+      WAV_PlaceSongsToTable((playlist_t*)&g_output_music[cnt], (char*)&line);
       cnt++;
       if(cnt > 254)
       {
@@ -230,14 +229,14 @@ void NAND_CopyToFlash()
   }
 
   //Copy file table to NAND flash
-  flash_status = nand_copy_to_flash(NAND_PAGE_SIZE, sizeof(flash_table), (uint8_t*) &flash_table[0]);
+  flash_status = nand_copy_to_flash(NAND_PAGE_SIZE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
   }
 
   //Copy playlist table to NAND flash
-  flash_status = nand_copy_to_flash(NAND_PAGE_SIZE * 3, sizeof(g_output_music), (uint8_t*) &g_output_music[0]);
+  flash_status = nand_copy_to_flash(NAND_PAGE_SIZE * 3, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
@@ -259,8 +258,8 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t 
   uint32_t read_size;
 
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
-  row_address = (uint16_t) (address / NAND_PAGE_SIZE);
-  column_address = (uint16_t) (address % NAND_PAGE_SIZE);
+  row_address = (uint16_t)(address / NAND_PAGE_SIZE);
+  column_address = (uint16_t)(address % NAND_PAGE_SIZE);
 
   while(1)
   {
@@ -292,9 +291,9 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t 
 
     /* 1. Page Read to Cache */
     tx_buff[0] = NAND_PAGE_READ;
-    tx_buff[1] = *((uint8_t*) &row_address + 2);
-    tx_buff[2] = *((uint8_t*) &row_address + 1);
-    tx_buff[3] = *((uint8_t*) &row_address);
+    tx_buff[1] = *((uint8_t*)&row_address + 2);
+    tx_buff[2] = *((uint8_t*)&row_address + 1);
+    tx_buff[3] = *((uint8_t*)&row_address);
     memdrv_info.cnt = 4;
     memdrv_info.p_data = tx_buff;
 
@@ -311,8 +310,8 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t 
 
     /* 3. Read from Cache */
     tx_buff[0] = NAND_READ_FROM_CACHE;
-    tx_buff[1] = *((uint8_t*) &column_address + 1);
-    tx_buff[2] = *((uint8_t*) &column_address);
+    tx_buff[1] = *((uint8_t*)&column_address + 1);
+    tx_buff[2] = *((uint8_t*)&column_address);
     tx_buff[3] = 0;  //dummy byte
     memdrv_info.cnt = 4;
     memdrv_info.p_data = tx_buff;
@@ -325,8 +324,6 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t 
     R_MEMDRV_Rx(NAND_DEVNO, &memdrv_info);
     NAND_CS_HIGH;  //CS HIGH
 
-    /* Write to FIFO */
-    //FIFO_Write(p_data, read_size);
     /* Prepare for next read if needed */
     row_address++;
     column_address = 0;
@@ -341,7 +338,7 @@ int NAND_CheckDataInFlash()
   uint8_t data[4];
   uint32_t cast_data;
   NAND_ReadFromFlash(0, sizeof(data), data);
-  cast_data = *(uint32_t*) &data;
+  cast_data = *(uint32_t*)&data;
 
   if(0xDEADBEEF == cast_data)
   {
@@ -439,9 +436,9 @@ nand_flash_status_t NAND_Erase()
 
     /* 2. Block Erase */
     tx_buff[0] = NAND_BLOCK_ERASE;
-    tx_buff[1] = *((uint8_t*) &addr + 2);
-    tx_buff[2] = *((uint8_t*) &addr + 1);
-    tx_buff[3] = *((uint8_t*) &addr);
+    tx_buff[1] = *((uint8_t*)&addr + 2);
+    tx_buff[2] = *((uint8_t*)&addr + 1);
+    tx_buff[3] = *((uint8_t*)&addr);
     memdrv_info.cnt = 4;
     memdrv_info.p_data = tx_buff;
 
@@ -488,8 +485,8 @@ nand_flash_status_t nand_copy_to_flash(uint32_t address, uint32_t size, uint8_t 
   uint32_t write_size;
 
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
-  row_address = (uint16_t) (address / NAND_PAGE_SIZE);
-  column_address = (uint16_t) (address % NAND_PAGE_SIZE);
+  row_address = (uint16_t)(address / NAND_PAGE_SIZE);
+  column_address = (uint16_t)(address % NAND_PAGE_SIZE);
 
   while(1)
   {
@@ -532,8 +529,8 @@ nand_flash_status_t nand_copy_to_flash(uint32_t address, uint32_t size, uint8_t 
 
     /* 2. Program Load */
     tx_buff[0] = NAND_PROGRAM_LOAD;
-    tx_buff[1] = *((uint8_t*) &column_address + 1);
-    tx_buff[2] = *((uint8_t*) &column_address);
+    tx_buff[1] = *((uint8_t*)&column_address + 1);
+    tx_buff[2] = *((uint8_t*)&column_address);
     memdrv_info.cnt = 3;
     memdrv_info.p_data = tx_buff;
 
@@ -549,9 +546,9 @@ nand_flash_status_t nand_copy_to_flash(uint32_t address, uint32_t size, uint8_t 
 
     /* 3. Program Execute */
     tx_buff[0] = NAND_PROGRAM_EXECUTE;
-    tx_buff[1] = *((uint8_t*) &row_address + 2);
-    tx_buff[2] = *((uint8_t*) &row_address + 1);
-    tx_buff[3] = *((uint8_t*) &row_address);
+    tx_buff[1] = *((uint8_t*)&row_address + 2);
+    tx_buff[2] = *((uint8_t*)&row_address + 1);
+    tx_buff[3] = *((uint8_t*)&row_address);
     memdrv_info.cnt = 4;
     memdrv_info.p_data = tx_buff;
 

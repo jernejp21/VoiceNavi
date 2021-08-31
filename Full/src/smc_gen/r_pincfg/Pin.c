@@ -71,11 +71,6 @@ void R_Pins_Create(void)
     PORT0.PMR.BYTE &= 0xDFU;
     PORT0.PDR.BYTE &= 0xDFU;
 
-    /* Set IRQ13 pin */
-    MPC.PC6PFS.BYTE = 0x40U;
-    PORTC.PMR.BYTE &= 0xBFU;
-    PORTC.PDR.BYTE &= 0xBFU;
-
     /* Set MISOC pin */
     MPC.PD2PFS.BYTE = 0x0DU;
     PORTD.PMR.BYTE |= 0x04U;

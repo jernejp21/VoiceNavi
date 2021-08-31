@@ -47,17 +47,8 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
-/* ICU IRQ13 */
-void r_EXT_IRQ_irq13_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(ICU,IRQ13))));
-
 /* TPU0 TGI0A */
 void r_TPU0_tgi0a_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB130))));
-
-/* TMR0 CMIA0 */
-void r_TMR_play_cmia0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB146))));
-
-/* TMR2 CMIA2 */
-void r_TMR_various_cmia2_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB152))));
 
 /* S12AD S12ADI */
 void r_ADC0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB186))));

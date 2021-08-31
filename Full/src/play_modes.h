@@ -37,11 +37,4 @@ typedef union un_gpio
   } BIT;
 } gpio_t;
 
-#define RINGBUF_SIZE 2048
-#define RINGBUF_SIZE_MAX (RINGBUF_SIZE)
-#define p_inc(p, max) (((p + 1) >= max) ? 0 : (p + 1))
-extern uint16_t ringbuf[RINGBUF_SIZE];
-
-void wavmp3p_put(void*, uint32_t);
-
 #endif //__PLAY_MODES_H

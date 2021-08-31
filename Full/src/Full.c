@@ -11,17 +11,33 @@
 //5A2 board
 #include "globals.h"
 
+/** Function definition */
 void main(void);
+void playFromPlaylist(uint8_t);
 void CNT_USB_CntCallback();
+void wavmp3p_put(void*, uint32_t);
+void callBack_read();
+void callBack_write();
+void I2C_Send(uint8_t reg_add, uint8_t value);
+uint8_t I2C_Receive(uint8_t reg_add);
+void I2C_Init();
+void I2C_Periodic();
 
+/* Global variables */
 int g_counter;
 int g_readBuffer;
 uint32_t g_file_size;
 uint32_t g_current_byte;
 int g_playing;
 int g_stopPlaying;
-__attribute__((aligned))
-       uint16_t g_volume[2];
+uint8_t g_i2c_gpio_rx[2];
+uint8_t g_i2c_gpio_tx[2];
+const uint8_t g_msc_file[15];
+uint8_t g_isIRQ;
+uint8_t g_isIRQTriggered;
+
+__attribute__((aligned(4)))
+uint16_t g_volume[2];
 
 int16_t (*mode)();
 modeSelect_t boardType;
@@ -42,8 +58,7 @@ wav_header_t g_wav_file;
 
 volatile sci_iic_return_t ret;
 sci_iic_info_t iic_info;
-uint8_t g_i2c_gpio_rx[2];
-uint8_t g_i2c_gpio_tx[2];
+
 uint8_t i2c_gpio_address[1] = {I2C_GPIO_ADDR};
 uint8_t i2c_potent_address[1] = {I2C_POTENT_ADDR};
 uint8_t i2c_reg_addr[1];
@@ -58,6 +73,10 @@ st_memdrv_info_t memdrv_info;
 nand_flash_status_t nand_status;
 uint32_t cmt_channel;
 int usb_cnt;
+
+__attribute__((aligned(4096)))
+uint16_t ringbuf[RINGBUF_SIZE];
+static int decode_putp = 0;
 
 /* main start */
 void main(void)
@@ -74,7 +93,6 @@ void main(void)
   // resetpgr.c in PowerON_Reset_PC function.
 
   LED_PowOn();
-  FIFO_Init();
   R_DAC1_Start();
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
   boardType = PIN_BoardSelection();
@@ -146,9 +164,9 @@ void main(void)
   {
     NAND_Reset();
     //first 4 bytes signalise if data is in flash
-    NAND_ReadFromFlash(NAND_PAGE_SIZE, sizeof(flash_table), (uint8_t*) &flash_table[0]);
+    NAND_ReadFromFlash(NAND_PAGE_SIZE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
     //flash_table[1].address = 0x177fe;  //bug fix for test.
-    NAND_ReadFromFlash(NAND_PAGE_SIZE * 3, sizeof(g_output_music), (uint8_t*) &g_output_music[0]);
+    NAND_ReadFromFlash(NAND_PAGE_SIZE * 3, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
   }
   else
   {
@@ -193,7 +211,6 @@ void main(void)
   }
 
   I2C_Init();
-  R_EXT_IRQ_IRQ13_Start();
 
   /* Enable audio amp */
   PIN_ShutdownSet();
@@ -203,15 +220,6 @@ void main(void)
   R_DMAC0_Start();
   R_ADC0_Start();
   R_DMAC1_Start();
-  R_TMR_play_Set_Frequency(1000);
-
-  for(int i = 0; i < sizeof(g_file_data); i++)
-  {
-    FIFO_buffer[i] = i;
-    ringbuf[i] = i;
-  }
-
-  //R_TPU0_Start();
 
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)
@@ -230,7 +238,6 @@ void main(void)
 }
 
 int g_playing = 0;
-int fiffo_test = 1000;
 
 void playFromPlaylist(uint8_t playNr)
 {
@@ -241,35 +248,27 @@ void playFromPlaylist(uint8_t playNr)
   uint32_t _fileAddress;
   int _trackNr = 0;
   int _repetitions = 0;
-  int _fifo_status = FIFO_OK;
 
   LED_BusyOn();
   while(g_output_music[playNr].repeat > _repetitions)
   {
     while(g_output_music[playNr].playlist_len > _trackNr)
     {
-      //DA.DADR1 = 2048;
       _fileToPlay = g_output_music[playNr].file_nr[_index];
       _fileAddress = flash_table[_fileToPlay].address;
 
       NAND_ReadFromFlash(_fileAddress, WAV_HEADER_SIZE, g_file_data);
-      //FIFO_Init();
 
       WAV_Open(&g_wav_file, g_file_data);
       _dataSize = g_wav_file.data_size;
       _fileAddress += WAV_HEADER_SIZE;
       g_counter = 0;
       g_current_byte = 0;
-      //g_stopPlaying = 0;
 
       g_playing = 1;
-      R_TMR_play_Set_Frequency(g_wav_file.sample_rate);
+      R_TPU0_SetFrequency(g_wav_file.sample_rate);
 
-      //R_TMR_play_Start();
       R_TPU0_Start();
-      //DA.DADR1 = 4095;
-      //LED_USBOn();
-      //while(g_playing)
       while(_dataSize > 0)
       {
         g_readBuffer = 0;
@@ -284,14 +283,11 @@ void playFromPlaylist(uint8_t playNr)
 
         NAND_ReadFromFlash(_fileAddress, _sizeToRead, g_file_data);
 
-        LED_USBOn();
         wavmp3p_put(g_file_data, _sizeToRead);
         _fileAddress += sizeof(g_file_data);
         _dataSize -= _sizeToRead;
         mode();
       }
-      //LED_USBOff();
-      //DA.DADR1 = 0;
 
       if(g_stopPlaying)
       {
@@ -300,8 +296,6 @@ void playFromPlaylist(uint8_t playNr)
       }
 
       R_TPU0_Stop();
-      FIFO_Init();
-      //DA.DADR1 = 2048;
 
       _trackNr++;
       _index++;
@@ -315,48 +309,56 @@ void playFromPlaylist(uint8_t playNr)
   LED_BusyOff();
 }
 
-__attribute__((aligned(RINGBUF_SIZE)))
-uint8_t FIFO_buffer[FIFO_SIZE];
-uint16_t FIFO_head, FIFO_tail;
-
-void FIFO_Init(void)
+int decode_getp(void)
 {
-  FIFO_head = 0;
-  FIFO_tail = 0;
+  return ((unsigned int) DMAC1.DMSAR - (unsigned int)&ringbuf[0]) / sizeof(uint16_t);
 }
 
-int FIFO_Write(uint8_t *new, uint16_t size)
+int decode_put(uint16_t audio_data)
 {
-  for(int i = 0; i < size; i++)
+  int ret = 0;
+  unsigned int putp = p_inc(decode_putp, RINGBUF_SIZE);
+
+  if(putp != decode_getp())
   {
-    if(FIFO_head == ((FIFO_tail - 1 + FIFO_SIZE) % FIFO_SIZE))
-    {
-      return FIFO_FULL; /* Queue Full*/
-    }
 
-    FIFO_buffer[FIFO_head] = *(new + i);
+    ringbuf[decode_putp] = audio_data;
 
-    FIFO_head = (FIFO_head + 1) % FIFO_SIZE;
+    decode_putp = putp;
+    ret = 1;
   }
 
-  return FIFO_OK;  // No errors
+  return ret;
 }
 
-int FIFO_Read(uint8_t *old, uint16_t size)
+void wavmp3p_put(void *read_buffer, uint32_t size)
 {
-  for(int i = 0; i < size; i++)
+  uint8_t *data = read_buffer;
+  int16_t audio_data;
+
+  if(g_wav_file.bps == 8)
   {
-    if(FIFO_head == FIFO_tail)
+    for(int n = 0; n < size; n++)
     {
-      return FIFO_EMPTY; /* Queue Empty - nothing to get*/
+      audio_data = (int16_t)(*data++);
+      audio_data = audio_data << 4;
+
+      while(1 != decode_put((uint16_t)audio_data));
     }
+  }
+  else
+  {
+    for(int n = 0; n < size; n += 2)
+    {
+      audio_data = (int16_t)((*(data + 1) << 8) | *data);
+      audio_data = (audio_data >> 4) + 2048;
 
-    *(old + i) = FIFO_buffer[FIFO_tail];
+      data += 2;
 
-    FIFO_tail = (FIFO_tail + 1) % FIFO_SIZE;
+      while(1 != decode_put((uint16_t)audio_data));
+    }
   }
 
-  return FIFO_OK;  // No errors
 }
 
 void I2C_Init()
@@ -382,7 +384,8 @@ void I2C_Init()
   iic_info.p_slv_adr = i2c_potent_address;
 
   ret = R_SCI_IIC_Open(&iic_info);
-  /* Potentiometer init */
+
+  /* Potentiometer init - do not write to EEPROM */
   I2C_Send(2, 0x80);
 
   // Switch from Potentiometer address to GPIO address
@@ -468,15 +471,6 @@ void callBack_read()
   {
     /* Call error processing for the R_SCI_IIC_GetStatus()function*/
   }
-  else
-  {
-    if(1 == iic_status.BIT.NACK)
-    {
-      /* Processing when a NACK is detected
-       by verifying the iic_status flag. */
-
-    }
-  }
 }
 
 void callBack_write()
@@ -490,15 +484,6 @@ void callBack_write()
   {
     /* Call error processing for the R_SCI_IIC_GetStatus()function*/
   }
-  else
-  {
-    if(1 == iic_status.BIT.NACK)
-    {
-      /* Processing when a NACK is detected
-       by verifying the iic_status flag. */
-
-    }
-  }
 }
 
 void CNT_USB_CntCallback()
@@ -511,14 +496,15 @@ void I2C_Periodic()
   R_BSP_InterruptsEnable();
   uint8_t volume;
 
-  volume = (uint8_t) (g_volume[0] >> 1);  //g_volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
+  //g_volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
+  volume = (uint8_t)(g_volume[0] >> 1);
 
   // Activated when 0.
-  if(0 == PIN_6dBGet())
+  if(0 == PIN_Get6dB())
   {
     volume = volume / 2;
   }
-  else if(0 == PIN_14dBGet())
+  else if(0 == PIN_Get14dB())
   {
     volume = volume / 5;
   }
@@ -532,12 +518,5 @@ void I2C_Periodic()
   g_i2c_gpio_rx[0] = I2C_Receive(0x09);
   g_i2c_gpio_rx[1] = I2C_Receive(0x19);
 
-  if(g_isIRQTriggered)
-  {
-    g_isIRQ = 1;
-  }
-  else
-  {
-    g_isIRQ = 0;
-  }
+  g_isIRQ = PIN_GetExtIRQ();
 }

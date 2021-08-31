@@ -36,10 +36,7 @@ Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
 #include "DAC.h"
-#include "EXT_IRQ.h"
 #include "PORT_config.h"
-#include "TMR_play.h"
-#include "TMR_various.h"
 #include "DMAC0.h"
 #include "ADC0.h"
 #include "DMAC1.h"
@@ -94,9 +91,6 @@ void R_Systeminit(void)
     /* Set peripheral settings */
     R_PORT_config_Create();
     R_DAC_Create();
-    R_EXT_IRQ_Create();
-    R_TMR_play_Create();
-    R_TMR_various_Create();
     R_DMAC0_Create();
     R_ADC0_Create();
     R_DMAC1_Create();

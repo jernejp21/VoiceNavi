@@ -23,8 +23,8 @@ int16_t normalPlay()
   int16_t ret = -1;
   //gpio_t gpio_union;
 
-  gpioa = I2C_Receive(0x07);
-  gpiob = I2C_Receive(0x17);
+  //gpioa = I2C_Receive(0x07);
+  //gpiob = I2C_Receive(0x17);
 
   //gpio_union.BYTE = I2C_Receive(0x07);
 
@@ -33,20 +33,20 @@ int16_t normalPlay()
 
   if(0 != (gpiob & STOP))
   {
-    R_TMR_play_Stop();
+    //R_TMR_play_Stop();
     g_playing = 0;
     g_stopPlaying = 1;
     ret = -1;
   }
 
-  I2C_Receive(0x09);  //Clear INT flags
-  I2C_Receive(0x19);  //Clear INT flags
+  // I2C_Receive(0x09);  //Clear INT flags
+  //I2C_Receive(0x19);  //Clear INT flags
 
   if(g_isIRQ)
   {
     if(0 != (gpiob & STOP))
     {
-      R_TMR_play_Stop();
+      //R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
     }
@@ -70,14 +70,14 @@ int16_t lastInputPlay()
   uint8_t gpiob;
   int16_t ret = -1;
 
-  gpioa = I2C_Receive(0x07);
-  gpiob = I2C_Receive(0x17);
+  //gpioa = I2C_Receive(0x07);
+  //gpiob = I2C_Receive(0x17);
 
   /* Correct switches order according to HW design */
   gpioa = (gpioa >> 4) | (gpioa << 4);
 
-  I2C_Receive(0x09);  //Clear INT flags
-  I2C_Receive(0x19);  //Clear INT flags
+  //I2C_Receive(0x09);  //Clear INT flags
+  //I2C_Receive(0x19);  //Clear INT flags
 
   if(g_isIRQ)
   {
@@ -88,7 +88,7 @@ int16_t lastInputPlay()
     }
     else
     {
-      R_TMR_play_Stop();
+      //R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
       ret = gpioa;
@@ -96,7 +96,7 @@ int16_t lastInputPlay()
 
     if(0 != (gpiob & STOP))
     {
-      R_TMR_play_Stop();
+      //R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
       ret = -1;
@@ -141,7 +141,7 @@ int16_t priorityPlay()
         ret = gpioa & (1 << bit);
         if(ret)
         {
-          R_TMR_play_Stop();
+          //R_TMR_play_Stop();
           g_playing = 0;
           g_stopPlaying = 1;
           break;
@@ -152,7 +152,7 @@ int16_t priorityPlay()
     /* If STOP, stop immediately */
     if(0 != (gpiob & STOP))
     {
-      R_TMR_play_Stop();
+      //R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
       ret = -1;
@@ -171,21 +171,21 @@ int16_t inputPlay()
   uint8_t gpiob;
   int16_t ret = -1;
 
-  gpioa = I2C_Receive(0x07);
-  gpiob = I2C_Receive(0x17);
+  //gpioa = I2C_Receive(0x07);
+  //gpiob = I2C_Receive(0x17);
 
   /* Correct switches order according to HW design */
   gpioa = (gpioa >> 4) | (gpioa << 4);
 
-  I2C_Receive(0x09);  //Clear INT flags
-  I2C_Receive(0x19);  //Clear INT flags
+  //I2C_Receive(0x09);  //Clear INT flags
+  //I2C_Receive(0x19);  //Clear INT flags
 
   if(g_isIRQ)
   {
     /* If STOP, stop immediately */
     if(0 != (gpiob & STOP))
     {
-      R_TMR_play_Stop();
+      //R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
       ret = -1;
@@ -200,7 +200,7 @@ int16_t inputPlay()
           ret = gpioa;
           gpioa_prev = gpioa;
 
-          R_TMR_play_Stop();
+          //R_TMR_play_Stop();
           g_playing = 0;
           g_stopPlaying = 1;
         }
@@ -213,7 +213,7 @@ int16_t inputPlay()
   }
   else
   {
-    R_TMR_play_Stop();
+    //R_TMR_play_Stop();
     g_playing = 0;
     g_stopPlaying = 1;
     gpiob_prev = 0;
@@ -234,14 +234,14 @@ int16_t binary128ch()
   uint8_t gpiob;
   int16_t ret = -1;
 
-  gpioa = I2C_Receive(0x07);
-  gpiob = I2C_Receive(0x17);
+  //gpioa = I2C_Receive(0x07);
+  //gpiob = I2C_Receive(0x17);
 
   /* Correct switches order according to HW design */
   gpioa = (gpioa >> 4) | (gpioa << 4);
 
-  I2C_Receive(0x09);  //Clear INT flags
-  I2C_Receive(0x19);  //Clear INT flags
+  //I2C_Receive(0x09);  //Clear INT flags
+  //I2C_Receive(0x19);  //Clear INT flags
 
   if(g_isIRQ)
   {
@@ -261,7 +261,7 @@ int16_t binary128ch()
 
     if(0 != (gpiob & STOP))
     {
-      R_TMR_play_Stop();
+      //R_TMR_play_Stop();
       g_playing = 0;
       g_stopPlaying = 1;
       ret = -1;
@@ -296,65 +296,3 @@ uint8_t bitOrder(uint8_t order)
   return new_order;
 }
 
-__attribute__((aligned(4096)))
-      uint16_t ringbuf[RINGBUF_SIZE];
-static int decode_putp = 0;
-
-int decode_getp(void)
-{
-  int ret_val = ((unsigned int) DMAC1.DMSAR - (unsigned int) &ringbuf[0]) / sizeof(uint16_t);
-  return ret_val;
-}
-
-int decode_put(uint16_t audio_data)
-{
-  int ret = 0;
-  unsigned int putp = p_inc(decode_putp, RINGBUF_SIZE_MAX);
-
-  if(putp != decode_getp())
-  {
-
-    ringbuf[decode_putp] = audio_data;
-
-    decode_putp = putp;
-    ret = 1;
-  }
-  else
-  {
-    //R_TPU0_Stop();
-    LED_USBOff();
-    ret = 0;
-  }
-
-  return ret;
-}
-
-void wavmp3p_put(void *read_buffer, uint32_t size)
-{
-  uint8_t *data = read_buffer;
-  int16_t audio_data;
-
-  if(g_wav_file.bps == 8)
-  {
-    for(int n = 0; n < size; n++)
-    {
-      audio_data = (int16_t) (*data++);
-      audio_data = audio_data << 4;
-
-      while(1 != decode_put((uint16_t) audio_data));
-    }
-  }
-  else
-  {
-    for(int n = 0; n < size; n += 2)
-    {
-      audio_data = (int16_t) ((*(data + 1) << 8) | *data);
-      audio_data = (audio_data >> 4) + 2048;
-
-      data += 2;
-
-      while(1 != decode_put((uint16_t) audio_data));
-    }
-  }
-
-}

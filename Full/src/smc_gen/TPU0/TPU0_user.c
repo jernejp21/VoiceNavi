@@ -70,10 +70,16 @@ void R_TPU0_Create_UserInit(void)
 void r_TPU0_tgi0a_interrupt(void)
 {
     /* Start user code for r_TPU0_tgi0a_interrupt. Do not edit comment generated here */
-  LED_USBToggle();
-  //R_DMAC1_Set_SoftwareTrigger();
+
   /* End user code. Do not edit comment generated here */
 }
 
 /* Start user code for adding. Do not edit comment generated here */
+void R_TPU0_SetFrequency(uint32_t freq_hz)
+{
+  // Timer clock is 60000 kHz
+  //TMR01.TCORA = (uint16_t) (60000000 / freq_hz);
+  TPU0.TGRA = (uint16_t) (60000000 / freq_hz);
+
+}
 /* End user code. Do not edit comment generated here */

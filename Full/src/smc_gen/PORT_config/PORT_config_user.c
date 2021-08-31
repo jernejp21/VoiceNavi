@@ -154,14 +154,19 @@ void PIN_RstReset()
   PORT5.PODR.BIT.B0 = 0;
 }
 
-uint8_t PIN_6dBGet()
+uint8_t PIN_Get6dB()
 {
   return PORTC.PIDR.BIT.B2;
 }
 
-uint8_t PIN_14dBGet()
+uint8_t PIN_Get14dB()
 {
   return PORTC.PIDR.BIT.B0;
+}
+
+uint8_t PIN_GetExtIRQ()
+{
+  return PORTC.PIDR.BIT.B6;
 }
 
 /* End user code. Do not edit comment generated here */
