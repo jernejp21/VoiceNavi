@@ -295,3 +295,66 @@ uint8_t bitOrder(uint8_t order)
 
   return new_order;
 }
+
+__attribute__((aligned(4096)))
+      uint16_t ringbuf[RINGBUF_SIZE];
+static int decode_putp = 0;
+
+int decode_getp(void)
+{
+  int ret_val = ((unsigned int) DMAC1.DMSAR - (unsigned int) &ringbuf[0]) / sizeof(uint16_t);
+  return ret_val;
+}
+
+int decode_put(uint16_t audio_data)
+{
+  int ret = 0;
+  unsigned int putp = p_inc(decode_putp, RINGBUF_SIZE_MAX);
+
+  if(putp != decode_getp())
+  {
+
+    ringbuf[decode_putp] = audio_data;
+
+    decode_putp = putp;
+    ret = 1;
+  }
+  else
+  {
+    //R_TPU0_Stop();
+    LED_USBOff();
+    ret = 0;
+  }
+
+  return ret;
+}
+
+void wavmp3p_put(void *read_buffer, uint32_t size)
+{
+  uint8_t *data = read_buffer;
+  int16_t audio_data;
+
+  if(g_wav_file.bps == 8)
+  {
+    for(int n = 0; n < size; n++)
+    {
+      audio_data = (int16_t) (*data++);
+      audio_data = audio_data << 4;
+
+      while(1 != decode_put((uint16_t) audio_data));
+    }
+  }
+  else
+  {
+    for(int n = 0; n < size; n += 2)
+    {
+      audio_data = (int16_t) ((*(data + 1) << 8) | *data);
+      audio_data = (audio_data >> 4) + 2048;
+
+      data += 2;
+
+      while(1 != decode_put((uint16_t) audio_data));
+    }
+  }
+
+}

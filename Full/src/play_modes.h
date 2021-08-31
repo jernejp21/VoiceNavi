@@ -21,7 +21,6 @@ int16_t binary255_positive();
 int16_t binary255_negative();
 uint8_t bitOrder(uint8_t);
 
-
 typedef union un_gpio
 {
   uint8_t BYTE;
@@ -35,7 +34,14 @@ typedef union un_gpio
     uint8_t GPIO5 :1;
     uint8_t GPIO6 :1;
     uint8_t GPIO7 :1;
-  }BIT;
-}gpio_t;
+  } BIT;
+} gpio_t;
+
+#define RINGBUF_SIZE 2048
+#define RINGBUF_SIZE_MAX (RINGBUF_SIZE)
+#define p_inc(p, max) (((p + 1) >= max) ? 0 : (p + 1))
+extern uint16_t ringbuf[RINGBUF_SIZE];
+
+void wavmp3p_put(void*, uint32_t);
 
 #endif //__PLAY_MODES_H

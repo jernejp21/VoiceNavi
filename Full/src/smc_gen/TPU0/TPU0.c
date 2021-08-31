@@ -18,43 +18,99 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : ADC0.h
-* Version      : 1.10.1
+* File Name    : TPU0.c
+* Version      : 1.9.2
 * Device(s)    : R5F5651EHxFP
-* Description  : This file implements device driver for ADC0.
+* Description  : This file implements device driver for TPU0.
 * Creation Date: 2021-08-31
 ***********************************************************************************************************************/
 
-#ifndef CFG_ADC0_H
-#define CFG_ADC0_H
+/***********************************************************************************************************************
+Pragma directive
+***********************************************************************************************************************/
+/* Start user code for pragma. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_s12ad.h"
-
-/***********************************************************************************************************************
-Macro definitions (Register bit)
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
-#define _F0_AD0_SAMPLING_STATE_6           (0xF0U) /* ANx06 sampling time setting */
-#define _F0_AD0_SAMPLING_STATE_7           (0xF0U) /* ANx07 sampling time setting */
-
-/***********************************************************************************************************************
-Typedef definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Global functions
-***********************************************************************************************************************/
-void R_ADC0_Create(void);
-void R_ADC0_Create_UserInit(void);
-void R_ADC0_Start(void);
-void R_ADC0_Stop(void);
-void R_ADC0_Get_ValueResult(ad_channel_t channel, uint16_t * const buffer);
-/* Start user code for function. Do not edit comment generated here */
+#include "r_cg_macrodriver.h"
+#include "TPU0.h"
+/* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-#endif
+#include "r_cg_userdefine.h"
+
+/***********************************************************************************************************************
+Global variables and functions
+***********************************************************************************************************************/
+/* Start user code for global. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: R_TPU0_Create
+* Description  : This function initializes the TPU0 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_TPU0_Create(void)
+{
+    /* Release TPU channel 0 from stop state */
+    MSTP(TPU4) = 0U;
+
+    /* Stop TPU channel 0 counter */
+    TPUA.TSTR.BIT.CST0 = 0U;
+
+    /* Set TGI0A interrupt priority level */
+    ICU.SLIBXR130.BYTE = 0x0FU;
+    IPR(PERIB, INTB130) = _0F_TPU_PRIORITY_LEVEL15;
+
+    /* TPU channel 0 is used as normal mode */
+    TPUA.TSYR.BIT.SYNC0 = 0U;
+    TPU0.TCR.BYTE = _00_TPU_PCLK_1 | _20_TPU_CKCL_A;
+    TPU0.TIER.BYTE |= (_01_TPU_TGIEA_ENABLE | _00_TPU_TGIEB_DISABLE | _00_TPU_TGIEC_DISABLE | _00_TPU_TGIED_DISABLE | 
+                      _00_TPU_TCIEV_DISABLE | _00_TPU_TTGE_DISABLE | _40_TPU_TIER_DEFAULT);
+    TPU0.TIORH.BYTE = _00_TPU_IOA_DISABLE | _00_TPU_IOB_DISABLE;
+    TPU0.TIORL.BYTE = _00_TPU_IOC_DISABLE | _00_TPU_IOD_DISABLE;
+    TPU0.TGRA = _09C3_TGRA0_VALUE;
+    TPU0.TGRB = _176F_TGRB0_VALUE;
+    TPU0.TGRC = _176F_TGRC0_VALUE;
+    TPU0.TGRD = _176F_TGRD0_VALUE;
+
+    R_TPU0_Create_UserInit();
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TPU0_Start
+* Description  : This function starts the TPU0 channel counter
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_TPU0_Start(void)
+{
+    /* Enable TGI0A interrupt in ICU */
+    IEN(PERIB, INTB130) = 1U;
+    
+    /* Start TPU channel 0 counter */
+    TPUA.TSTR.BIT.CST0 = 1U;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TPU0_Stop
+* Description  : This function stops the TPU0 channel counter
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_TPU0_Stop(void)
+{
+    /* Disable TGI0A interrupt in ICU */
+    IEN(PERIB, INTB130) = 0U;
+    
+    /* Stop TPU channel 0 counter */
+    TPUA.TSTR.BIT.CST0 = 0U;
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */

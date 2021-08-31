@@ -22,7 +22,7 @@
 * Version      : 1.2.102
 * Device(s)    : R5F5651EHxFP
 * Description  : Initialization file for code generation configurations.
-* Creation Date: 2021-08-27
+* Creation Date: 2021-08-31
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -42,6 +42,8 @@ Includes
 #include "TMR_various.h"
 #include "DMAC0.h"
 #include "ADC0.h"
+#include "DMAC1.h"
+#include "TPU0.h"
 #include "r_smc_cgc.h"
 #include "r_smc_interrupt.h"
 /* Start user code for include. Do not edit comment generated here */
@@ -97,6 +99,8 @@ void R_Systeminit(void)
     R_TMR_various_Create();
     R_DMAC0_Create();
     R_ADC0_Create();
+    R_DMAC1_Create();
+    R_TPU0_Create();
 
     /* Register undefined interrupt */
     R_BSP_InterruptWrite(BSP_INT_SRC_UNDEFINED_INTERRUPT,(bsp_int_cb_t)r_undefined_exception);

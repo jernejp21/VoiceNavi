@@ -18,20 +18,20 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : ADC0.h
-* Version      : 1.10.1
+* File Name    : DMAC1.h
+* Version      : 1.6.2
 * Device(s)    : R5F5651EHxFP
-* Description  : This file implements device driver for ADC0.
+* Description  : This file implements device driver for DMAC1.
 * Creation Date: 2021-08-31
 ***********************************************************************************************************************/
 
-#ifndef CFG_ADC0_H
-#define CFG_ADC0_H
+#ifndef CFG_DMAC1_H
+#define CFG_DMAC1_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_s12ad.h"
+#include "r_cg_dmac.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)
@@ -40,8 +40,12 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-#define _F0_AD0_SAMPLING_STATE_6           (0xF0U) /* ANx06 sampling time setting */
-#define _F0_AD0_SAMPLING_STATE_7           (0xF0U) /* ANx07 sampling time setting */
+#define _82_DMAC1_ACTIVATION_SOURCE                             (0x82U) /* Activation source select */
+#define _0000A000_DMAC1_SRC_ADDR                                (0x0000A000UL) /* Source address */
+#define _00000000_DMAC1_DST_ADDR                                (0x00000000UL) /* Destination address */
+#define _00000000_DMAC1_DMCRA_COUNT                             (0x00000000UL) /* Transfer count */
+#define _0C00_DMAC1_SRC_EXT_RPT_AREA                            (0x0C00U) /* Source address extended repeat area */
+#define _0000_DMAC1_DST_EXT_RPT_AREA                            (0x0000U) /* Destination address extended repeat area */
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -50,11 +54,10 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
-void R_ADC0_Create(void);
-void R_ADC0_Create_UserInit(void);
-void R_ADC0_Start(void);
-void R_ADC0_Stop(void);
-void R_ADC0_Get_ValueResult(ad_channel_t channel, uint16_t * const buffer);
+void R_DMAC1_Create(void);
+void R_DMAC1_Create_UserInit(void);
+void R_DMAC1_Start(void);
+void R_DMAC1_Stop(void);
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #endif

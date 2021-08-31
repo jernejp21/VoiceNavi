@@ -18,43 +18,104 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : ADC0.h
-* Version      : 1.10.1
+* File Name    : DMAC1.c
+* Version      : 1.6.2
 * Device(s)    : R5F5651EHxFP
-* Description  : This file implements device driver for ADC0.
+* Description  : This file implements device driver for DMAC1.
 * Creation Date: 2021-08-31
 ***********************************************************************************************************************/
 
-#ifndef CFG_ADC0_H
-#define CFG_ADC0_H
+/***********************************************************************************************************************
+Pragma directive
+***********************************************************************************************************************/
+/* Start user code for pragma. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_s12ad.h"
-
-/***********************************************************************************************************************
-Macro definitions (Register bit)
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
-#define _F0_AD0_SAMPLING_STATE_6           (0xF0U) /* ANx06 sampling time setting */
-#define _F0_AD0_SAMPLING_STATE_7           (0xF0U) /* ANx07 sampling time setting */
-
-/***********************************************************************************************************************
-Typedef definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Global functions
-***********************************************************************************************************************/
-void R_ADC0_Create(void);
-void R_ADC0_Create_UserInit(void);
-void R_ADC0_Start(void);
-void R_ADC0_Stop(void);
-void R_ADC0_Get_ValueResult(ad_channel_t channel, uint16_t * const buffer);
-/* Start user code for function. Do not edit comment generated here */
+#include "r_cg_macrodriver.h"
+#include "DMAC1.h"
+/* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-#endif
+#include "r_cg_userdefine.h"
+
+/***********************************************************************************************************************
+Global variables and functions
+***********************************************************************************************************************/
+/* Start user code for global. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: R_DMAC1_Create
+* Description  : This function initializes the DMAC1 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_DMAC1_Create(void)
+{
+    /* Cancel DMAC/DTC module stop state in LPC */
+    MSTP(DMAC) = 0U;
+
+    /* Disable DMAC interrupts */
+    IEN(DMAC,DMAC1I) = 0U;
+
+    /* Disable DMAC1 transfer */
+    DMAC1.DMCNT.BIT.DTE = 0U;
+
+    /* Set DMAC1 activation source */
+    ICU.DMRSR1 = _82_DMAC1_ACTIVATION_SOURCE;
+
+    /* Set DMAC1 transfer address update and extended repeat setting */
+    DMAC1.DMAMD.WORD = _8000_DMAC_SRC_ADDR_UPDATE_INCREMENT | _0000_DMAC_DST_ADDR_UPDATE_FIXED | 
+                       _0C00_DMAC1_SRC_EXT_RPT_AREA | _0000_DMAC1_DST_EXT_RPT_AREA;
+
+    /* Set DMAC1 transfer mode, data size and repeat area */
+    DMAC1.DMTMD.WORD = _0000_DMAC_TRANS_MODE_FREERUN | _2000_DMAC_REPEAT_AREA_NONE | _0100_DMAC_TRANS_DATA_SIZE_16 | 
+                       _0001_DMAC_TRANS_REQ_SOURCE_INT;
+
+    /* Set DMAC1 interrupt flag control */
+    DMAC1.DMCSL.BYTE = _00_DMAC_INT_TRIGGER_FLAG_CLEAR;
+
+    /* Set DMAC1 source address */
+    DMAC1.DMSAR = (void *)_0000A000_DMAC1_SRC_ADDR;
+
+    /* Set DMAC1 destination address */
+    DMAC1.DMDAR = (void *)_00000000_DMAC1_DST_ADDR;
+
+    /* Clear DMAC1 transfer count (free running) */
+    DMAC1.DMCRA = _00000000_DMAC1_DMCRA_COUNT;
+
+    /* Enable DMAC activation */
+    DMAC.DMAST.BIT.DMST = 1U;
+    
+    R_DMAC1_Create_UserInit();
+}
+
+/***********************************************************************************************************************
+* Function Name: R_DMAC1_Start
+* Description  : This function enable the DMAC1 activation
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_DMAC1_Start(void)
+{
+    DMAC1.DMCNT.BIT.DTE = 1U;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_DMAC1_Stop
+* Description  : This function disable the DMAC1 activation
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_DMAC1_Stop(void)
+{
+    DMAC1.DMCNT.BIT.DTE = 0U;
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */

@@ -22,7 +22,7 @@
 * Version      : 1.7.0
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for TMR_play.
-* Creation Date: 2021-08-27
+* Creation Date: 2021-08-31
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -117,7 +117,8 @@ void r_TMR_play_cmia0_interrupt(void)
 void R_TMR_play_Set_Frequency(uint32_t freq_hz)
 {
   // Timer clock is 60000 kHz
-  TMR01.TCORA = (uint16_t) (60000000 / freq_hz);
+  //TMR01.TCORA = (uint16_t) (60000000 / freq_hz);
+  TPU0.TGRA = (uint16_t) (60000000 / freq_hz);
 
 }
 /* End user code. Do not edit comment generated here */

@@ -22,7 +22,7 @@
 * Version      : 1.2.102
 * Device(s)    : R5F5651EHxFP
 * Description  : This file declares interrupt handlers.
-* Creation Date: 2021-08-27
+* Creation Date: 2021-08-31
 ***********************************************************************************************************************/
 
 #ifndef INTERRUPT_HANDLERS_H
@@ -49,6 +49,9 @@ Global functions
 ***********************************************************************************************************************/
 /* ICU IRQ13 */
 void r_EXT_IRQ_irq13_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(ICU,IRQ13))));
+
+/* TPU0 TGI0A */
+void r_TPU0_tgi0a_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB130))));
 
 /* TMR0 CMIA0 */
 void r_TMR_play_cmia0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB146))));

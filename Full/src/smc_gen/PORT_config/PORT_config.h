@@ -22,7 +22,7 @@
 * Version      : 2.1.3
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements device driver for PORT_config.
-* Creation Date: 2021-08-27
+* Creation Date: 2021-08-31
 ***********************************************************************************************************************/
 
 #ifndef CFG_PORT_config_H

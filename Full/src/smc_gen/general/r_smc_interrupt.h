@@ -22,7 +22,7 @@
 * Version      : 1.2.2
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements interrupt setting.
-* Creation Date: 2021-08-27
+* Creation Date: 2021-08-31
 ***********************************************************************************************************************/
 
 #ifndef SMC_INTERRUPT_H
@@ -143,7 +143,7 @@ Macro definitions
 #define ICU_SCI12_RXI12_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_SCI12_TXI12_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_DMAC_DMAC0I_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_DMAC_DMAC1I_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
+#define ICU_DMAC_DMAC1I_PRIORITY                   (_0D_ICU_PRIORITY_LEVEL13)
 #define ICU_DMAC_DMAC2I_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_DMAC_DMAC3I_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_DMAC_DMAC74I_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)

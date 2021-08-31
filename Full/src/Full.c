@@ -21,7 +21,7 @@ uint32_t g_current_byte;
 int g_playing;
 int g_stopPlaying;
 __attribute__((aligned))
-uint16_t g_volume[2];
+       uint16_t g_volume[2];
 
 int16_t (*mode)();
 modeSelect_t boardType;
@@ -202,7 +202,16 @@ void main(void)
   R_CMT_CreatePeriodic(22, &I2C_Periodic, &cmt_channel);
   R_DMAC0_Start();
   R_ADC0_Start();
+  R_DMAC1_Start();
+  R_TMR_play_Set_Frequency(1000);
 
+  for(int i = 0; i < sizeof(g_file_data); i++)
+  {
+    FIFO_buffer[i] = i;
+    ringbuf[i] = i;
+  }
+
+  //R_TPU0_Start();
 
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)
@@ -227,7 +236,8 @@ void playFromPlaylist(uint8_t playNr)
 {
   int _index = 0;
   int _fileToPlay;
-  UINT _size;
+  uint32_t _dataSize;
+  uint32_t _sizeToRead;
   uint32_t _fileAddress;
   int _trackNr = 0;
   int _repetitions = 0;
@@ -238,7 +248,7 @@ void playFromPlaylist(uint8_t playNr)
   {
     while(g_output_music[playNr].playlist_len > _trackNr)
     {
-      DA.DADR1 = 2048;
+      //DA.DADR1 = 2048;
       _fileToPlay = g_output_music[playNr].file_nr[_index];
       _fileAddress = flash_table[_fileToPlay].address;
 
@@ -246,8 +256,8 @@ void playFromPlaylist(uint8_t playNr)
       //FIFO_Init();
 
       WAV_Open(&g_wav_file, g_file_data);
+      _dataSize = g_wav_file.data_size;
       _fileAddress += WAV_HEADER_SIZE;
-      NAND_ReadFromFlash(_fileAddress, sizeof(g_file_data), g_file_data);
       g_counter = 0;
       g_current_byte = 0;
       //g_stopPlaying = 0;
@@ -255,21 +265,33 @@ void playFromPlaylist(uint8_t playNr)
       g_playing = 1;
       R_TMR_play_Set_Frequency(g_wav_file.sample_rate);
 
-      R_TMR_play_Start();
-      while(g_playing)
+      //R_TMR_play_Start();
+      R_TPU0_Start();
+      //DA.DADR1 = 4095;
+      //LED_USBOn();
+      //while(g_playing)
+      while(_dataSize > 0)
       {
-        //if(FIFO_head - fiffo_test == FIFO_tail)
-        if(g_readBuffer)
+        g_readBuffer = 0;
+        if(_dataSize >= sizeof(g_file_data))
         {
-          LED_USBOn();
-          g_readBuffer = 0;
-          _fileAddress += sizeof(g_file_data);
-          NAND_ReadFromFlash(_fileAddress, sizeof(g_file_data), g_file_data);
-          LED_USBOff();
+          _sizeToRead = sizeof(g_file_data);
+        }
+        else
+        {
+          _sizeToRead = _dataSize;
         }
 
+        NAND_ReadFromFlash(_fileAddress, _sizeToRead, g_file_data);
+
+        LED_USBOn();
+        wavmp3p_put(g_file_data, _sizeToRead);
+        _fileAddress += sizeof(g_file_data);
+        _dataSize -= _sizeToRead;
         mode();
       }
+      //LED_USBOff();
+      //DA.DADR1 = 0;
 
       if(g_stopPlaying)
       {
@@ -277,8 +299,9 @@ void playFromPlaylist(uint8_t playNr)
         return;
       }
 
+      R_TPU0_Stop();
       FIFO_Init();
-      DA.DADR1 = 2048;
+      //DA.DADR1 = 2048;
 
       _trackNr++;
       _index++;
@@ -292,6 +315,7 @@ void playFromPlaylist(uint8_t playNr)
   LED_BusyOff();
 }
 
+__attribute__((aligned(RINGBUF_SIZE)))
 uint8_t FIFO_buffer[FIFO_SIZE];
 uint16_t FIFO_head, FIFO_tail;
 
@@ -487,7 +511,7 @@ void I2C_Periodic()
   R_BSP_InterruptsEnable();
   uint8_t volume;
 
-  volume = (uint8_t)(g_volume[0] >> 1); //g_volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
+  volume = (uint8_t) (g_volume[0] >> 1);  //g_volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
 
   // Activated when 0.
   if(0 == PIN_6dBGet())

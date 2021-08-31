@@ -18,43 +18,62 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : ADC0.h
-* Version      : 1.10.1
+* File Name    : TPU0_user.c
+* Version      : 1.9.2
 * Device(s)    : R5F5651EHxFP
-* Description  : This file implements device driver for ADC0.
+* Description  : This file implements device driver for TPU0.
 * Creation Date: 2021-08-31
 ***********************************************************************************************************************/
 
-#ifndef CFG_ADC0_H
-#define CFG_ADC0_H
+/***********************************************************************************************************************
+Pragma directive
+***********************************************************************************************************************/
+/* Start user code for pragma. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_s12ad.h"
-
-/***********************************************************************************************************************
-Macro definitions (Register bit)
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
-#define _F0_AD0_SAMPLING_STATE_6           (0xF0U) /* ANx06 sampling time setting */
-#define _F0_AD0_SAMPLING_STATE_7           (0xF0U) /* ANx07 sampling time setting */
-
-/***********************************************************************************************************************
-Typedef definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Global functions
-***********************************************************************************************************************/
-void R_ADC0_Create(void);
-void R_ADC0_Create_UserInit(void);
-void R_ADC0_Start(void);
-void R_ADC0_Stop(void);
-void R_ADC0_Get_ValueResult(ad_channel_t channel, uint16_t * const buffer);
-/* Start user code for function. Do not edit comment generated here */
+#include "r_cg_macrodriver.h"
+#include "TPU0.h"
+/* Start user code for include. Do not edit comment generated here */
+#include "globals.h"
 /* End user code. Do not edit comment generated here */
-#endif
+#include "r_cg_userdefine.h"
+
+/***********************************************************************************************************************
+Global variables and functions
+***********************************************************************************************************************/
+/* Start user code for global. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: R_TPU0_Create_UserInit
+* Description  : This function adds user code after initializing the TPU0 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_TPU0_Create_UserInit(void)
+{
+    /* Start user code for user init. Do not edit comment generated here */
+  /* End user code. Do not edit comment generated here */
+}
+
+/***********************************************************************************************************************
+* Function Name: r_TPU0_tgi0a_interrupt
+* Description  : This function is TGI0A interrupt service routine
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void r_TPU0_tgi0a_interrupt(void)
+{
+    /* Start user code for r_TPU0_tgi0a_interrupt. Do not edit comment generated here */
+  LED_USBToggle();
+  //R_DMAC1_Set_SoftwareTrigger();
+  /* End user code. Do not edit comment generated here */
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
