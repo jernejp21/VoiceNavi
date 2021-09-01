@@ -17,7 +17,7 @@
 
 /* Change parameters if needed */
 #define MAX_NR_FILES 8 //Max number of files which can be stacked into single file to play
-#define FILE_NAME_LEN 13 //Man lenght of file name - including ".wav"
+#define FILE_NAME_LEN 13 //Max length of file name - including ".wav" + 1 (for end of line symbol).
 
 /* Do not change parameters below */
 #define WAV_HEADER_SIZE 44  //WAVE file header size is 44 bytes.

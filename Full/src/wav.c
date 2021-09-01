@@ -106,6 +106,7 @@ void WAV_PlaceNameToTable(char *dest, char *source)
     if(('\r' == *source) || ('\n' == *source))
     {
       //End of line, parsing completed.
+      *dest = 0;
       return;
     }
 

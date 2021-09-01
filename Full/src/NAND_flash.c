@@ -171,7 +171,7 @@ void NAND_CopyToFlash()
     {
       WAV_PlaceNameToTable((char*)&file_name.file_name, (char*)&line);
       fr = f_open(&file1, &file_name.file_name[0], FA_READ);
-      if(FR_NO_FILE == fr)
+      if(FR_OK != fr)
       {
         ERROR_WAVEFile();
       }
