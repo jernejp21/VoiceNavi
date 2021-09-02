@@ -61,7 +61,7 @@ uint8_t i2c_gpio_address[1] = {I2C_GPIO_ADDR};
 uint8_t i2c_potent_address[1] = {I2C_POTENT_ADDR};
 uint8_t i2c_reg_addr[1];
 
-/* Used inside main. Declared here so we don't fill up stack. */
+/* Used inside this file. Declared here so we don't fill up stack. */
 char is_data_in_flash = 0;
 usb_ctrl_t ctrl;
 usb_cfg_t cfg;
@@ -72,6 +72,7 @@ nand_flash_status_t nand_status;
 uint32_t cmt_channel;
 int usb_cnt;
 uint8_t interval_time;
+int16_t song = -1;
 
 uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(4096)));
 static int decode_putp = 0;
@@ -176,7 +177,7 @@ void main(void)
       break;
 
     case 1:
-      mode = lastInputPlay;
+      mode = lastInputInterruptPlay;
       break;
 
     case 2:
@@ -248,10 +249,13 @@ void main(void)
   {
     if(g_isIRQ)
     {
-      int16_t _song = mode();
-      if(-1 != _song)
+      if(-1 != song)
       {
-        playFromPlaylist(_song);
+        playFromPlaylist(song);
+      }
+      else
+      {
+        song = mode();
       }
     }
   }
@@ -308,16 +312,17 @@ void playFromPlaylist(uint8_t playNr)
 
         if(g_isIRQ)
         {
-          mode();
+          song = mode();
+          if(!g_playing)
+          {
+            break;
+          }
         }
-        if(!g_playing)
-        {
-          break;
-        }
+        song = -1;
       }
 
-      emptyPlayBuffer();
       R_TPU0_Stop();
+      emptyPlayBuffer();
       g_playing = 0;
 
       _trackNr++;

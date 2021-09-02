@@ -13,7 +13,7 @@
 #define __PLAY_MODES_H
 
 int16_t normalPlay();
-int16_t lastInputPlay();
+int16_t lastInputInterruptPlay();
 int16_t priorityPlay();
 int16_t inputPlay();
 int16_t binary128ch();
