@@ -310,13 +310,10 @@ void playFromPlaylist(uint8_t playNr)
         _fileAddress += sizeof(g_file_data);
         _dataSize -= _sizeToRead;
 
-        if(g_isIRQ)
+        song = mode();
+        if(!g_playing)
         {
-          song = mode();
-          if(!g_playing)
-          {
-            break;
-          }
+          break;
         }
         song = -1;
       }
@@ -517,26 +514,26 @@ void CNT_USB_CntCallback()
 void I2C_Periodic()
 {
   R_BSP_InterruptsEnable();
-  uint8_t volume;
+  uint8_t _volume;
 
   //g_volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
-  volume = (uint8_t)(g_volume[0] >> 1);
+  _volume = (uint8_t)(g_volume[0] >> 1);
 
   // Activated when 0.
   if(0 == PIN_Get6dB())
   {
     // -6dB is half
-    volume = volume / 2;
+    _volume = _volume / 2;
   }
   else if(0 == PIN_Get14dB())
   {
     // -14dB is fifth
-    volume = volume / 5;
+    _volume = _volume / 5;
   }
 
   /* Send volume data to potentiometer */
   iic_info.p_slv_adr = i2c_potent_address;
-  I2C_Send(0, volume);
+  I2C_Send(0, _volume);
 
   /* Read gpioa, gpiob from GPIO mux */
   iic_info.p_slv_adr = i2c_gpio_address;
