@@ -155,6 +155,8 @@ int16_t priorityPlay()
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint8_t prio_order;
+  uint8_t _nr_sw_pressed;
+  uint8_t _sw_pressed[8] = {0};
   int16_t _ret = -1;
 
   _gpioa = g_i2c_gpio_rx[0];
@@ -164,45 +166,40 @@ int16_t priorityPlay()
   _gpioa = bitOrder(_gpioa);
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
-  //I2C_Receive(0x09);  //Clear INT flags
-  //I2C_Receive(0x19);  //Clear INT flags
+  /* Get number of pressed switches and pressed positions. */
+  _nr_sw_pressed = switchToPlay(_gpioa, _sw_pressed);
 
-  if(g_isIRQ)
+  if(0 != (_gpiob & STOP))
   {
-
-    if(gpioa_prev == _gpioa)
+    g_playing = 0;
+  }
+  else
+  {
+    if(!g_playing)
     {
-      //do nothing. correct song is playing
-      _ret = gpioa_prev;
+      prev_sw = 255;
     }
-    else
+
+    for(char sw_pos = 0; sw_pos < 8; sw_pos++)
     {
-      for(int bit = 0; bit < 8; bit++)
+      if(_sw_pressed[sw_pos])
       {
-        _ret = _gpioa & (1 << bit);
-        if(_ret)
+        if((sw_pos < prev_sw))
         {
-          //R_TMR_play_Stop();
           g_playing = 0;
-          g_stopPlaying = 1;
+          _ret = sw_pos;
+          prev_sw = sw_pos;
+          gpioa_prev = _gpioa;
+          break;
+        }
+        else
+        {
+          _ret = prev_sw;
           break;
         }
       }
     }
-
-    /* If STOP, stop immediately */
-    if(0 != (_gpiob & STOP))
-    {
-      //R_TMR_play_Stop();
-      g_playing = 0;
-      g_stopPlaying = 1;
-      _ret = -1;
-    }
-
-    gpioa_prev = _gpioa;
-    gpiob_prev = _gpiob;
   }
-
   return _ret;
 }
 
