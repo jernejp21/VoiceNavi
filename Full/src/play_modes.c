@@ -45,25 +45,19 @@ int16_t normalPlay()
       /* Get number of pressed switches and pressed positions. */
       _nr_sw_pressed = switchToPlay(_gpioa, _sw_pressed);
 
-      /* If only one switch is pressed, play that song */
-      if(_nr_sw_pressed == 1)
+      for(char sw_pos = 0; sw_pos < 8; sw_pos++)
       {
-        for(char sw_pos = 0; sw_pos < 8; sw_pos++)
+        if(_sw_pressed[sw_pos])
         {
-          if(_sw_pressed[sw_pos])
+          /* If only one switch is pressed, play that song */
+          if(_nr_sw_pressed == 1)
           {
             /* Return pressed switch number -1. */
             _ret = sw_pos;
             prev_sw = sw_pos;
             break;
           }
-        }
-      }
-      else if(_nr_sw_pressed == 2)
-      {
-        for(char sw_pos = 0; sw_pos < 8; sw_pos++)
-        {
-          if(_sw_pressed[sw_pos])
+          else if(_nr_sw_pressed == 2)
           {
             /* If current SW position is different from previous,
              * return pressed switch. This is for alternating play.
