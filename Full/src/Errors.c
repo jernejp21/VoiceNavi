@@ -13,56 +13,43 @@
 
 void ERROR_FileSystem()
 {
-  //R_TMR_various_Set_Frequency(1);
-  g_counter = 0;
-  //R_TMR_various_Start();
+  //500ms period
+  R_CMT_CreatePeriodic(2, &led_blink_busy, 0);
   LED_USBOff();
 
   while(1)
   {
-    if(g_counter == 500)
-    {
-      g_counter = 0;
-      LED_BusyToggle();
-    }
     if(g_isIRQ)
     {
       LED_AlarmOn();
     }
   }
-
 }
 
 void ERROR_WAVEFile()
 {
-  //R_TMR_various_Set_Frequency(1);
-  g_counter = 0;
-  //R_TMR_various_Start();
+  //500ms period
+  R_CMT_CreatePeriodic(2, &led_blink_busy, 0);
   LED_USBOff();
 
-  while(1)
-  {
-    if(g_counter == 500)
-    {
-      g_counter = 0;
-      LED_BusyToggle();
-    }
-  }
+  while(1);
 }
 
 void ERROR_FlashECS()
 {
-  //R_TMR_various_Set_Frequency(1);
-  //g_counter = 0;
-  //R_TMR_various_Start();
+  //500ms period
+  R_CMT_CreatePeriodic(2, &led_blink_usb, 0);
   LED_AlarmOn();
 
-  /*while(1)
-   {
-   if(g_counter == 500)
-   {
-   g_counter = 0;
-   LED_USBToggle();
-   }
-   }*/
+  while(1);
+}
+
+void led_blink_busy()
+{
+  LED_BusyToggle();
+}
+
+void led_blink_usb()
+{
+  LED_USBToggle();
 }

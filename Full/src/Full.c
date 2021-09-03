@@ -37,7 +37,7 @@ uint8_t g_isIRQTriggered;
 
 uint16_t g_volume[2] __attribute__((aligned(4)));
 
-int16_t (*mode)();
+uint8_t (*mode)();
 modeSelect_t boardType;
 
 char line[100];
@@ -72,7 +72,8 @@ nand_flash_status_t nand_status;
 uint32_t cmt_channel;
 int usb_cnt;
 uint8_t interval_time;
-int16_t song = -1;
+uint8_t song[20];
+uint8_t g_song_cnt;
 
 uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(4096)));
 static int decode_putp = 0;
@@ -93,6 +94,9 @@ void main(void)
   R_DAC1_Start();
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
   boardType = PIN_BoardSelection();
+  I2C_Init();
+  /* Periodic timer ~45 ms. Used for I2C communication */
+  R_CMT_CreatePeriodic(22, &I2C_Periodic, &cmt_channel);
 
   //Init USB Host Mass Storage Device controller
   ctrl.module = USB_IP0;
@@ -232,32 +236,33 @@ void main(void)
     interval_time = 0;
   }
 
-  I2C_Init();
-
   /* Enable audio amp */
   PIN_ShutdownSet();
 
-  /* Periodic timer ~45 ms. Used for I2C communication */
-  R_CMT_CreatePeriodic(22, &I2C_Periodic, &cmt_channel);
   R_DMAC0_Start();
   R_ADC0_Start();
   R_DMAC1_Start();
   emptyPlayBuffer();
 
   /* Wait for interrupt from GPIO pins to start playing */
+  memset(song, -1, 20);
+  int cur_cnt = 0;
   while(1)
   {
-    if(g_isIRQ)
+    while(cur_cnt < g_song_cnt)
     {
-      if(-1 != song)
+      if(0xFF != song[cur_cnt])
       {
-        playFromPlaylist(song);
+        playFromPlaylist(song[cur_cnt]);
+        cur_cnt++;
       }
       else
       {
-        song = mode();
+        break;
       }
     }
+    g_song_cnt = mode(song);
+    cur_cnt = 0;
   }
 
 }
@@ -310,12 +315,12 @@ void playFromPlaylist(uint8_t playNr)
         _fileAddress += sizeof(g_file_data);
         _dataSize -= _sizeToRead;
 
-        song = mode();
+        mode(song);
         if(!g_playing)
         {
           break;
         }
-        song = -1;
+        song[g_song_cnt] = 0xFF;
       }
 
       R_TPU0_Stop();

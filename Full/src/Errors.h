@@ -16,4 +16,7 @@ void ERROR_FileSystem();
 void ERROR_WAVEFile();
 void ERROR_FlashECS();
 
+void led_blink_busy();
+void led_blink_usb();
+
 #endif //__ERRORS_H

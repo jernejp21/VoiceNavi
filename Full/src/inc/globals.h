@@ -76,5 +76,6 @@ extern file_meta_data_t g_file_meta_data[255];
 extern uint8_t g_isIRQ;
 extern uint8_t g_isIRQTriggered;
 extern int g_stopPlaying;
+extern uint8_t g_song_cnt;
 
 #endif //__GLOBALS_H

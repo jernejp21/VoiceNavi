@@ -12,13 +12,13 @@
 #ifndef __PLAY_MODES_H
 #define __PLAY_MODES_H
 
-int16_t normalPlay();
-int16_t lastInputInterruptPlay();
-int16_t priorityPlay();
-int16_t inputPlay();
-int16_t binary128ch();
-int16_t binary255_positive();
-int16_t binary255_negative();
+uint8_t normalPlay(uint8_t *songArray);
+uint8_t lastInputInterruptPlay(uint8_t *songArray);
+uint8_t priorityPlay(uint8_t *songArray);
+uint8_t inputPlay(uint8_t *songArray);
+uint8_t binary128ch(uint8_t *songArray);
+uint8_t binary255_positive(uint8_t *songArray);
+uint8_t binary255_negative(uint8_t *songArray);
 uint8_t bitOrder(uint8_t);
 uint8_t switchToPlay(uint16_t, uint8_t*);
 
