@@ -27,10 +27,10 @@
 #include "../Errors.h"
 
 /** Macro definitions */
-#define NAND_VOL_PAGE 2
-#define NAND_DATA_PAGE 8
-#define NAND_FILE_LIST_PAGE 3
-#define NAND_PLAYLIST_PAGE 5
+#define NAND_VOL_PAGE (2 * NAND_PAGE_SIZE)
+#define NAND_DATA_PAGE (8 * NAND_PAGE_SIZE)
+#define NAND_FILE_LIST_PAGE (3 * NAND_PAGE_SIZE)
+#define NAND_PLAYLIST_PAGE (5 * NAND_PAGE_SIZE)
 
 #define FILE_SIZE (2048)
 #define NAND_CS PORTD.PODR.BIT.B4
@@ -62,8 +62,6 @@ typedef enum modeSelect
 
 /** Global functions */
 modeSelect_t PIN_BoardSelection();
-
-
 
 /** Global variables */
 extern uint16_t ringbuf[RINGBUF_SIZE];

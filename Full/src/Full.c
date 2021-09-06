@@ -114,7 +114,7 @@ void main(void)
   NAND_Reset();
   NAND_CheckBlock();
 
-  //Create 500 ms counter for polling if USB is connected.
+  //Create 500 ms counter for polling to check if USB is connected.
   R_CMT_CreatePeriodic(2, &CNT_USB_CntCallback, &cmt_channel);
   usb_cnt = 0;
 
@@ -163,7 +163,7 @@ void main(void)
   if(is_data_in_flash)
   {
     NAND_Reset();
-    NAND_ReadFromFlash(NAND_DATA_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
+    NAND_ReadFromFlash(NAND_FILE_LIST_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
     NAND_ReadFromFlash(NAND_PLAYLIST_PAGE, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
   }
   else
@@ -209,11 +209,12 @@ void main(void)
   }
 
   /* Inverval select */
-  uint8_t _inverval_select = DIP_ReadState() & 0x18;  //Switches 4, 5 are interval select
+  uint8_t _interval_select = (DIP_ReadState() & 0x18) >> 3;  //Switches 4, 5 are interval select
   if(_mode_select == 0)
   {
-    switch(_inverval_select)
+    switch(_interval_select)
     {
+      /* Interval are 30, 60 and 120 s. */
       case 0:
         interval_time = 0;
         break;
@@ -247,6 +248,7 @@ void main(void)
   /* Wait for interrupt from GPIO pins to start playing */
   memset(song, -1, 20);
   int cur_cnt = 0;
+
   while(1)
   {
     while(cur_cnt < g_song_cnt)
@@ -260,6 +262,9 @@ void main(void)
       {
         break;
       }
+
+      /* Wait for interval time */
+      R_BSP_SoftwareDelay(interval_time, BSP_DELAY_SECS);
     }
     g_song_cnt = mode(song);
     cur_cnt = 0;

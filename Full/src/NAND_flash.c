@@ -224,7 +224,7 @@ void NAND_CopyToFlash()
   }
 
   //Copy file table to NAND flash
-  flash_status = nand_copy_to_flash(NAND_DATA_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
+  flash_status = nand_copy_to_flash(NAND_FILE_LIST_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
