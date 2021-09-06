@@ -22,7 +22,7 @@
 * Version      : 1.0.2
 * Device(s)    : R5F5651EHxFP
 * Description  : This file implements SMC pin code generation.
-* Creation Date: 2021-08-26
+* Creation Date: 2021-09-06
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -56,28 +56,21 @@ void R_Pins_Create(void)
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
 
-    /* Set AN006 pin */
-    MPC.P46PFS.BYTE = 0x80U;
-    PORT4.PMR.BYTE &= 0xBFU;
-    PORT4.PDR.BYTE &= 0xBFU;
+    /* Set MISOC pin */
+    MPC.PD2PFS.BYTE = 0x0DU;
+    PORTD.PMR.BYTE |= 0x04U;
 
-    /* Set AN007 pin */
-    MPC.P47PFS.BYTE = 0x80U;
-    PORT4.PMR.BYTE &= 0x7FU;
-    PORT4.PDR.BYTE &= 0x7FU;
+    /* Set MOSIC pin */
+    MPC.PD1PFS.BYTE = 0x0DU;
+    PORTD.PMR.BYTE |= 0x02U;
 
-    /* Set IRQ13 pin */
-    MPC.PC6PFS.BYTE = 0x40U;
-    PORTC.PMR.BYTE &= 0xBFU;
-    PORTC.PDR.BYTE &= 0xBFU;
+    /* Set RSPCKC pin */
+    MPC.PD3PFS.BYTE = 0x0DU;
+    PORTD.PMR.BYTE |= 0x08U;
 
-    /* Set SSCL11 pin */
-    MPC.PB6PFS.BYTE = 0x24U;
-    PORTB.PMR.BYTE |= 0x40U;
-
-    /* Set SSDA11 pin */
-    MPC.PB7PFS.BYTE = 0x24U;
-    PORTB.PMR.BYTE |= 0x80U;
+    /* Set SSLC0 pin */
+    MPC.PD4PFS.BYTE = 0x0DU;
+    PORTD.PMR.BYTE |= 0x10U;
 
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
 }

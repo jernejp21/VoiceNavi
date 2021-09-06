@@ -4,19 +4,18 @@
         <Setting id="SrcGeneratedPath" value="src/smc_gen"/>
     </Segment>
     <Segment id="Pin">
-        <Setting id="EMLE" value="EMLE"/>
-        <Setting id="PC6" value="IRQ13"/>
-        <Setting id="PB7" value="SSDA11"/>
-        <Setting id="PB6" value="SSCL11"/>
-        <Setting id="P30" value="TDI"/>
-        <Setting id="P31" value="TMS"/>
         <Setting id="P34" value="TRST#"/>
-        <Setting id="P47" value="AN007"/>
+        <Setting id="EMLE" value="EMLE"/>
+        <Setting id="PD4" value="SSLC0"/>
         <Setting id="P36" value="EXTAL"/>
-        <Setting id="P46" value="AN006"/>
         <Setting id="P27" value="TCK"/>
         <Setting id="P26" value="TDO"/>
         <Setting id="P37" value="XTAL"/>
+        <Setting id="PD1" value="MOSIC"/>
+        <Setting id="P30" value="TDI"/>
+        <Setting id="PD3" value="RSPCKC"/>
+        <Setting id="PD2" value="MISOC"/>
+        <Setting id="P31" value="TMS"/>
     </Segment>
     <Segment id="Device">
         <Setting id="Series" value="RX600"/>
@@ -43,10 +42,12 @@
     <Segment id="Component">
         <Setting id="r_bsp" value="FIT"/>
         <Setting id="r_cmt_rx" value="FIT"/>
-        <Setting id="Config_S12AD0" value="CG"/>
-        <Setting id="r_sci_iic_rx" value="FIT"/>
-        <Setting id="Config_ICU" value="CG"/>
+        <Setting id="r_tfat_rx" value="FIT"/>
+        <Setting id="r_tfat_driver_rx" value="FIT"/>
+        <Setting id="r_rspi_rx" value="FIT"/>
+        <Setting id="r_usb_hmsc" value="FIT"/>
         <Setting id="r_sys_time_rx" value="FIT"/>
-        <Setting id="Config_DMAC0" value="CG"/>
+        <Setting id="r_memdrv_rx" value="FIT"/>
+        <Setting id="r_usb_basic" value="FIT"/>
     </Segment>
 </QE>

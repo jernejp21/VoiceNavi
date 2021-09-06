@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<QE>
+    <Segment id="Project">
+        <Setting id="SrcGeneratedPath" value="src/smc_gen"/>
+    </Segment>
+    <Segment id="Pin">
+        <Setting id="PB3" value="PB3"/>
+        <Setting id="EMLE" value="EMLE"/>
+        <Setting id="PB4" value="PB4"/>
+        <Setting id="PB7" value="SSDA11"/>
+        <Setting id="PB6" value="SSCL11"/>
+        <Setting id="P43" value="P43"/>
+        <Setting id="P42" value="P42"/>
+        <Setting id="P47" value="AN007"/>
+        <Setting id="P46" value="AN006"/>
+        <Setting id="P05" value="DA1"/>
+        <Setting id="P27" value="TCK"/>
+        <Setting id="P26" value="TDO"/>
+        <Setting id="PC0" value="PC0"/>
+        <Setting id="PA0" value="PA0"/>
+        <Setting id="PC2" value="PC2"/>
+        <Setting id="PA2" value="PA2"/>
+        <Setting id="PC4" value="PC4"/>
+        <Setting id="PE6" value="PE6"/>
+        <Setting id="PA1" value="PA1"/>
+        <Setting id="PA4" value="PA4"/>
+        <Setting id="PC6" value="PC6"/>
+        <Setting id="PA3" value="PA3"/>
+        <Setting id="PC5" value="PC5"/>
+        <Setting id="PE7" value="PE7"/>
+        <Setting id="PA6" value="PA6"/>
+        <Setting id="PA5" value="PA5"/>
+        <Setting id="PA7" value="PA7"/>
+        <Setting id="P50" value="P50"/>
+        <Setting id="P52" value="P52"/>
+        <Setting id="P30" value="TDI"/>
+        <Setting id="P51" value="P51"/>
+        <Setting id="P54" value="P54"/>
+        <Setting id="P53" value="P53"/>
+        <Setting id="P31" value="TMS"/>
+        <Setting id="P34" value="TRST#"/>
+        <Setting id="P55" value="P55"/>
+        <Setting id="P36" value="EXTAL"/>
+        <Setting id="P37" value="XTAL"/>
+        <Setting id="PD1" value="MOSIC"/>
+        <Setting id="PD3" value="RSPCKC"/>
+        <Setting id="PD2" value="MISOC"/>
+    </Segment>
+    <Segment id="Device">
+        <Setting id="Series" value="RX600"/>
+        <Setting id="Group" value="RX65N"/>
+        <Setting id="Board" value="Custom User Board"/>
+        <Setting id="PartNo" value="R5F565N9FxFP"/>
+        <Setting id="PinCount" value="100"/>
+    </Segment>
+    <Segment id="Clock">
+        <Setting id="CacMCLK" value="12000.0"/>
+        <Setting id="PLLCLK" value="240000.0"/>
+        <Setting id="BusCLK" value="120000.0"/>
+        <Setting id="PCLKA" value="120000.0"/>
+        <Setting id="ExtCLK" value="12000.0"/>
+        <Setting id="UsbCLK" value="48000.0"/>
+        <Setting id="PCLKD" value="60000.0"/>
+        <Setting id="PCLKB" value="60000.0"/>
+        <Setting id="VCC" value="3.3"/>
+        <Setting id="PCLKC" value="60000.0"/>
+        <Setting id="ICLK" value="120000.0"/>
+        <Setting id="FCLK" value="60000.0"/>
+        <Setting id="SysCLKSrc" value="4.0"/>
+    </Segment>
+    <Segment id="Component">
+        <Setting id="r_bsp" value="FIT"/>
+        <Setting id="r_tfat_rx" value="FIT"/>
+        <Setting id="DMAC1" value="CG"/>
+        <Setting id="r_tfat_driver_rx" value="FIT"/>
+        <Setting id="DAC" value="CG"/>
+        <Setting id="DMAC0" value="CG"/>
+        <Setting id="r_sci_iic_rx" value="FIT"/>
+        <Setting id="r_usb_hmsc" value="FIT"/>
+        <Setting id="r_sys_time_rx" value="FIT"/>
+        <Setting id="ADC0" value="CG"/>
+        <Setting id="TPU0" value="CG"/>
+        <Setting id="r_cmt_rx" value="FIT"/>
+        <Setting id="r_rspi_rx" value="FIT"/>
+        <Setting id="r_usb_basic" value="FIT"/>
+        <Setting id="r_memdrv_rx" value="FIT"/>
+        <Setting id="PORT_config" value="CG"/>
+    </Segment>
+</QE>
