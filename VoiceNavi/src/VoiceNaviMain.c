@@ -34,6 +34,7 @@ uint8_t g_i2c_gpio_tx[2];
 const uint8_t g_msc_file[15];
 uint8_t g_isIRQ;
 uint8_t g_isIRQTriggered;
+uint8_t g_binary_vol_reduction_address;
 
 uint16_t g_volume[2] __attribute__((aligned(4)));
 
@@ -77,6 +78,8 @@ uint8_t g_song_cnt;
 
 uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(4096)));
 static int decode_putp = 0;
+uint8_t binary_vol_reduction;
+uint8_t mode_select;
 
 /* main start */
 void main(void)
@@ -173,8 +176,8 @@ void main(void)
   }
 
   /* Mode select */
-  uint8_t _mode_select = DIP_ReadState() & 0x07;  //Switches 1, 2, 3 are mode select
-  switch(_mode_select)
+  mode_select = DIP_ReadState() & 0x07;  //Switches 1, 2, 3 are mode select
+  switch(mode_select)
   {
     case 0:
       mode = normalPlay;
@@ -210,7 +213,7 @@ void main(void)
 
   /* Inverval select */
   uint8_t _interval_select = (DIP_ReadState() & 0x18) >> 3;  //Switches 4, 5 are interval select
-  if(_mode_select == 0)
+  if(mode_select == 0)
   {
     switch(_interval_select)
     {
@@ -235,6 +238,16 @@ void main(void)
   else
   {
     interval_time = 0;
+  }
+
+  /* Find address for binary volume reduction */
+  if(mode_select > 3)
+  {
+    while(0 == binary_vol_reduction)
+    {
+      NAND_ReadFromFlash(1, g_binary_vol_reduction_address, &binary_vol_reduction);
+      g_binary_vol_reduction_address++;
+    }
   }
 
   /* Enable audio amp */
@@ -530,15 +543,15 @@ void I2C_Periodic()
   _volume = (uint8_t)(g_volume[0] >> 1);
 
   // Activated when 0.
-  if(0 == PIN_Get6dB())
+  if(0 == PIN_Get6dB() || 2 == binary_vol_reduction)
   {
     // -6dB is half
-    _volume = _volume / 2;
+    _volume = _volume / (2 | binary_vol_reduction);
   }
-  else if(0 == PIN_Get14dB())
+  else if(0 == PIN_Get14dB() || 5 == binary_vol_reduction)
   {
     // -14dB is fifth
-    _volume = _volume / 5;
+    _volume = _volume / (5 | binary_vol_reduction);
   }
 
   /* Send volume data to potentiometer */

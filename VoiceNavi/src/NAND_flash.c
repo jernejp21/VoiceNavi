@@ -180,7 +180,7 @@ void NAND_CopyToFlash()
       do
       {
         LED_USBToggle();
-        flash_status = nand_copy_to_flash(flash_address, size, wav_buffer);
+        flash_status = NAND_WriteToFlash(flash_address, size, wav_buffer);
         flash_address += size;
         if(NAND_WRITE_NOK == flash_status)
         {
@@ -191,7 +191,7 @@ void NAND_CopyToFlash()
       while(size == sizeof(wav_buffer));
 
       /* Copy last part of read file to flash */
-      flash_status = nand_copy_to_flash(flash_address, size, wav_buffer);
+      flash_status = NAND_WriteToFlash(flash_address, size, wav_buffer);
       flash_address += size;
       if(NAND_WRITE_NOK == flash_status)
       {
@@ -215,21 +215,21 @@ void NAND_CopyToFlash()
 
   //Mark that data is in flash
   uint8_t data[4] = {0xEF, 0xBE, 0xAD, 0xDE};  //0xdeadbeef in little endian
-  flash_status = nand_copy_to_flash(0, sizeof(data), data);
+  flash_status = NAND_WriteToFlash(0, sizeof(data), data);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
   }
 
   //Copy file table to NAND flash
-  flash_status = nand_copy_to_flash(NAND_FILE_LIST_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
+  flash_status = NAND_WriteToFlash(NAND_FILE_LIST_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
   }
 
   //Copy playlist table to NAND flash
-  flash_status = nand_copy_to_flash(NAND_PLAYLIST_PAGE, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
+  flash_status = NAND_WriteToFlash(NAND_PLAYLIST_PAGE, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
@@ -467,7 +467,7 @@ nand_flash_status_t NAND_Erase()
   return ret;
 }
 
-static nand_flash_status_t nand_copy_to_flash(uint32_t address, uint32_t size, uint8_t *p_data)
+nand_flash_status_t NAND_WriteToFlash(uint32_t address, uint32_t size, uint8_t *p_data)
 {
   uint16_t column_address;
   uint32_t row_address;

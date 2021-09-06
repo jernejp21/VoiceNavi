@@ -371,14 +371,24 @@ uint8_t binary255_positive(uint8_t *songArray)
 
           //Full volume
         case 0xFD:
+        //Rewrite existing address with 0, and wite to next available address.
+          uint8_t vol_reduction[2] = {0, 1};
+          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          g_binary_vol_reduction_address++;
           break;
 
           //Fifth volume
         case 0xFC:
+          uint8_t vol_reduction[2] = {0, 5};
+          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          g_binary_vol_reduction_address++;
           break;
 
           //Half volume
         case 0xFB:
+          uint8_t vol_reduction[2] = {0, 2};
+          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          g_binary_vol_reduction_address++;
           break;
 
         default:
@@ -432,14 +442,24 @@ uint8_t binary255_negative(uint8_t *songArray)
 
           //Full volume
         case 0xFD:
+          //Rewrite existing address with 0, and wite to next available address.
+          uint8_t vol_reduction[2] = {0, 1};
+          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          g_binary_vol_reduction_address++;
           break;
 
           //Fifth volume
         case 0xFC:
+          uint8_t vol_reduction[2] = {0, 5};
+          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          g_binary_vol_reduction_address++;
           break;
 
           //Half volume
         case 0xFB:
+          uint8_t vol_reduction[2] = {0, 2};
+          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          g_binary_vol_reduction_address++;
           break;
 
         default:

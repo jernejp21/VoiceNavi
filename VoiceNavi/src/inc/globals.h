@@ -79,5 +79,6 @@ extern uint8_t g_isIRQ;
 extern uint8_t g_isIRQTriggered;
 extern int g_stopPlaying;
 extern uint8_t g_song_cnt;
+extern uint8_t g_binary_vol_reduction_address;
 
 #endif //__GLOBALS_H
