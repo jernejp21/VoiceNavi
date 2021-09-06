@@ -163,8 +163,8 @@ void main(void)
   if(is_data_in_flash)
   {
     NAND_Reset();
-    NAND_ReadFromFlash(NAND_PAGE_SIZE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
-    NAND_ReadFromFlash(NAND_PAGE_SIZE * 3, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
+    NAND_ReadFromFlash(NAND_DATA_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
+    NAND_ReadFromFlash(NAND_PLAYLIST_PAGE, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
   }
   else
   {

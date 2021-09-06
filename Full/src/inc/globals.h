@@ -27,8 +27,12 @@
 #include "../Errors.h"
 
 /** Macro definitions */
-#define FILE_SIZE (2048)
+#define NAND_VOL_PAGE 2
+#define NAND_DATA_PAGE 8
+#define NAND_FILE_LIST_PAGE 3
+#define NAND_PLAYLIST_PAGE 5
 
+#define FILE_SIZE (2048)
 #define NAND_CS PORTD.PODR.BIT.B4
 #define NAND_CS_HIGH (NAND_CS = 1)
 #define NAND_CS_LOW (NAND_CS = 0)

@@ -112,8 +112,7 @@ void NAND_CopyToFlash()
 {
 
   int cnt = 0;
-  char *fileName_p;
-  uint32_t flash_address = 4096 * 1000;
+  uint32_t flash_address = NAND_DATA_PAGE;
   nand_flash_status_t flash_status;
 
   fr = f_mount(&fs, "", 0);
@@ -184,10 +183,8 @@ void NAND_CopyToFlash()
       {
         LED_USBToggle();
         flash_status = nand_copy_to_flash(flash_address, size, wav_buffer);
-        flash_status = NAND_ReadFromFlash(flash_address, size, flash_buffer);
-        flash_status = nand_check_if_write_ok(wav_buffer, flash_buffer, size);
-        flash_address += NAND_PAGE_SIZE;
-        if(NAND_READ_NOK == flash_status)
+        flash_address += size;
+        if(NAND_WRITE_NOK == flash_status)
         {
           ERROR_FlashECS();
         }
@@ -197,9 +194,7 @@ void NAND_CopyToFlash()
 
       /* Copy last part of read file to flash */
       flash_status = nand_copy_to_flash(flash_address, size, wav_buffer);
-      flash_status = NAND_ReadFromFlash(flash_address, size, flash_buffer);
-      flash_status = nand_check_if_write_ok(wav_buffer, flash_buffer, size);
-      flash_address += NAND_PAGE_SIZE;
+      flash_address += size;
       if(NAND_WRITE_NOK == flash_status)
       {
         ERROR_FlashECS();
@@ -229,14 +224,14 @@ void NAND_CopyToFlash()
   }
 
   //Copy file table to NAND flash
-  flash_status = nand_copy_to_flash(NAND_PAGE_SIZE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
+  flash_status = nand_copy_to_flash(NAND_DATA_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
   }
 
   //Copy playlist table to NAND flash
-  flash_status = nand_copy_to_flash(NAND_PAGE_SIZE * 3, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
+  flash_status = nand_copy_to_flash(NAND_PLAYLIST_PAGE, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
@@ -572,7 +567,7 @@ nand_flash_status_t nand_copy_to_flash(uint32_t address, uint32_t size, uint8_t 
     R_MEMDRV_Rx(NAND_DEVNO, &memdrv_info);
     NAND_CS_HIGH;  //CS HIGH
 
-    if(0 != (rx_buff[0] & (NAND_STATUS_P_FAIL | NAND_STATUS_ECCS0 | NAND_STATUS_ECCS1)))
+    if(0 != (rx_buff[0] & (NAND_STATUS_P_FAIL | NAND_STATUS_ECCS1)))
     {
       return NAND_WRITE_NOK;
     }
