@@ -243,7 +243,7 @@ void NAND_CopyToFlash()
   }
 
   /* After finishing wiriting to flash, lock flash for write protection */
-  nand_lock_flash();
+  NAND_LockFlash();
 
 }
 
@@ -588,7 +588,7 @@ nand_flash_status_t NAND_WriteToFlash(uint32_t address, uint32_t size, uint8_t *
 
 }
 
-static nand_flash_status_t nand_wait_operation_complete()
+nand_flash_status_t nand_wait_operation_complete()
 {
   st_memdrv_info_t memdrv_info;
   uint8_t tx_buff[4];
@@ -616,7 +616,7 @@ static nand_flash_status_t nand_wait_operation_complete()
   return NAND_READ_OK;
 }
 
-static void nand_lock_flash()
+void NAND_LockFlash()
 {
   st_memdrv_info_t memdrv_info;
   uint8_t tx_buff[4];
@@ -648,7 +648,39 @@ static void nand_lock_flash()
   nand_wait_operation_complete();
 }
 
-static nand_flash_status_t nand_check_if_write_ok(uint8_t *w_buff, uint8_t *r_buff, uint32_t size)
+void NAND_UnlockFlash()
+{
+  st_memdrv_info_t memdrv_info;
+  uint8_t tx_buff[4];
+
+  memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
+
+  /* 1. Write Disable */
+  tx_buff[0] = NAND_WRITE_DISABLE;
+  memdrv_info.cnt = 1;
+  memdrv_info.p_data = tx_buff;
+
+  NAND_CS_LOW;  //CS LOW
+  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+  NAND_CS_HIGH;  //CS HIGH
+
+  R_BSP_SoftwareDelay(NAND_DELAY_TIME, NAND_DELAY_UNIT);
+
+  /* 2. Disable block lock bits */
+  tx_buff[0] = NAND_SET_FEATURE;
+  tx_buff[1] = NAND_BLOCK_LOCK_REG;
+  tx_buff[2] = 0;  //Set block lock bits to 1, whole flash space is locked.
+  memdrv_info.cnt = 3;
+  memdrv_info.p_data = tx_buff;
+
+  NAND_CS_LOW;  //CS LOW
+  R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
+  NAND_CS_HIGH;  //CS HIGH
+
+  nand_wait_operation_complete();
+}
+
+nand_flash_status_t nand_check_if_write_ok(uint8_t *w_buff, uint8_t *r_buff, uint32_t size)
 {
   nand_flash_status_t ret = NAND_READ_OK;
 

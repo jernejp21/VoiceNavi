@@ -352,6 +352,7 @@ uint8_t binary255_positive(uint8_t *songArray)
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint8_t _ret = 0;
+  uint8_t vol_reduction[2] = {0, 1};
 
   _gpioa = g_i2c_gpio_rx[0];
   _gpiob = g_i2c_gpio_rx[1];
@@ -386,23 +387,32 @@ uint8_t binary255_positive(uint8_t *songArray)
 
           //Full volume
         case 0xFD:
-        //Rewrite existing address with 0, and wite to next available address.
-          uint8_t vol_reduction[2] = {0, 1};
+        //Rewrite existing address with 0, and write to next available address.
+          vol_reduction[1] = 1;
+          g_binary_vol_reduction = 1;
+          NAND_UnlockFlash();
           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          NAND_LockFlash();
           g_binary_vol_reduction_address++;
           break;
 
           //Fifth volume
         case 0xFC:
-          uint8_t vol_reduction[2] = {0, 5};
+          vol_reduction[1] = 5;
+          g_binary_vol_reduction = 5;
+          NAND_UnlockFlash();
           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          NAND_LockFlash();
           g_binary_vol_reduction_address++;
           break;
 
           //Half volume
         case 0xFB:
-          uint8_t vol_reduction[2] = {0, 2};
+          vol_reduction[1] = 2;
+          g_binary_vol_reduction = 2;
+          NAND_UnlockFlash();
           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          NAND_LockFlash();
           g_binary_vol_reduction_address++;
           break;
 
@@ -422,6 +432,7 @@ uint8_t binary255_negative(uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
+  uint8_t vol_reduction[2] = {0, 1};
   uint8_t _ret = 0;
 
   _gpioa = g_i2c_gpio_rx[0];
@@ -458,22 +469,31 @@ uint8_t binary255_negative(uint8_t *songArray)
           //Full volume
         case 0xFD:
           //Rewrite existing address with 0, and wite to next available address.
-          uint8_t vol_reduction[2] = {0, 1};
+          vol_reduction[1] = 1;
+          g_binary_vol_reduction = 1;
+          NAND_UnlockFlash();
           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          NAND_LockFlash();
           g_binary_vol_reduction_address++;
           break;
 
           //Fifth volume
         case 0xFC:
-          uint8_t vol_reduction[2] = {0, 5};
+          vol_reduction[1] = 5;
+          g_binary_vol_reduction = 5;
+          NAND_UnlockFlash();
           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          NAND_LockFlash();
           g_binary_vol_reduction_address++;
           break;
 
           //Half volume
         case 0xFB:
-          uint8_t vol_reduction[2] = {0, 2};
+          vol_reduction[1] = 2;
+          g_binary_vol_reduction = 2;
+          NAND_UnlockFlash();
           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+          NAND_LockFlash();
           g_binary_vol_reduction_address++;
           break;
 

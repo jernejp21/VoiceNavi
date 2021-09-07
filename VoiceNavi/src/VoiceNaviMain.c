@@ -94,7 +94,7 @@ uint8_t g_song_cnt;
 
 uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(4096)));
 static int decode_putp = 0;
-uint8_t binary_vol_reduction;
+uint8_t g_binary_vol_reduction;
 uint8_t mode_select;
 
 /* main start */
@@ -259,11 +259,13 @@ void main(void)
   /* Find address for binary volume reduction */
   if(mode_select > 3)
   {
-    while(0 == binary_vol_reduction)
+    while(0 == g_binary_vol_reduction)
     {
-      NAND_ReadFromFlash(g_binary_vol_reduction_address, 1, &binary_vol_reduction);
+      NAND_ReadFromFlash(g_binary_vol_reduction_address, 1, &g_binary_vol_reduction);
       g_binary_vol_reduction_address++;
     }
+    //Go back 1 so we can set value to 0 if command comes in.
+    g_binary_vol_reduction_address--;
   }
 
   /* Enable audio amp */
@@ -560,15 +562,15 @@ void I2C_Periodic()
   _volume = (uint8_t)(g_volume[0] >> 1);
 
   // Activated when 0.
-  if(0 == PIN_Get6dB() || 2 == binary_vol_reduction)
+  if(0 == PIN_Get6dB() || 2 == g_binary_vol_reduction)
   {
     // -6dB is half
-    _volume = _volume / (2 | binary_vol_reduction);
+    _volume = _volume / (2 | g_binary_vol_reduction);
   }
-  else if(0 == PIN_Get14dB() || 5 == binary_vol_reduction)
+  else if(0 == PIN_Get14dB() || 5 == g_binary_vol_reduction)
   {
     // -14dB is fifth
-    _volume = _volume / (5 | binary_vol_reduction);
+    _volume = _volume / (5 | g_binary_vol_reduction);
   }
 
   /* Send volume data to potentiometer */
