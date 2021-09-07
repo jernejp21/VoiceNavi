@@ -50,7 +50,7 @@ uint8_t g_i2c_gpio_tx[2];
 const uint8_t g_msc_file[15];
 uint8_t g_isIRQ;
 uint8_t g_isIRQTriggered;
-uint8_t g_binary_vol_reduction_address;
+uint32_t g_binary_vol_reduction_address = NAND_VOL_PAGE;
 
 uint16_t g_volume[2] __attribute__((aligned(4)));
 
@@ -114,8 +114,8 @@ void main(void)
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
   boardType = PIN_BoardSelection();
   I2C_Init();
-  /* Periodic timer ~45 ms. Used for I2C communication */
-  R_CMT_CreatePeriodic(22, &I2C_Periodic, &cmt_channel);
+  /* Periodic timer ~20 ms. Used for I2C communication */
+  R_CMT_CreatePeriodic(50, &I2C_Periodic, &cmt_channel);
 
   //Init USB Host Mass Storage Device controller
   ctrl.module = USB_IP0;
@@ -261,7 +261,7 @@ void main(void)
   {
     while(0 == binary_vol_reduction)
     {
-      NAND_ReadFromFlash(1, g_binary_vol_reduction_address, &binary_vol_reduction);
+      NAND_ReadFromFlash(g_binary_vol_reduction_address, 1, &binary_vol_reduction);
       g_binary_vol_reduction_address++;
     }
   }
@@ -314,6 +314,7 @@ void playFromPlaylist(uint8_t playNr)
   int _repetitions = 0;
 
   LED_BusyOn();
+  PIN_BusyReset();
   while(g_output_music[playNr].repeat > _repetitions)
   {
     while(g_output_music[playNr].playlist_len > _trackNr)
@@ -371,6 +372,7 @@ void playFromPlaylist(uint8_t playNr)
   }
 
   LED_BusyOff();
+  PIN_BusySet();
 }
 
 int decode_getp(void)
@@ -438,10 +440,9 @@ void I2C_Init()
 
   /* GPIO Mux Init */
   /* GPIO Mux Reset pin */
-  PORT5.PDR.BIT.B0 = 1;  //Set pin as output
-  PORT5.PODR.BIT.B0 = 0;  //Set pin LOW
+  PIN_RstReset();
   R_BSP_SoftwareDelay(5, BSP_DELAY_MILLISECS);
-  PORT5.PODR.BIT.B0 = 1;  //Set pin HIGH
+  PIN_RstSet();
 
   i2c_reg_addr[0] = 0x0A;
   g_i2c_gpio_rx[0] = 255;

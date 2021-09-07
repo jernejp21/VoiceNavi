@@ -61,6 +61,8 @@ void R_PORT_config_Create_UserInit(void)
   LED_BusyOff();
   LED_USBOff();
   LED_AlarmOff();
+  PIN_BusySet();
+  PIN_AlarmSet();
     /* End user code. Do not edit comment generated here */
 }
 
@@ -152,6 +154,26 @@ void PIN_RstSet()
 void PIN_RstReset()
 {
   PORT5.PODR.BIT.B0 = 0;
+}
+
+void PIN_BusySet()
+{
+  PORTC.PODR.BIT.B5 = 1;
+}
+
+void PIN_BusyReset()
+{
+  PORTC.PODR.BIT.B5 = 0;
+}
+
+void PIN_AlarmSet()
+{
+  PORTC.PODR.BIT.B4 = 1;
+}
+
+void PIN_AlarmReset()
+{
+  PORTC.PODR.BIT.B4 = 0;
 }
 
 uint8_t PIN_Get6dB()
