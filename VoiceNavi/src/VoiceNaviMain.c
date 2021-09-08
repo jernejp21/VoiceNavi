@@ -103,7 +103,6 @@ void main(void)
 
   //SPI CS Pin
   PORTD.PDR.BIT.B4 = 1;  //Set pin as output
-  //PORTD.PODR.BIT.B4 = 1;  //Set pin HIGH
   NAND_CS_HIGH;
 
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
@@ -565,12 +564,12 @@ void I2C_Periodic()
   if(0 == PIN_Get6dB() || 2 == g_binary_vol_reduction)
   {
     // -6dB is half
-    _volume = _volume / (2 | g_binary_vol_reduction);
+    _volume = _volume / 2;
   }
   else if(0 == PIN_Get14dB() || 5 == g_binary_vol_reduction)
   {
     // -14dB is fifth
-    _volume = _volume / (5 | g_binary_vol_reduction);
+    _volume = _volume / 5;
   }
 
   /* Send volume data to potentiometer */
