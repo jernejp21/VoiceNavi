@@ -141,6 +141,14 @@ void NAND_CopyToFlash()
     ERROR_FileSystem();
   }
 
+  nand_flash_status_t nand_status;
+  nand_status = NAND_Erase();
+  if(NAND_ERASE_NOK == nand_status)
+  {
+    ERROR_FlashECS();
+  }
+  NAND_Reset();
+
   startOfFileNames = 0;
   startOfPlaylist = 0;
   while(f_gets((TCHAR*)&line, sizeof(line), &file))

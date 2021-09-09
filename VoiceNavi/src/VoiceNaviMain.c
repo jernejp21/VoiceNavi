@@ -85,7 +85,6 @@ usb_cfg_t cfg;
 usb_err_t usb_err;
 uint16_t event;
 st_memdrv_info_t memdrv_info;
-nand_flash_status_t nand_status;
 uint32_t cmt_channel;
 int usb_cnt;
 uint8_t interval_time;
@@ -147,13 +146,7 @@ void main(void)
 
         R_CMT_Stop(cmt_channel);
         usb_cnt = 2;
-        LED_USBOn();
-        NAND_Reset();
-        nand_status = NAND_Erase();
-        if(NAND_ERASE_NOK == nand_status)
-        {
-          ERROR_FlashECS();
-        }
+        //LED_USBOn();
         NAND_Reset();
         NAND_CopyToFlash();
         break;
@@ -172,7 +165,7 @@ void main(void)
     }
   }
   R_CMT_Stop(cmt_channel);
-  LED_USBOff();
+  //LED_USBOff();
 
   /* Check if there is any data in flash. */
   is_data_in_flash = NAND_CheckDataInFlash();
@@ -256,7 +249,8 @@ void main(void)
   }
 
   /* Find address for binary volume reduction */
-  if(mode_select > 3)
+  uint8_t _vol_reduction_select = !!(DIP_ReadState() & 0x80);  //Switch 8 is vol reduction select
+  if((mode_select > 5) && _vol_reduction_select)
   {
     while(0 == g_binary_vol_reduction)
     {
