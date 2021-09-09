@@ -517,9 +517,9 @@ uint8_t bitOrder(uint8_t order)
 
   new_order = order >> 4;
   new_order |= (order & 0x01) << 7;
-  new_order |= (order & 0x02) << 6;
-  new_order |= (order & 0x04) << 5;
-  new_order |= (order & 0x08) << 4;
+  new_order |= (order & 0x02) << 5;
+  new_order |= (order & 0x04) << 3;
+  new_order |= (order & 0x08) << 1;
 
   return new_order;
 }
