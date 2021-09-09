@@ -341,7 +341,7 @@ void playFromPlaylist(uint8_t playNr)
 
         NAND_ReadFromFlash(_fileAddress, _sizeToRead, g_file_data);
 
-        wavmp3p_put(g_file_data, _sizeToRead);
+        wav_put(g_file_data, _sizeToRead);
         _fileAddress += sizeof(g_file_data);
         _dataSize -= _sizeToRead;
 
@@ -392,7 +392,7 @@ int decode_put(uint16_t audio_data)
   return ret;
 }
 
-void wavmp3p_put(void *read_buffer, uint32_t size)
+void wav_put(void *read_buffer, uint32_t size)
 {
   uint8_t *data = read_buffer;
   int16_t audio_data;
@@ -424,6 +424,7 @@ void wavmp3p_put(void *read_buffer, uint32_t size)
 
 void emptyPlayBuffer()
 {
+  /* Fill buffer with 2048 (half of 12-bit ADC) for smooth transitions between songs. */
   for(int i = 0; i < RINGBUF_SIZE; i++)
   {
     ringbuf[i] = 2048;
