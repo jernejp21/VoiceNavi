@@ -199,7 +199,8 @@ void NAND_CopyToFlash()
 
       /* Copy last part of read file to flash */
       flash_status = NAND_WriteToFlash(flash_address, size, wav_buffer);
-      flash_address += size;
+      // Write always on new page
+      flash_address += sizeof(wav_buffer);
       if(NAND_WRITE_NOK == flash_status)
       {
         ERROR_FlashECS();
@@ -571,13 +572,17 @@ nand_flash_status_t NAND_WriteToFlash(uint32_t address, uint32_t size, uint8_t *
     R_MEMDRV_Rx(NAND_DEVNO, &memdrv_info);
     NAND_CS_HIGH;  //CS HIGH
 
-    if(0 != (rx_buff[0] & (NAND_STATUS_P_FAIL | NAND_STATUS_ECCS1)))
+    if(0 != (rx_buff[0] & (NAND_STATUS_P_FAIL | NAND_STATUS_ECCS0 | NAND_STATUS_ECCS1)))
     {
       return NAND_WRITE_NOK;
     }
 
     /* 3. Wait until write operation finishes */
-    nand_wait_operation_complete();
+    nand_flash_status_t status = nand_wait_operation_complete();
+    if(status == NAND_READ_NOK)
+    {
+      return NAND_WRITE_NOK;
+    }
 
     /* Prepare for next write if needed */
     row_address++;
@@ -612,6 +617,9 @@ nand_flash_status_t nand_wait_operation_complete()
     NAND_CS_HIGH;  //CS HIGH
   }
   while(0 != (rx_buff[0] & NAND_STATUS_OIP));
+
+  if(rx_buff[0] & NAND_STATUS_ECCS0)
+    return NAND_READ_NOK;
 
   return NAND_READ_OK;
 }
