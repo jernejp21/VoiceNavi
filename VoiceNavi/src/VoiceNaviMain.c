@@ -31,7 +31,7 @@
 void main(void);
 void playFromPlaylist(uint8_t);
 void CNT_USB_CntCallback();
-void wavmp3p_put(void*, uint32_t);
+void wav_put(void*, uint32_t);
 void emptyPlayBuffer();
 void callBack_read();
 void I2C_Send(uint8_t reg_add, uint8_t value);
