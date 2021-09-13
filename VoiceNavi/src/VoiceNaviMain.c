@@ -146,7 +146,7 @@ void main(void)
 
         R_CMT_Stop(cmt_channel);
         usb_cnt = 2;
-        //LED_USBOn();
+        LED_USBOn();
         NAND_Reset();
         NAND_CopyToFlash();
         break;
@@ -165,7 +165,7 @@ void main(void)
     }
   }
   R_CMT_Stop(cmt_channel);
-  //LED_USBOff();
+  LED_USBOff();
 
   /* Check if there is any data in flash. */
   is_data_in_flash = NAND_CheckDataInFlash();
