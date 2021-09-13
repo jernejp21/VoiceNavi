@@ -194,7 +194,7 @@ void NAND_CopyToFlash()
 
       do
       {
-        LED_USBToggle();
+        //LED_USBToggle();
         flash_status = NAND_WriteToFlash(flash_address, size, wav_buffer);
         flash_address += size;
         if(NAND_WRITE_NOK == flash_status)

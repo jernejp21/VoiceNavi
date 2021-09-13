@@ -19,9 +19,12 @@ For updating FW, use [Renesas Flash Programmer V3](https://www.renesas.com/us/en
  - Move SBPOW1 switch from **Host** to **Slave**.
  - Plug in USB cable and connect to PC.
  - Power on the device. To check if the device is recognised by PC, go to Device Manager and look at Ports.
+
  ![device manager](Images/Ports.png)
  - In Renesas Flash Programmer, create new project.
+
  ![new project](Images/RFP_new_project.png)
+
  - Under *Tool* select *Com port*, under *Tool Details* select port which corresponds to RX USB Boot (Device Manager).
  - Click connect to check if you can connect to device. ID Code is all **F**s.
  - In operation tab, make sure you have **little endian** selected.
