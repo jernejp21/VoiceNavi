@@ -124,7 +124,8 @@ void LED_Toggle()
 
 uint8_t DIP_ReadState()
 {
-  return PORTA.PIDR.BYTE;
+  //Should be positive logic, but due to error in HW it's negative logic.
+  return (PORTA.PIDR.BYTE ^ 0xFF);
 }
 
 modeSelect_t PIN_BoardSelection()
