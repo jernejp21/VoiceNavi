@@ -284,8 +284,8 @@ void main(void)
       {
         if(0xFF != song[cur_cnt])
         {
-          playFromPlaylist(song[cur_cnt]);
-          cur_cnt++;
+          //cur_cnt++;
+          playFromPlaylist(song[cur_cnt++]);
         }
         else
         {
@@ -353,6 +353,7 @@ void playFromPlaylist(uint8_t playNr)
         //mode(song);
         if(!g_playing)
         {
+          cur_cnt = 0;
           break;
         }
         song[g_song_cnt] = 0xFF;
