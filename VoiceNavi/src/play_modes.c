@@ -26,6 +26,8 @@
 
 #include "globals.h"
 
+#define MAX_BIN_BUFF_SIZE 20
+
 #define STOP 0x01
 #define STB 0x02
 
@@ -33,7 +35,13 @@ static uint8_t gpioa_prev;
 
 static uint8_t prev_sw = 255;
 static uint8_t irqTriggered;
+int my_cnt = 0;
 
+uint8_t emptyPlay(uint8_t *empty)
+{
+
+  return 1;
+}
 
 uint8_t normalPlay(uint8_t *songArray)
 {
@@ -75,7 +83,7 @@ uint8_t normalPlay(uint8_t *songArray)
               /* Return pressed switch number -1. */
               *songArray = sw_pos;
               prev_sw = sw_pos;
-              _ret = 1;
+              g_song_cnt = 1;
               break;
             }
             else if(_nr_sw_pressed == 2)
@@ -87,7 +95,7 @@ uint8_t normalPlay(uint8_t *songArray)
               {
                 *songArray = sw_pos;
                 prev_sw = sw_pos;
-                _ret = 1;
+                g_song_cnt = 1;
                 break;
               }
             }
@@ -138,7 +146,7 @@ uint8_t lastInputInterruptPlay(uint8_t *songArray)
             if(prev_sw == sw_pos)
             {
               *songArray = prev_sw;
-              _ret = 1;
+              g_song_cnt = 1;
               break;
             }
             else
@@ -147,7 +155,7 @@ uint8_t lastInputInterruptPlay(uint8_t *songArray)
               *songArray = sw_pos;
               prev_sw = sw_pos;
               gpioa_prev = _gpioa;
-              _ret = 1;
+              g_song_cnt = 1;
               break;
             }
           }
@@ -168,7 +176,7 @@ uint8_t lastInputInterruptPlay(uint8_t *songArray)
                 *songArray = sw_pos;
                 prev_sw = sw_pos;
                 irqTriggered = 1;
-                _ret = 1;
+                g_song_cnt = 1;
                 break;
               }
             }
@@ -222,13 +230,13 @@ uint8_t priorityPlay(uint8_t *songArray)
             *songArray = sw_pos;
             prev_sw = sw_pos;
             gpioa_prev = _gpioa;
-            _ret = 1;
+            g_song_cnt = 1;
             break;
           }
           else
           {
             *songArray = prev_sw;
-            _ret = 1;
+            g_song_cnt = 1;
             break;
           }
         }
@@ -262,8 +270,8 @@ uint8_t inputPlay(uint8_t *songArray)
   {
     if((_nr_sw_pressed == 1) && (0 != (_gpiob & STOP)))
     {
-      R_TPU0_Stop();
-      LED_BusyOff();
+      //R_TPU0_Stop();
+      //LED_BusyOff();
       do
       {
         _gpioa = g_i2c_gpio_rx[0];
@@ -283,7 +291,7 @@ uint8_t inputPlay(uint8_t *songArray)
         {
           *songArray = sw_pos;
           prev_sw = sw_pos;
-          _ret = 1;
+          g_song_cnt = 1;
           break;
         }
       }
@@ -321,7 +329,7 @@ uint8_t binary128ch(uint8_t *songArray)
       g_song_cnt = 0;
     }
 
-    if(0 != (_gpiob & STB))
+    if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
     {
       _gpioa &= 0x7F;  //Pass through mask in case of 8-bit value (mistake).
       switch(_gpioa)
@@ -336,12 +344,24 @@ uint8_t binary128ch(uint8_t *songArray)
           break;
 
         default:
-          *(songArray + g_song_cnt) = (_gpioa ^ 0x7F) - 1;  //Convert to positive logic
-          g_song_cnt++;
-          _ret = g_song_cnt;
+          if(g_song_cnt < MAX_BIN_BUFF_SIZE)
+          {
+            *(songArray + g_song_cnt) = (_gpioa ^ 0x7F) - 1;  //Convert to positive logic
+            g_song_cnt++;
+            _ret = g_song_cnt;
+          }
           break;
       }
+      prev_sw = _gpiob & STB;
     }
+    else if(0 == (_gpiob & STB))
+    {
+      prev_sw = 0;
+    }
+  }
+  else
+  {
+    prev_sw = 0;
   }
 
   return _ret;
@@ -371,7 +391,7 @@ uint8_t binary255_positive(uint8_t *songArray)
       g_song_cnt = 0;
     }
 
-    if(0 != (_gpiob & STB))
+    if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
     {
       switch(_gpioa)
       {
@@ -387,7 +407,7 @@ uint8_t binary255_positive(uint8_t *songArray)
 
           //Full volume
         case 0xFD:
-        //Rewrite existing address with 0, and write to next available address.
+          //Rewrite existing address with 0, and write to next available address.
           vol_reduction[1] = 1;
           g_binary_vol_reduction = 1;
           NAND_UnlockFlash();
@@ -417,12 +437,24 @@ uint8_t binary255_positive(uint8_t *songArray)
           break;
 
         default:
-          *(songArray + g_song_cnt) = _gpioa - 1;
-          g_song_cnt++;
-          _ret = g_song_cnt;
+          if(g_song_cnt < MAX_BIN_BUFF_SIZE)
+          {
+            *(songArray + g_song_cnt) = _gpioa - 1;
+            g_song_cnt++;
+            _ret = g_song_cnt;
+          }
           break;
       }
+      prev_sw = _gpiob & STB;
     }
+    else if(0 == (_gpiob & STB))
+    {
+      prev_sw = 0;
+    }
+  }
+  else
+  {
+    prev_sw = 0;
   }
 
   return _ret;
@@ -452,7 +484,7 @@ uint8_t binary255_negative(uint8_t *songArray)
       g_song_cnt = 0;
     }
 
-    if(0 != (_gpiob & STB))
+    if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
     {
       switch(_gpioa)
       {
@@ -498,12 +530,24 @@ uint8_t binary255_negative(uint8_t *songArray)
           break;
 
         default:
-          *(songArray + g_song_cnt) = (_gpioa ^ 0xFF) - 1; //Convert to positive logic
-          g_song_cnt++;
-          _ret = g_song_cnt;
+          if(g_song_cnt < MAX_BIN_BUFF_SIZE)
+          {
+            *(songArray + g_song_cnt) = 0xFA - _gpioa;  //Convert to positive logic
+            g_song_cnt++;
+            _ret = g_song_cnt;
+          }
           break;
       }
+      prev_sw = _gpiob & STB;
     }
+    else if(0 == (_gpiob & STB))
+    {
+      prev_sw = 0;
+    }
+  }
+  else
+  {
+    prev_sw = 0;
   }
 
   return _ret;

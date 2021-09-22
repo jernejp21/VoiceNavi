@@ -27,6 +27,7 @@
 #ifndef __PLAY_MODES_H
 #define __PLAY_MODES_H
 
+uint8_t emptyPlay(uint8_t *empty);
 uint8_t normalPlay(uint8_t *songArray);
 uint8_t lastInputInterruptPlay(uint8_t *songArray);
 uint8_t priorityPlay(uint8_t *songArray);

@@ -62,7 +62,7 @@ void LED_USBToggle();
 void LED_AlarmOn();
 void LED_AlarmOff();
 void LED_Init();
-void LED_Toggle();
+void LED_AlarmToggle();
 uint8_t DIP_ReadState();
 void PIN_ShutdownSet();
 void PIN_ShutdownReset();

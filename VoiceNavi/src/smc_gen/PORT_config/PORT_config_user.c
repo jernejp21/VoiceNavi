@@ -117,9 +117,9 @@ void LED_AlarmOff()
   PORT5.PODR.BIT.B4 = 1;
 }
 
-void LED_Toggle()
+void LED_AlarmToggle()
 {
-  PORT5.PODR.BIT.B3 ^= 1;
+  PORT5.PODR.BIT.B4 ^= 1;
 }
 
 uint8_t DIP_ReadState()

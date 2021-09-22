@@ -86,6 +86,7 @@ usb_err_t usb_err;
 uint16_t event;
 st_memdrv_info_t memdrv_info;
 uint32_t cmt_channel;
+uint32_t cmt_channel_i2c;
 int usb_cnt;
 uint8_t interval_time;
 uint8_t song[20];
@@ -95,6 +96,8 @@ uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(4096)));
 static int decode_putp = 0;
 uint8_t g_binary_vol_reduction;
 uint8_t mode_select;
+int cur_cnt = 0;
+int semaphoreLock = 0;
 
 /* main start */
 void main(void)
@@ -107,13 +110,14 @@ void main(void)
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
   // resetpgr.c in PowerON_Reset_PC function.
 
+  mode = emptyPlay;
   LED_PowOn();
   R_DAC1_Start();
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
   boardType = PIN_BoardSelection();
   I2C_Init();
-  /* Periodic timer ~20 ms. Used for I2C communication */
-  R_CMT_CreatePeriodic(50, &I2C_Periodic, &cmt_channel);
+  /* Periodic timer ~45 ms. Used for I2C communication */
+  R_CMT_CreatePeriodic(22, &I2C_Periodic, &cmt_channel_i2c);
 
   //Init USB Host Mass Storage Device controller
   ctrl.module = USB_IP0;
@@ -271,27 +275,28 @@ void main(void)
 
   /* Wait for interrupt from GPIO pins to start playing */
   memset(song, -1, 20);
-  int cur_cnt = 0;
 
   while(1)
   {
-    while(cur_cnt < g_song_cnt)
+    if(!semaphoreLock)
     {
-      if(0xFF != song[cur_cnt])
+      while(cur_cnt < g_song_cnt)
       {
-        playFromPlaylist(song[cur_cnt]);
-        cur_cnt++;
-      }
-      else
-      {
-        break;
-      }
+        if(0xFF != song[cur_cnt])
+        {
+          playFromPlaylist(song[cur_cnt]);
+          cur_cnt++;
+        }
+        else
+        {
+          break;
+        }
 
-      /* Wait for interval time */
-      R_BSP_SoftwareDelay(interval_time, BSP_DELAY_SECS);
+        /* Wait for interval time */
+        R_BSP_SoftwareDelay(interval_time, BSP_DELAY_SECS);
+        semaphoreLock = 1;
+      }
     }
-    g_song_cnt = mode(song);
-    cur_cnt = 0;
   }
 
 }
@@ -345,7 +350,7 @@ void playFromPlaylist(uint8_t playNr)
         _fileAddress += sizeof(g_file_data);
         _dataSize -= _sizeToRead;
 
-        mode(song);
+        //mode(song);
         if(!g_playing)
         {
           break;
@@ -405,6 +410,11 @@ void wav_put(void *read_buffer, uint32_t size)
       audio_data = audio_data << 4;
 
       while(1 != decode_put((uint16_t)audio_data));
+
+      if(!g_playing)
+      {
+        return;
+      }
     }
   }
   else
@@ -417,6 +427,11 @@ void wav_put(void *read_buffer, uint32_t size)
       data += 2;
 
       while(1 != decode_put((uint16_t)audio_data));
+
+      if(!g_playing)
+      {
+        return;
+      }
     }
   }
 
@@ -577,4 +592,13 @@ void I2C_Periodic()
   g_i2c_gpio_rx[1] = I2C_Receive(0x19);
 
   g_isIRQ = PIN_GetExtIRQ();
+
+  if((cur_cnt == g_song_cnt) && (0 != g_song_cnt))
+  {
+    cur_cnt = 0;
+    g_song_cnt = 0;
+  }
+
+  mode(song);
+  semaphoreLock = 0;
 }
