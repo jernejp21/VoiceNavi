@@ -364,7 +364,11 @@ void playFromPlaylist(uint8_t playNr)
         if(!g_playing)
         {
           cur_cnt = 0;
-          break;
+          R_TPU0_Stop();
+          emptyPlayBuffer();
+          LED_BusyOff();
+          PIN_BusySet();
+          return;
         }
         song[g_song_cnt] = 0xFF;
       }
