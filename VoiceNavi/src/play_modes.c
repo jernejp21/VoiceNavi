@@ -327,6 +327,7 @@ void binary128ch(uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0x7F;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -355,7 +356,7 @@ void binary128ch(uint8_t *songArray)
         default:
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
-            *(songArray + g_systemStatus.song_cnt) = (_gpioa ^ 0x7F) - 1;  //Convert to positive logic
+            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;  //Convert to positive logic
             g_systemStatus.song_cnt++;
           }
           break;
@@ -472,6 +473,7 @@ void binary255_negative(uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -531,7 +533,7 @@ void binary255_negative(uint8_t *songArray)
         default:
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
-            *(songArray + g_systemStatus.song_cnt) = 0xFA - _gpioa;  //Convert to positive logic
+            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
             g_systemStatus.song_cnt++;
           }
           break;
