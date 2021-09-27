@@ -169,22 +169,12 @@ void lastInputInterruptPlay(uint8_t *songArray)
         {
           if(_sw_pressed[sw_pos])
           {
-
             irqTriggered = 0;
-            if(prev_sw == sw_pos)
-            {
-              *songArray = prev_sw;
-              g_systemStatus.song_cnt = 1;
-              break;
-            }
-            else
-            {
-              g_systemStatus.flag_isPlaying = 0;
-              *songArray = sw_pos;
-              prev_sw = sw_pos;
-              g_systemStatus.song_cnt = 1;
-              break;
-            }
+            g_systemStatus.flag_isPlaying = 0;
+            *songArray = sw_pos;
+            prev_sw = sw_pos;
+            g_systemStatus.song_cnt = 1;
+            break;
           }
         }
       }
