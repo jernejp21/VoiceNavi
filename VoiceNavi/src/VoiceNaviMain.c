@@ -215,12 +215,13 @@ void main(void)
     case 5:
       break;
 
+      //Reverse 6 and 7, because input logic is reversed.
     case 6:
-      mode = binary255_negative;
+      mode = binary255_positive;
       break;
 
     case 7:
-      mode = binary255_positive;
+      mode = binary255_negative;
       break;
   }
 
