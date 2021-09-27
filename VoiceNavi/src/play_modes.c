@@ -239,18 +239,12 @@ void priorityPlay(uint8_t *songArray)
       {
         if(_sw_pressed[sw_pos])
         {
-          if((sw_pos < prev_sw))
+          if((sw_pos <= prev_sw))
           {
             g_systemStatus.flag_isPlaying = 0;
             *songArray = sw_pos;
             prev_sw = sw_pos;
             gpioa_prev = _gpioa;
-            g_systemStatus.song_cnt = 1;
-            break;
-          }
-          else
-          {
-            *songArray = prev_sw;
             g_systemStatus.song_cnt = 1;
             break;
           }
