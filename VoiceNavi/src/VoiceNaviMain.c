@@ -296,9 +296,13 @@ void main(void)
         /* Wait for interval time */
         if(interval_time)
         {
+          LED_BusyOn();
+          PIN_BusyReset();
           waitForInterval = 1;
           R_BSP_SoftwareDelay(interval_time, BSP_DELAY_SECS);
           waitForInterval = 0;
+          LED_BusyOff();
+          PIN_BusySet();
         }
         semaphoreLock = 1;
       }
