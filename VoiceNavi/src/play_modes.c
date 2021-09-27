@@ -133,7 +133,7 @@ uint8_t lastInputInterruptPlay(uint8_t *songArray)
     {
       g_playing = 0;
     }
-    else
+    else if(gpioa_prev != _gpioa)
     {
       if(_nr_sw_pressed == 1)
       {
@@ -154,7 +154,6 @@ uint8_t lastInputInterruptPlay(uint8_t *songArray)
               g_playing = 0;
               *songArray = sw_pos;
               prev_sw = sw_pos;
-              gpioa_prev = _gpioa;
               g_song_cnt = 1;
               break;
             }
@@ -185,6 +184,7 @@ uint8_t lastInputInterruptPlay(uint8_t *songArray)
       }
     }
   }
+  gpioa_prev = _gpioa;
 
   return _ret;
 }
@@ -213,7 +213,7 @@ uint8_t priorityPlay(uint8_t *songArray)
     {
       g_playing = 0;
     }
-    else
+    else if(gpioa_prev != _gpioa)
     {
       if(!g_playing)
       {
@@ -243,6 +243,7 @@ uint8_t priorityPlay(uint8_t *songArray)
       }
     }
   }
+  gpioa_prev = _gpioa;
 
   return _ret;
 }
