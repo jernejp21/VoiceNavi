@@ -39,6 +39,7 @@ uint8_t wav_buffer[NAND_PAGE_SIZE];
 char line[100];
 
 flash_custom_FAT_t flash_table[255];
+playlist_t output_music[255];
 wav_header_t wav_file;
 int startOfFileNames;
 int startOfPlaylist;
@@ -219,7 +220,7 @@ void NAND_CopyToFlash()
 
     if(startOfPlaylist)
     {
-      WAV_PlaceSongsToTable((playlist_t*)&g_output_music[cnt], (char*)&line);
+      WAV_PlaceSongsToTable((playlist_t*)&output_music[cnt], (char*)&line);
       cnt++;
       if(cnt > 254)
       {
@@ -245,7 +246,7 @@ void NAND_CopyToFlash()
   }
 
   //Copy playlist table to NAND flash
-  flash_status = NAND_WriteToFlash(NAND_PLAYLIST_PAGE, sizeof(g_output_music), (uint8_t*)&g_output_music[0]);
+  flash_status = NAND_WriteToFlash(NAND_PLAYLIST_PAGE, sizeof(output_music), (uint8_t*)&output_music[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();

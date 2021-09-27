@@ -35,24 +35,55 @@ static uint8_t gpioa_prev;
 
 static uint8_t prev_sw = 255;
 static uint8_t irqTriggered;
-int my_cnt = 0;
 
-uint8_t emptyPlay(uint8_t *empty)
+static uint8_t bitOrder(uint8_t order)
 {
+  uint8_t new_order = 0;
 
-  return 1;
+  order ^= 0xFF;  //Reverse all bits, to show only active gpios.
+
+  new_order = order >> 4;
+  new_order |= (order & 0x01) << 7;
+  new_order |= (order & 0x02) << 5;
+  new_order |= (order & 0x04) << 3;
+  new_order |= (order & 0x08) << 1;
+
+  return new_order;
 }
 
-uint8_t normalPlay(uint8_t *songArray)
+static uint8_t switchToPlay(uint16_t bitField, uint8_t *sw_array_p)
+{
+//Return value is number of switches pressed
+  uint8_t cnt = 0;
+
+  for(int index = 0; index < 8; index++)
+  {
+    if(bitField & 1)
+    {
+      *(sw_array_p + index) = 1;
+      cnt++;
+    }
+
+    bitField = bitField >> 1;
+  }
+
+  return cnt;
+}
+
+void emptyPlay(uint8_t *empty)
+{
+
+}
+
+void normalPlay(uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[8] = {0};
-  uint8_t _ret = 0;
 
   /* Check for switch status only when triggered */
-  if(g_isIRQ)
+  if(g_systemStatus.flag_isIRQ)
   {
     _gpioa = g_i2c_gpio_rx[0];
     _gpiob = g_i2c_gpio_rx[1];
@@ -63,12 +94,12 @@ uint8_t normalPlay(uint8_t *songArray)
 
     if(0 != (_gpiob & STOP))
     {
-      g_playing = 0;
+      g_systemStatus.flag_isPlaying = 0;
     }
     else
     {
       /* No interrupts. Play only if a song isn't played yet. */
-      if(!g_playing)
+      if(!g_systemStatus.flag_isPlaying)
       {
         /* Get number of pressed switches and pressed positions. */
         _nr_sw_pressed = switchToPlay(_gpioa, _sw_pressed);
@@ -83,7 +114,7 @@ uint8_t normalPlay(uint8_t *songArray)
               /* Return pressed switch number -1. */
               *songArray = sw_pos;
               prev_sw = sw_pos;
-              g_song_cnt = 1;
+              g_systemStatus.song_cnt = 1;
               break;
             }
             else if(_nr_sw_pressed == 2)
@@ -95,7 +126,7 @@ uint8_t normalPlay(uint8_t *songArray)
               {
                 *songArray = sw_pos;
                 prev_sw = sw_pos;
-                g_song_cnt = 1;
+                g_systemStatus.song_cnt = 1;
                 break;
               }
             }
@@ -104,20 +135,17 @@ uint8_t normalPlay(uint8_t *songArray)
       }
     }
   }
-
-  return _ret;
 }
 
-uint8_t lastInputInterruptPlay(uint8_t *songArray)
+void lastInputInterruptPlay(uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[8] = {0};
-  uint8_t _ret = 0;
 
   /* Check for switch status only when triggered */
-  if(g_isIRQ)
+  if(g_systemStatus.flag_isIRQ)
   {
     _gpioa = g_i2c_gpio_rx[0];
     _gpiob = g_i2c_gpio_rx[1];
@@ -131,7 +159,7 @@ uint8_t lastInputInterruptPlay(uint8_t *songArray)
 
     if(0 != (_gpiob & STOP))
     {
-      g_playing = 0;
+      g_systemStatus.flag_isPlaying = 0;
     }
     else if(gpioa_prev != _gpioa)
     {
@@ -146,15 +174,15 @@ uint8_t lastInputInterruptPlay(uint8_t *songArray)
             if(prev_sw == sw_pos)
             {
               *songArray = prev_sw;
-              g_song_cnt = 1;
+              g_systemStatus.song_cnt = 1;
               break;
             }
             else
             {
-              g_playing = 0;
+              g_systemStatus.flag_isPlaying = 0;
               *songArray = sw_pos;
               prev_sw = sw_pos;
-              g_song_cnt = 1;
+              g_systemStatus.song_cnt = 1;
               break;
             }
           }
@@ -171,11 +199,11 @@ uint8_t lastInputInterruptPlay(uint8_t *songArray)
 
               if(prev_sw != sw_pos)
               {
-                g_playing = 0;
+                g_systemStatus.flag_isPlaying = 0;
                 *songArray = sw_pos;
                 prev_sw = sw_pos;
                 irqTriggered = 1;
-                g_song_cnt = 1;
+                g_systemStatus.song_cnt = 1;
                 break;
               }
             }
@@ -185,19 +213,16 @@ uint8_t lastInputInterruptPlay(uint8_t *songArray)
     }
   }
   gpioa_prev = _gpioa;
-
-  return _ret;
 }
 
-uint8_t priorityPlay(uint8_t *songArray)
+void priorityPlay(uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint8_t _sw_pressed[8] = {0};
-  uint8_t _ret = 0;
 
   /* Check for switch status only when triggered */
-  if(g_isIRQ)
+  if(g_systemStatus.flag_isIRQ)
   {
     _gpioa = g_i2c_gpio_rx[0];
     _gpiob = g_i2c_gpio_rx[1];
@@ -211,11 +236,11 @@ uint8_t priorityPlay(uint8_t *songArray)
 
     if(0 != (_gpiob & STOP))
     {
-      g_playing = 0;
+      g_systemStatus.flag_isPlaying = 0;
     }
     else if(gpioa_prev != _gpioa)
     {
-      if(!g_playing)
+      if(!g_systemStatus.flag_isPlaying)
       {
         prev_sw = 255;
       }
@@ -226,17 +251,17 @@ uint8_t priorityPlay(uint8_t *songArray)
         {
           if((sw_pos < prev_sw))
           {
-            g_playing = 0;
+            g_systemStatus.flag_isPlaying = 0;
             *songArray = sw_pos;
             prev_sw = sw_pos;
             gpioa_prev = _gpioa;
-            g_song_cnt = 1;
+            g_systemStatus.song_cnt = 1;
             break;
           }
           else
           {
             *songArray = prev_sw;
-            g_song_cnt = 1;
+            g_systemStatus.song_cnt = 1;
             break;
           }
         }
@@ -244,17 +269,14 @@ uint8_t priorityPlay(uint8_t *songArray)
     }
   }
   gpioa_prev = _gpioa;
-
-  return _ret;
 }
 
-uint8_t inputPlay(uint8_t *songArray)
+void inputPlay(uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[8] = {0};
-  uint8_t _ret = 0;
 
   _gpioa = g_i2c_gpio_rx[0];
   _gpiob = g_i2c_gpio_rx[1];
@@ -267,7 +289,7 @@ uint8_t inputPlay(uint8_t *songArray)
   _nr_sw_pressed = switchToPlay(_gpioa, _sw_pressed);
 
   /* Stop if switch isn't triggered */
-  if(g_isIRQ)
+  if(g_systemStatus.flag_isIRQ)
   {
     if((_nr_sw_pressed == 1) && (0 != (_gpiob & STOP)))
     {
@@ -280,7 +302,7 @@ uint8_t inputPlay(uint8_t *songArray)
       }
       while(_gpioa);
 
-      g_playing = 0;
+      g_systemStatus.flag_isPlaying = 0;
       *songArray = -1;
 
     }
@@ -292,7 +314,7 @@ uint8_t inputPlay(uint8_t *songArray)
         {
           *songArray = sw_pos;
           prev_sw = sw_pos;
-          g_song_cnt = 1;
+          g_systemStatus.song_cnt = 1;
           break;
         }
       }
@@ -300,18 +322,15 @@ uint8_t inputPlay(uint8_t *songArray)
   }
   else
   {
-    g_playing = 0;
+    g_systemStatus.flag_isPlaying = 0;
     *songArray = -1;
   }
-
-  return _ret;
 }
 
-uint8_t binary128ch(uint8_t *songArray)
+void binary128ch(uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
-  uint8_t _ret = 0;
 
   _gpioa = g_i2c_gpio_rx[0];
   _gpiob = g_i2c_gpio_rx[1];
@@ -321,13 +340,12 @@ uint8_t binary128ch(uint8_t *songArray)
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
-  if(g_isIRQ)
+  if(g_systemStatus.flag_isIRQ)
   {
     if(0 != (_gpiob & STOP))
     {
-      g_playing = 0;
-      _ret = 0;
-      g_song_cnt = 0;
+      g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.song_cnt = 0;
     }
 
     if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
@@ -337,7 +355,7 @@ uint8_t binary128ch(uint8_t *songArray)
       {
         //STOP
         case 0x7F:
-          *(songArray + g_song_cnt) = 0xFF;
+          *(songArray + g_systemStatus.song_cnt) = 0xFF;
           break;
 
           //Not in use
@@ -345,11 +363,10 @@ uint8_t binary128ch(uint8_t *songArray)
           break;
 
         default:
-          if(g_song_cnt < MAX_BIN_BUFF_SIZE)
+          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
-            *(songArray + g_song_cnt) = (_gpioa ^ 0x7F) - 1;  //Convert to positive logic
-            g_song_cnt++;
-            _ret = g_song_cnt;
+            *(songArray + g_systemStatus.song_cnt) = (_gpioa ^ 0x7F) - 1;  //Convert to positive logic
+            g_systemStatus.song_cnt++;
           }
           break;
       }
@@ -364,15 +381,12 @@ uint8_t binary128ch(uint8_t *songArray)
   {
     prev_sw = 0;
   }
-
-  return _ret;
 }
 
-uint8_t binary255_positive(uint8_t *songArray)
+void binary255_positive(uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
-  uint8_t _ret = 0;
   uint8_t vol_reduction[2] = {0, 1};
 
   _gpioa = g_i2c_gpio_rx[0];
@@ -383,13 +397,12 @@ uint8_t binary255_positive(uint8_t *songArray)
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
-  if(g_isIRQ)
+  if(g_systemStatus.flag_isIRQ)
   {
     if(0 != (_gpiob & STOP))
     {
-      g_playing = 0;
-      _ret = 0;
-      g_song_cnt = 0;
+      g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.song_cnt = 0;
     }
 
     if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
@@ -398,7 +411,7 @@ uint8_t binary255_positive(uint8_t *songArray)
       {
         //STOP
         case 0xFF:
-          *(songArray + g_song_cnt) = 0xFF;
+          *(songArray + g_systemStatus.song_cnt) = 0xFF;
           break;
 
           //Not in use
@@ -438,11 +451,10 @@ uint8_t binary255_positive(uint8_t *songArray)
           break;
 
         default:
-          if(g_song_cnt < MAX_BIN_BUFF_SIZE)
+          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
-            *(songArray + g_song_cnt) = _gpioa - 1;
-            g_song_cnt++;
-            _ret = g_song_cnt;
+            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
+            g_systemStatus.song_cnt++;
           }
           break;
       }
@@ -457,16 +469,13 @@ uint8_t binary255_positive(uint8_t *songArray)
   {
     prev_sw = 0;
   }
-
-  return _ret;
 }
 
-uint8_t binary255_negative(uint8_t *songArray)
+void binary255_negative(uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint8_t vol_reduction[2] = {0, 1};
-  uint8_t _ret = 0;
 
   _gpioa = g_i2c_gpio_rx[0];
   _gpiob = g_i2c_gpio_rx[1];
@@ -476,13 +485,12 @@ uint8_t binary255_negative(uint8_t *songArray)
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
-  if(g_isIRQ)
+  if(g_systemStatus.flag_isIRQ)
   {
     if(0 != (_gpiob & STOP))
     {
-      g_playing = 0;
-      _ret = 0;
-      g_song_cnt = 0;
+      g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.song_cnt = 0;
     }
 
     if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
@@ -491,7 +499,7 @@ uint8_t binary255_negative(uint8_t *songArray)
       {
         //STOP
         case 0xFF:
-          *(songArray + g_song_cnt) = 0xFF;
+          *(songArray + g_systemStatus.song_cnt) = 0xFF;
           break;
 
           //Not in use
@@ -531,11 +539,10 @@ uint8_t binary255_negative(uint8_t *songArray)
           break;
 
         default:
-          if(g_song_cnt < MAX_BIN_BUFF_SIZE)
+          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
-            *(songArray + g_song_cnt) = 0xFA - _gpioa;  //Convert to positive logic
-            g_song_cnt++;
-            _ret = g_song_cnt;
+            *(songArray + g_systemStatus.song_cnt) = 0xFA - _gpioa;  //Convert to positive logic
+            g_systemStatus.song_cnt++;
           }
           break;
       }
@@ -550,41 +557,4 @@ uint8_t binary255_negative(uint8_t *songArray)
   {
     prev_sw = 0;
   }
-
-  return _ret;
 }
-
-uint8_t bitOrder(uint8_t order)
-{
-  uint8_t new_order = 0;
-
-  order ^= 0xFF;  //Reverse all bits, to show only active gpios.
-
-  new_order = order >> 4;
-  new_order |= (order & 0x01) << 7;
-  new_order |= (order & 0x02) << 5;
-  new_order |= (order & 0x04) << 3;
-  new_order |= (order & 0x08) << 1;
-
-  return new_order;
-}
-
-uint8_t switchToPlay(uint16_t bitField, uint8_t *sw_array_p)
-{
-//Return value is number of switches pressed
-  uint8_t cnt = 0;
-
-  for(int index = 0; index < 8; index++)
-  {
-    if(bitField & 1)
-    {
-      *(sw_array_p + index) = 1;
-      cnt++;
-    }
-
-    bitField = bitField >> 1;
-  }
-
-  return cnt;
-}
-

@@ -34,7 +34,7 @@ void ERROR_FileSystem()
 
   while(1)
   {
-    if(g_isIRQ)
+    if(g_systemStatus.flag_isIRQ)
     {
       LED_AlarmOn();
     }

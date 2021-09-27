@@ -27,31 +27,13 @@
 #ifndef __PLAY_MODES_H
 #define __PLAY_MODES_H
 
-uint8_t emptyPlay(uint8_t *empty);
-uint8_t normalPlay(uint8_t *songArray);
-uint8_t lastInputInterruptPlay(uint8_t *songArray);
-uint8_t priorityPlay(uint8_t *songArray);
-uint8_t inputPlay(uint8_t *songArray);
-uint8_t binary128ch(uint8_t *songArray);
-uint8_t binary255_positive(uint8_t *songArray);
-uint8_t binary255_negative(uint8_t *songArray);
-uint8_t bitOrder(uint8_t);
-uint8_t switchToPlay(uint16_t, uint8_t*);
-
-typedef union un_gpio
-{
-  uint8_t BYTE;
-  struct
-  {
-    uint8_t GPIO1 :1;
-    uint8_t GPIO2 :1;
-    uint8_t GPIO3 :1;
-    uint8_t GPIO4 :1;
-    uint8_t GPIO5 :1;
-    uint8_t GPIO6 :1;
-    uint8_t GPIO7 :1;
-    uint8_t GPIO8 :1;
-  } BIT;
-} gpio_t;
+void emptyPlay(uint8_t *empty);
+void normalPlay(uint8_t *songArray);
+void lastInputInterruptPlay(uint8_t *songArray);
+void priorityPlay(uint8_t *songArray);
+void inputPlay(uint8_t *songArray);
+void binary128ch(uint8_t *songArray);
+void binary255_positive(uint8_t *songArray);
+void binary255_negative(uint8_t *songArray);
 
 #endif //__PLAY_MODES_H

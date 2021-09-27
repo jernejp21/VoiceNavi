@@ -83,26 +83,21 @@ typedef enum modeSelect
   WAV_5F9IH = 0,
 } modeSelect_t;
 
+typedef struct system_status
+{
+  uint8_t flag_isPlaying;
+  uint8_t flag_isIRQ;
+  uint8_t song_cnt;
+} system_status_t;
+
 /** Global functions */
 modeSelect_t PIN_BoardSelection();
 
 /** Global variables */
 extern uint16_t ringbuf[RINGBUF_SIZE];
 extern uint16_t g_volume[2];
-extern int g_counter;
-extern int g_readBuffer;
-extern uint8_t g_file_data[FILE_SIZE];
-extern wav_header_t g_wav_file;
-extern uint32_t g_file_size;
-extern uint32_t g_current_byte;
-extern int g_playing;
-extern playlist_t g_output_music[255];
-extern file_meta_data_t g_file_meta_data[255];
-extern uint8_t g_isIRQ;
-extern uint8_t g_isIRQTriggered;
-extern int g_stopPlaying;
-extern uint8_t g_song_cnt;
 extern uint8_t g_binary_vol_reduction;
 extern uint32_t g_binary_vol_reduction_address;
+extern system_status_t g_systemStatus;
 
 #endif //__GLOBALS_H
