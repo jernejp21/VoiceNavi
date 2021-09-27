@@ -98,6 +98,7 @@ uint8_t g_binary_vol_reduction;
 uint8_t mode_select;
 int cur_cnt = 0;
 int semaphoreLock = 0;
+int waitForInterval;
 
 /* main start */
 void main(void)
@@ -293,7 +294,12 @@ void main(void)
         }
 
         /* Wait for interval time */
-        R_BSP_SoftwareDelay(interval_time, BSP_DELAY_SECS);
+        if(interval_time)
+        {
+          waitForInterval = 1;
+          R_BSP_SoftwareDelay(interval_time, BSP_DELAY_SECS);
+          waitForInterval = 0;
+        }
         semaphoreLock = 1;
       }
     }
@@ -600,6 +606,9 @@ void I2C_Periodic()
     g_song_cnt = 0;
   }
 
-  mode(song);
+  if(!waitForInterval)
+  {
+    mode(song);
+  }
   semaphoreLock = 0;
 }
