@@ -96,39 +96,36 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     {
       g_systemStatus.flag_isPlaying = 0;
     }
-    else
+    else if(!g_systemStatus.flag_isPlaying)
     {
       /* No interrupts. Play only if a song isn't played yet. */
-      if(!g_systemStatus.flag_isPlaying)
-      {
-        /* Get number of pressed switches and pressed positions. */
-        _nr_sw_pressed = switchToPlay(_gpioa, _sw_pressed);
+      /* Get number of pressed switches and pressed positions. */
+      _nr_sw_pressed = switchToPlay(_gpioa, _sw_pressed);
 
-        for(char sw_pos = 0; sw_pos < 8; sw_pos++)
+      for(char sw_pos = 0; sw_pos < 8; sw_pos++)
+      {
+        if(_sw_pressed[sw_pos])
         {
-          if(_sw_pressed[sw_pos])
+          /* If only one switch is pressed, play that song */
+          if(_nr_sw_pressed == 1)
           {
-            /* If only one switch is pressed, play that song */
-            if(_nr_sw_pressed == 1)
+            /* Return pressed switch number -1. */
+            *songArray = sw_pos;
+            prev_sw = sw_pos;
+            g_systemStatus.song_cnt = 1;
+            break;
+          }
+          else if(_nr_sw_pressed == 2)
+          {
+            /* If current SW position is different from previous,
+             * return pressed switch. This is for alternating play.
+             */
+            if(sw_pos != prev_sw)
             {
-              /* Return pressed switch number -1. */
               *songArray = sw_pos;
               prev_sw = sw_pos;
               g_systemStatus.song_cnt = 1;
               break;
-            }
-            else if(_nr_sw_pressed == 2)
-            {
-              /* If current SW position is different from previous,
-               * return pressed switch. This is for alternating play.
-               */
-              if(sw_pos != prev_sw)
-              {
-                *songArray = sw_pos;
-                prev_sw = sw_pos;
-                g_systemStatus.song_cnt = 1;
-                break;
-              }
             }
           }
         }
@@ -163,40 +160,25 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     }
     else if(gpioa_prev != _gpioa)
     {
-      if(_nr_sw_pressed == 1)
+      if((1 == _nr_sw_pressed) || ((2 == _nr_sw_pressed) && (0 == irqTriggered)))
       {
         for(char sw_pos = 0; sw_pos < 8; sw_pos++)
         {
           if(_sw_pressed[sw_pos])
           {
-            irqTriggered = 0;
+            if(prev_sw != sw_pos)
+            {
+              irqTriggered = 1;
+            }
+            else
+            {
+              irqTriggered = 0;
+            }
             g_systemStatus.flag_isPlaying = 0;
             *songArray = sw_pos;
             prev_sw = sw_pos;
             g_systemStatus.song_cnt = 1;
             break;
-          }
-        }
-      }
-      else if(_nr_sw_pressed == 2)
-      {
-        if(0 == irqTriggered)
-        {
-          for(char sw_pos = 0; sw_pos < 8; sw_pos++)
-          {
-            if(_sw_pressed[sw_pos])
-            {
-
-              if(prev_sw != sw_pos)
-              {
-                g_systemStatus.flag_isPlaying = 0;
-                *songArray = sw_pos;
-                prev_sw = sw_pos;
-                irqTriggered = 1;
-                g_systemStatus.song_cnt = 1;
-                break;
-              }
-            }
           }
         }
       }
@@ -239,7 +221,7 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
       {
         if(_sw_pressed[sw_pos])
         {
-          if((sw_pos <= prev_sw))
+          if(sw_pos <= prev_sw)
           {
             g_systemStatus.flag_isPlaying = 0;
             *songArray = sw_pos;
