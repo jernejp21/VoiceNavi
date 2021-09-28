@@ -88,6 +88,7 @@ typedef struct system_status
   uint8_t flag_isPlaying;
   uint8_t flag_isIRQ;
   uint8_t song_cnt;
+  uint8_t flag_isSongAvailable;
 } system_status_t;
 
 /** Global functions */

@@ -145,6 +145,7 @@ static void emptyPlayBuffer()
   {
     ringbuf[i] = 2048;
   }
+  R_DAC1_Set_ConversionValue(2048);
 }
 
 static void playFromPlaylist(uint8_t playNr)
@@ -156,6 +157,16 @@ static void playFromPlaylist(uint8_t playNr)
   uint32_t _fileAddress;
   int _trackNr = 0;
   int _repetitions = 0;
+
+  if(output_music[playNr].playlist_len)
+  {
+    g_systemStatus.flag_isSongAvailable = 1;
+  }
+  else
+  {
+    g_systemStatus.flag_isSongAvailable = 0;
+    return;
+  }
 
   LED_BusyOn();
   PIN_BusyReset();
@@ -581,7 +592,7 @@ void main(void)
         }
 
         /* Wait for interval time */
-        if(interval_time)
+        if(interval_time && g_systemStatus.flag_isSongAvailable)
         {
           LED_BusyOn();
           PIN_BusyReset();
