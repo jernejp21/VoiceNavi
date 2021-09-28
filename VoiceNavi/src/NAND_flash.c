@@ -267,7 +267,7 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t 
   uint32_t read_size;
 
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
-  row_address = (uint16_t)(address / NAND_PAGE_SIZE);
+  row_address = (uint32_t)(address / NAND_PAGE_SIZE);
   column_address = (uint16_t)(address % NAND_PAGE_SIZE);
 
   while(1)
@@ -493,7 +493,7 @@ nand_flash_status_t NAND_WriteToFlash(uint32_t address, uint32_t size, uint8_t *
   uint32_t write_size;
 
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
-  row_address = (uint16_t)(address / NAND_PAGE_SIZE);
+  row_address = (uint32_t)(address / NAND_PAGE_SIZE);
   column_address = (uint16_t)(address % NAND_PAGE_SIZE);
 
   while(1)

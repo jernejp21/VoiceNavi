@@ -191,7 +191,6 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
-  uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[8] = {0};
 
   /* Check for switch status only when triggered */
@@ -289,7 +288,7 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void binary128ch(uint8_t *i2c_gpio, uint8_t *songArray)
+void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -299,7 +298,6 @@ void binary128ch(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0x7F;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -346,7 +344,7 @@ void binary128ch(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
+void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -357,6 +355,7 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -434,7 +433,7 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
+void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -445,7 +444,6 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -500,6 +498,117 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
           NAND_LockFlash();
           g_binary_vol_reduction_address++;
+          break;
+
+        default:
+          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
+          {
+            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
+            g_systemStatus.song_cnt++;
+          }
+          break;
+      }
+      prev_sw = _gpiob & STB;
+    }
+    else if(0 == (_gpiob & STB))
+    {
+      prev_sw = 0;
+    }
+  }
+  else
+  {
+    prev_sw = 0;
+  }
+}
+
+void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
+{
+  uint8_t _gpioa;
+  uint8_t _gpiob;
+
+  _gpioa = *(i2c_gpio + 0);
+  _gpiob = *(i2c_gpio + 1);
+
+  /* Correct switches order according to HW design */
+  _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get negative logic
+  _gpiob ^= 0xFF;  //Convert to positive logic.
+
+  /* This mode has negative logic */
+  if(g_systemStatus.flag_isIRQ)
+  {
+    if(0 != (_gpiob & STOP))
+    {
+      g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.song_cnt = 0;
+    }
+
+    if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
+    {
+      switch(_gpioa)
+      {
+        //STOP
+        case 0xFF:
+          *(songArray + g_systemStatus.song_cnt) = 0xFF;
+          break;
+
+          //Not in use
+        case 0x00:
+          break;
+
+        default:
+          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
+          {
+            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
+            g_systemStatus.song_cnt++;
+          }
+          break;
+      }
+      prev_sw = _gpiob & STB;
+    }
+    else if(0 == (_gpiob & STB))
+    {
+      prev_sw = 0;
+    }
+  }
+  else
+  {
+    prev_sw = 0;
+  }
+}
+
+void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
+{
+  uint8_t _gpioa;
+  uint8_t _gpiob;
+
+  _gpioa = *(i2c_gpio + 0);
+  _gpiob = *(i2c_gpio + 1);
+
+  /* Correct switches order according to HW design */
+  _gpioa = bitOrder(_gpioa);
+  _gpiob ^= 0xFF;  //Convert to positive logic.
+
+  /* This mode has negative logic */
+  if(g_systemStatus.flag_isIRQ)
+  {
+    if(0 != (_gpiob & STOP))
+    {
+      g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.song_cnt = 0;
+    }
+
+    if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
+    {
+      switch(_gpioa)
+      {
+        //STOP
+        case 0xFF:
+          *(songArray + g_systemStatus.song_cnt) = 0xFF;
+          break;
+
+          //Not in use
+        case 0x00:
           break;
 
         default:

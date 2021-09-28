@@ -32,7 +32,9 @@ void normalPlay(uint8_t*, uint8_t*);
 void lastInputInterruptPlay(uint8_t*, uint8_t*);
 void priorityPlay(uint8_t*, uint8_t*);
 void inputPlay(uint8_t*, uint8_t*);
-void binary128ch(uint8_t*, uint8_t*);
+void binary127ch_negative(uint8_t*, uint8_t*);
+void binary250_positive(uint8_t*, uint8_t*);
+void binary250_negative(uint8_t*, uint8_t*);
 void binary255_positive(uint8_t*, uint8_t*);
 void binary255_negative(uint8_t*, uint8_t*);
 

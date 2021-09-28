@@ -45,7 +45,7 @@ uint32_t g_binary_vol_reduction_address = NAND_VOL_PAGE;
 system_status_t g_systemStatus;
 
 /** Song, play mode and output related variables */
-void (*mode)();
+void (*playMode)();
 uint8_t file_data[FILE_SIZE];
 playlist_t output_music[255];
 flash_custom_FAT_t flash_table[255];
@@ -345,7 +345,7 @@ static void sys_init()
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
   // resetpgr.c in PowerON_Reset_PC function.
 
-  mode = emptyPlay;
+  playMode = emptyPlay;
   LED_PowOn();
   R_DAC1_Start();
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
@@ -421,7 +421,7 @@ void ISR_periodicPolling()
 
   if(!g_systemStatus.flag_waitForInterval)
   {
-    mode(gpio_rx, songBuffer);
+    playMode(gpio_rx, songBuffer);
   }
   g_systemStatus.flag_semaphoreLock = 0;
 }
@@ -490,41 +490,64 @@ void main(void)
   }
 
   /* Determine board type */
-  boardType = PIN_BoardSelection();
+  //boardType = PIN_BoardSelection();
+  //Only for testing, change for final version
+  boardType = ((DIP_ReadState() ^ 0xFF) & 0x60) >> 5;  //Pins 6, 7
 
   /* Mode select */
   mode_select = DIP_ReadState() & 0x07;  //Switches 1, 2, 3 are mode select
   switch(mode_select)
   {
     case 0:
-      mode = normalPlay;
+      playMode = normalPlay;
       break;
 
     case 1:
-      mode = lastInputInterruptPlay;
+      playMode = lastInputInterruptPlay;
       break;
 
     case 2:
-      mode = priorityPlay;
+      playMode = priorityPlay;
       break;
 
     case 3:
-      mode = inputPlay;
+      playMode = inputPlay;
       break;
 
     case 4:
-      mode = binary128ch;
+      if(boardType == WAV_5A2)
+      {
+        playMode = binary127ch_negative;
+      }
       break;
 
     case 5:
+      if(boardType == WAV_5F2)
+      {
+        playMode = binary127ch_negative;
+      }
       break;
 
     case 6:
-      mode = binary255_negative;
+      if(boardType == WAV_5A2)
+      {
+        playMode = binary250_negative;
+      }
+      if(boardType == WAV_5F2)
+      {
+        playMode = binary255_positive;
+      }
       break;
 
     case 7:
-      mode = binary255_positive;
+      if(boardType == WAV_5A2)
+      {
+        playMode = binary250_positive;
+      }
+      if(boardType == WAV_5F2)
+      {
+        playMode = binary255_negative;
+      }
       break;
   }
 
