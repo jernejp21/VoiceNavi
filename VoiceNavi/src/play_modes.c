@@ -191,6 +191,7 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
+  uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[8] = {0};
 
   /* Check for switch status only when triggered */
@@ -210,7 +211,7 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     {
       g_systemStatus.flag_isPlaying = 0;
     }
-    else if(gpioa_prev != _gpioa)
+    else
     {
       if(!g_systemStatus.flag_isPlaying)
       {
@@ -221,12 +222,11 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
       {
         if(_sw_pressed[sw_pos])
         {
-          if(sw_pos <= prev_sw)
+          if(sw_pos < prev_sw)
           {
             g_systemStatus.flag_isPlaying = 0;
             *songArray = sw_pos;
             prev_sw = sw_pos;
-            gpioa_prev = _gpioa;
             g_systemStatus.song_cnt = 1;
             break;
           }
@@ -234,7 +234,6 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
       }
     }
   }
-  gpioa_prev = _gpioa;
 }
 
 void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
