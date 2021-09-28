@@ -75,6 +75,8 @@ typedef struct system_status
   uint8_t flag_isIRQ;
   uint8_t song_cnt;
   uint8_t flag_isSongAvailable;
+  uint8_t flag_waitForInterval;
+  uint8_t flag_semaphoreLock;
 } system_status_t;
 
 /** Global functions */

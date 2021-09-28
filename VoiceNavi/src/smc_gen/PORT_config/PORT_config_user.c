@@ -124,7 +124,7 @@ void LED_AlarmToggle()
 
 uint8_t DIP_ReadState()
 {
-  //Should be positive logic, but due to error in HW it's negative logic.
+  //Negative logic, chage to positive.
   return (PORTA.PIDR.BYTE ^ 0xFF);
 }
 

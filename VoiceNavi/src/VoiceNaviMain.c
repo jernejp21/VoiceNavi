@@ -33,48 +33,39 @@ void CNT_USB_CntCallback();
 void callBack_read();
 void ISR_periodicPolling();
 
+/** Defines */
 #define I2C_GPIO_ADDR 0x21
 #define I2C_POTENT_ADDR 0x28
 
 #define RINGBUF_SIZE 2048
 #define p_inc(p, max) (((p + 1) >= max) ? 0 : (p + 1))
 
-/* Global variables */
+/** Global variables */
 uint32_t g_binary_vol_reduction_address = NAND_VOL_PAGE;
-uint16_t volume[2] __attribute__((aligned(4)));
 system_status_t g_systemStatus;
 
+/** Song, play mode and output related variables */
 void (*mode)();
-modeSelect_t boardType;
-
 uint8_t file_data[FILE_SIZE];
 playlist_t output_music[255];
 flash_custom_FAT_t flash_table[255];
-
 wav_header_t wav_file;
+uint16_t volume[2] __attribute__((aligned(4)));
+uint8_t songBuffer[20];
+uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(4096)));
+uint8_t g_binary_vol_reduction;
+int cur_cnt = 0;
 
+/** Communication structures */
 sci_iic_info_t iic_info;
-
-/* Used inside this file. Declared here so we don't fill up stack. */
-char is_data_in_flash = 0;
 usb_ctrl_t ctrl;
 usb_cfg_t cfg;
-usb_err_t usb_err;
-uint16_t event;
 st_memdrv_info_t memdrv_info;
+
+/** CMT counter related variables */
 uint32_t cmt_channel;
 uint32_t cmt_channel_i2c;
 int usb_cnt;
-uint8_t interval_time;
-uint8_t song[20];
-
-uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(4096)));
-static int decode_putp = 0;
-uint8_t g_binary_vol_reduction;
-uint8_t mode_select;
-int cur_cnt = 0;
-int semaphoreLock = 0;
-int waitForInterval;
 
 static int decode_getp(void)
 {
@@ -83,7 +74,9 @@ static int decode_getp(void)
 
 static int decode_put(uint16_t audio_data)
 {
+  static int decode_putp = 0;
   int ret = 0;
+
   unsigned int putp = p_inc(decode_putp, RINGBUF_SIZE);
 
   if(putp != decode_getp())
@@ -213,7 +206,7 @@ static void playFromPlaylist(uint8_t playNr)
           PIN_BusySet();
           return;
         }
-        song[g_systemStatus.song_cnt] = 0xFF;
+        songBuffer[g_systemStatus.song_cnt] = 0xFF;
       }
 
       R_TPU0_Stop();
@@ -356,7 +349,6 @@ static void sys_init()
   LED_PowOn();
   R_DAC1_Start();
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
-  boardType = PIN_BoardSelection();
   I2C_Init();
   /* Periodic timer ~45 ms. Used for I2C communication */
   R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);
@@ -366,7 +358,7 @@ static void sys_init()
   ctrl.type = USB_HMSC;
   cfg.usb_speed = USB_FS;
   cfg.usb_mode = USB_HOST;
-  usb_err = R_USB_Open(&ctrl, &cfg);
+  R_USB_Open(&ctrl, &cfg);
 
   //Init SPI for NAND Flash
   memdrv_info.cnt = 0;
@@ -387,7 +379,7 @@ static void sys_init()
   R_DMAC1_Start();
   emptyPlayBuffer();
 
-  memset(song, -1, 20);
+  memset(songBuffer, -1, 20);
 }
 
 /* Periodic ISR for polling status on GPIO MUX */
@@ -427,16 +419,21 @@ void ISR_periodicPolling()
     g_systemStatus.song_cnt = 0;
   }
 
-  if(!waitForInterval)
+  if(!g_systemStatus.flag_waitForInterval)
   {
-    mode(gpio_rx, song);
+    mode(gpio_rx, songBuffer);
   }
-  semaphoreLock = 0;
+  g_systemStatus.flag_semaphoreLock = 0;
 }
 
 /* main start */
 void main(void)
 {
+  usb_status_t event;
+  uint8_t mode_select;
+  uint8_t interval_time;
+  uint8_t is_data_in_flash = 0;
+  modeSelect_t boardType;
 
   sys_init();
 
@@ -491,6 +488,9 @@ void main(void)
     LED_AlarmOn();
     while(1);  // No data in flash, loop forever here.
   }
+
+  /* Determine board type */
+  boardType = PIN_BoardSelection();
 
   /* Mode select */
   mode_select = DIP_ReadState() & 0x07;  //Switches 1, 2, 3 are mode select
@@ -573,14 +573,14 @@ void main(void)
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)
   {
-    if(!semaphoreLock)
+    if(!g_systemStatus.flag_semaphoreLock)
     {
       while(cur_cnt < g_systemStatus.song_cnt)
       {
-        if(0xFF != song[cur_cnt])
+        if(0xFF != songBuffer[cur_cnt])
         {
           //cur_cnt++;
-          playFromPlaylist(song[cur_cnt++]);
+          playFromPlaylist(songBuffer[cur_cnt++]);
         }
         else
         {
@@ -592,13 +592,13 @@ void main(void)
         {
           LED_BusyOn();
           PIN_BusyReset();
-          waitForInterval = 1;
+          g_systemStatus.flag_waitForInterval = 1;
           R_BSP_SoftwareDelay(interval_time, BSP_DELAY_SECS);
-          waitForInterval = 0;
+          g_systemStatus.flag_waitForInterval = 0;
           LED_BusyOff();
           PIN_BusySet();
         }
-        semaphoreLock = 1;
+        g_systemStatus.flag_semaphoreLock = 1;
       }
     }
   }

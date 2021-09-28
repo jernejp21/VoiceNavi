@@ -259,7 +259,7 @@ void NAND_CopyToFlash()
 
 nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
 {
-  nand_flash_status_t ret = NAND_WRITE_OK;
+  nand_flash_status_t ret;
   uint16_t column_address;
   uint32_t row_address;
   st_memdrv_info_t memdrv_info;
@@ -314,7 +314,7 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t 
     ret = nand_wait_operation_complete();
     if(NAND_READ_NOK == ret)
     {
-      //return ret;
+      return NAND_READ_NOK;
     }
 
     /* 3. Read from Cache */
@@ -376,7 +376,6 @@ void NAND_Reset()
 
 nand_flash_status_t NAND_Erase()
 {
-  nand_flash_status_t ret = NAND_ERASE_OK;
   uint8_t tx_buff[4];
   uint8_t rx_buff[4];
   uint32_t addr;
@@ -473,7 +472,7 @@ nand_flash_status_t NAND_Erase()
 
     if(0 != (rx_buff[0] & NAND_STATUS_E_FAIL))
     {
-      ret = NAND_ERASE_NOK;
+      return NAND_ERASE_NOK;
       break;
     }
 
@@ -481,7 +480,7 @@ nand_flash_status_t NAND_Erase()
     nand_wait_operation_complete();
   }
 
-  return ret;
+  return NAND_ERASE_OK;
 }
 
 nand_flash_status_t NAND_WriteToFlash(uint32_t address, uint32_t size, uint8_t *p_data)
@@ -627,7 +626,7 @@ nand_flash_status_t nand_wait_operation_complete()
   }
   while(0 != (rx_buff[0] & NAND_STATUS_OIP));
 
-  if(rx_buff[0] & NAND_STATUS_ECCS0)
+  if(rx_buff[0] & NAND_STATUS_ECCS1)
     return NAND_READ_NOK;
 
   return NAND_READ_OK;
