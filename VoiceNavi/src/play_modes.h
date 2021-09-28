@@ -27,13 +27,13 @@
 #ifndef __PLAY_MODES_H
 #define __PLAY_MODES_H
 
-void emptyPlay(uint8_t *empty);
-void normalPlay(uint8_t *songArray);
-void lastInputInterruptPlay(uint8_t *songArray);
-void priorityPlay(uint8_t *songArray);
-void inputPlay(uint8_t *songArray);
-void binary128ch(uint8_t *songArray);
-void binary255_positive(uint8_t *songArray);
-void binary255_negative(uint8_t *songArray);
+void emptyPlay(uint8_t*, uint8_t*);
+void normalPlay(uint8_t*, uint8_t*);
+void lastInputInterruptPlay(uint8_t*, uint8_t*);
+void priorityPlay(uint8_t*, uint8_t*);
+void inputPlay(uint8_t*, uint8_t*);
+void binary128ch(uint8_t*, uint8_t*);
+void binary255_positive(uint8_t*, uint8_t*);
+void binary255_negative(uint8_t*, uint8_t*);
 
 #endif //__PLAY_MODES_H

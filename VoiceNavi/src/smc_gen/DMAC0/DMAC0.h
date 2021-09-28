@@ -59,5 +59,6 @@ void R_DMAC0_Create_UserInit(void);
 void R_DMAC0_Start(void);
 void R_DMAC0_Stop(void);
 /* Start user code for function. Do not edit comment generated here */
+void R_DMAC0_SetAddresses(void*, void*);
 /* End user code. Do not edit comment generated here */
 #endif

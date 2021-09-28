@@ -31,12 +31,17 @@
 void main(void);
 void CNT_USB_CntCallback();
 void callBack_read();
-void I2C_Periodic();
+void ISR_periodicPolling();
+
+#define I2C_GPIO_ADDR 0x21
+#define I2C_POTENT_ADDR 0x28
+
+#define RINGBUF_SIZE 2048
+#define p_inc(p, max) (((p + 1) >= max) ? 0 : (p + 1))
 
 /* Global variables */
-uint8_t g_i2c_gpio_rx[2];
 uint32_t g_binary_vol_reduction_address = NAND_VOL_PAGE;
-uint16_t g_volume[2] __attribute__((aligned(4)));
+uint16_t volume[2] __attribute__((aligned(4)));
 system_status_t g_systemStatus;
 
 void (*mode)();
@@ -46,14 +51,9 @@ uint8_t file_data[FILE_SIZE];
 playlist_t output_music[255];
 flash_custom_FAT_t flash_table[255];
 
-wav_header_t g_wav_file;
+wav_header_t wav_file;
 
-volatile sci_iic_return_t ret;
 sci_iic_info_t iic_info;
-
-uint8_t i2c_gpio_address[1] = {I2C_GPIO_ADDR};
-uint8_t i2c_potent_address[1] = {I2C_POTENT_ADDR};
-uint8_t i2c_reg_addr[1];
 
 /* Used inside this file. Declared here so we don't fill up stack. */
 char is_data_in_flash = 0;
@@ -103,7 +103,7 @@ static void wav_put(void *read_buffer, uint32_t size)
   uint8_t *data = read_buffer;
   int16_t audio_data;
 
-  if(g_wav_file.bps == 8)
+  if(wav_file.bps == 8)
   {
     for(int n = 0; n < size; n++)
     {
@@ -179,12 +179,12 @@ static void playFromPlaylist(uint8_t playNr)
 
       NAND_ReadFromFlash(_fileAddress, WAV_HEADER_SIZE, file_data);
 
-      WAV_Open(&g_wav_file, file_data);
-      _dataSize = g_wav_file.data_size;
+      WAV_Open(&wav_file, file_data);
+      _dataSize = wav_file.data_size;
       _fileAddress += WAV_HEADER_SIZE;
 
       g_systemStatus.flag_isPlaying = 1;
-      R_TPU0_SetFrequency(g_wav_file.sample_rate);
+      R_TPU0_SetFrequency(wav_file.sample_rate);
 
       R_TPU0_Start();
       while(_dataSize > 0)
@@ -204,7 +204,6 @@ static void playFromPlaylist(uint8_t playNr)
         _fileAddress += sizeof(file_data);
         _dataSize -= _sizeToRead;
 
-        //mode(song);
         if(!g_systemStatus.flag_isPlaying)
         {
           cur_cnt = 0;
@@ -234,101 +233,96 @@ static void playFromPlaylist(uint8_t playNr)
   PIN_BusySet();
 }
 
-static uint8_t I2C_Receive(uint8_t reg_add)
+static uint8_t I2C_Receive(sci_iic_info_t *i2c_info, uint8_t dev_add, uint8_t reg_add)
 {
+  volatile sci_iic_return_t ret;
   uint8_t _rx;
 
-  iic_info.cnt1st = 1;
-  iic_info.cnt2nd = 1;
-  iic_info.dev_sts = SCI_IIC_NO_INIT;
-  iic_info.p_data1st = &reg_add;
-  iic_info.p_data2nd = &_rx;
+  i2c_info->cnt1st = 1;
+  i2c_info->cnt2nd = 1;
+  i2c_info->dev_sts = SCI_IIC_NO_INIT;
+  i2c_info->p_data1st = &reg_add;
+  i2c_info->p_data2nd = &_rx;
+  i2c_info->p_slv_adr = &dev_add;
 
-  ret = R_SCI_IIC_MasterReceive(&iic_info);
+  ret = R_SCI_IIC_MasterReceive(i2c_info);
   if(SCI_IIC_SUCCESS == ret)
   {
-    while(SCI_IIC_FINISH != iic_info.dev_sts);
+    while(SCI_IIC_FINISH != i2c_info->dev_sts);
   }
 
   return _rx;
 }
 
-static void I2C_Send(uint8_t reg_add, uint8_t value)
+static void I2C_Send(sci_iic_info_t *i2c_info, uint8_t dev_add, uint8_t reg_add, uint8_t value)
 {
-  iic_info.cnt1st = 1;
-  iic_info.cnt2nd = 1;
-  iic_info.dev_sts = SCI_IIC_NO_INIT;
-  iic_info.p_data1st = &reg_add;
-  iic_info.p_data2nd = &value;
+  volatile sci_iic_return_t ret;
 
-  ret = R_SCI_IIC_MasterSend(&iic_info);
+  i2c_info->cnt1st = 1;
+  i2c_info->cnt2nd = 1;
+  i2c_info->dev_sts = SCI_IIC_NO_INIT;
+  i2c_info->p_data1st = &reg_add;
+  i2c_info->p_data2nd = &value;
+  i2c_info->p_slv_adr = &dev_add;
+
+  ret = R_SCI_IIC_MasterSend(i2c_info);
   if(SCI_IIC_SUCCESS == ret)
   {
-    while(SCI_IIC_FINISH != iic_info.dev_sts);
+    while(SCI_IIC_FINISH != i2c_info->dev_sts);
   }
 
 }
 static void I2C_Init()
 {
-
   /* GPIO Mux Init */
   /* GPIO Mux Reset pin */
   PIN_RstReset();
   R_BSP_SoftwareDelay(5, BSP_DELAY_MILLISECS);
   PIN_RstSet();
 
-  i2c_reg_addr[0] = 0x0A;
-  g_i2c_gpio_rx[0] = 255;
-
   iic_info.callbackfunc = &callBack_read;
   iic_info.ch_no = 11;
   iic_info.cnt1st = 1;
-  iic_info.cnt2nd = 2;
+  iic_info.cnt2nd = 1;
   iic_info.dev_sts = SCI_IIC_NO_INIT;
-  iic_info.p_data1st = i2c_reg_addr;
-  iic_info.p_data2nd = g_i2c_gpio_rx;
-  iic_info.p_slv_adr = i2c_potent_address;
 
-  ret = R_SCI_IIC_Open(&iic_info);
+  R_SCI_IIC_Open(&iic_info);
 
   /* Potentiometer init - do not write to EEPROM */
-  I2C_Send(2, 0x80);
-
-  // Switch from Potentiometer address to GPIO address
-  iic_info.p_slv_adr = i2c_gpio_address;
+  I2C_Send(&iic_info, I2C_POTENT_ADDR, 2, 0x80);
 
   //IOCON
-  I2C_Send(0x0A, 0xC2);  //INT is active HIGH
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x0A, 0xC2);  //INT is active HIGH
 
   //IODIRA
-  I2C_Send(0x00, 0xFF);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x00, 0xFF);
   //IOPOLA
-  I2C_Send(0x01, 0);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x01, 0);
   //GPINTENA
-  I2C_Send(0x02, 0xFF);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x02, 0xFF);
   //DEFVALA
-  I2C_Send(0x03, 0xFF);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x03, 0xFF);
   //INTCONA
-  I2C_Send(0x04, 0xFF);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x04, 0xFF);
   //GPPUA
-  I2C_Send(0x06, 0xFF);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x06, 0xFF);
 
   //IODIRB
-  I2C_Send(0x10, 0xFF);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x10, 0xFF);
   //IOPOLB
-  I2C_Send(0x11, 0);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x11, 0);
   //GPINTENB
-  I2C_Send(0x12, 0xFF);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x12, 0xFF);
   //DEFVALB
-  I2C_Send(0x13, 0xFF);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x13, 0xFF);
   //INTCONB
-  I2C_Send(0x14, 0xFF);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x14, 0xFF);
   //GPPUB
-  I2C_Send(0x16, 0xFF);
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x16, 0xFF);
 
   //Clear interrupts
-  I2C_Receive(0x09);
-  I2C_Receive(0x19);
+  I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
+  I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
 }
 
 void callBack_read()
@@ -365,7 +359,7 @@ static void sys_init()
   boardType = PIN_BoardSelection();
   I2C_Init();
   /* Periodic timer ~45 ms. Used for I2C communication */
-  R_CMT_CreatePeriodic(22, &I2C_Periodic, &cmt_channel_i2c);
+  R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);
 
   //Init USB Host Mass Storage Device controller
   ctrl.module = USB_IP0;
@@ -386,21 +380,25 @@ static void sys_init()
   /* Enable audio amp */
   PIN_ShutdownSet();
 
+  R_DMAC0_SetAddresses((void*)&S12AD.ADDR6, (void*)&volume);
   R_DMAC0_Start();
   R_ADC0_Start();
+  R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);
   R_DMAC1_Start();
   emptyPlayBuffer();
 
   memset(song, -1, 20);
 }
 
-void I2C_Periodic()
+/* Periodic ISR for polling status on GPIO MUX */
+void ISR_periodicPolling()
 {
   R_BSP_InterruptsEnable();
   uint8_t _volume;
+  uint8_t gpio_rx[2];
 
-  //g_volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
-  _volume = (uint8_t)(g_volume[0] >> 1);
+  //volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
+  _volume = (uint8_t)(volume[0] >> 1);
 
   // Activated when 0.
   if(0 == PIN_Get6dB() || 2 == g_binary_vol_reduction)
@@ -415,13 +413,11 @@ void I2C_Periodic()
   }
 
   /* Send volume data to potentiometer */
-  iic_info.p_slv_adr = i2c_potent_address;
-  I2C_Send(0, _volume);
+  I2C_Send(&iic_info, I2C_POTENT_ADDR, 0, _volume);
 
   /* Read gpioa, gpiob from GPIO mux */
-  iic_info.p_slv_adr = i2c_gpio_address;
-  g_i2c_gpio_rx[0] = I2C_Receive(0x09);
-  g_i2c_gpio_rx[1] = I2C_Receive(0x19);
+  gpio_rx[0] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
+  gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
 
   g_systemStatus.flag_isIRQ = PIN_GetExtIRQ();
 
@@ -433,7 +429,7 @@ void I2C_Periodic()
 
   if(!waitForInterval)
   {
-    mode(song);
+    mode(gpio_rx, song);
   }
   semaphoreLock = 0;
 }

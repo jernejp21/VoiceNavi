@@ -60,20 +60,6 @@
 #define NAND_CS_HIGH (NAND_CS = 1)
 #define NAND_CS_LOW (NAND_CS = 0)
 
-#define I2C_GPIO_ADDR 0x21
-#define I2C_GPIO_READ ((I2C_GPIO_ADDR << 1) | 0x01)
-#define I2C_GPIO_WRITE ((I2C_GPIO_ADDR << 1) | 0x00)
-
-#define I2C_POTENT_ADDR 0x28
-#define I2C_POTENT_READ ((I2C_POTENT_ADDR << 1) | 0x01)
-#define I2C_POTENT_WRITE ((I2C_POTENT_ADDR << 1) | 0x00)
-
-#define RINGBUF_SIZE 2048
-#define p_inc(p, max) (((p + 1) >= max) ? 0 : (p + 1))
-
-uint8_t g_i2c_gpio_rx[2];
-uint8_t g_i2c_gpio_tx[2];
-
 /** Enum definitions */
 typedef enum modeSelect
 {
@@ -95,8 +81,7 @@ typedef struct system_status
 modeSelect_t PIN_BoardSelection();
 
 /** Global variables */
-extern uint16_t ringbuf[RINGBUF_SIZE];
-extern uint16_t g_volume[2];
+//extern uint16_t ringbuf[RINGBUF_SIZE];
 extern uint8_t g_binary_vol_reduction;
 extern uint32_t g_binary_vol_reduction_address;
 extern system_status_t g_systemStatus;

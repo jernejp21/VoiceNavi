@@ -70,12 +70,12 @@ static uint8_t switchToPlay(uint16_t bitField, uint8_t *sw_array_p)
   return cnt;
 }
 
-void emptyPlay(uint8_t *empty)
+void emptyPlay(uint8_t *i2c_gpio, uint8_t *empty)
 {
 
 }
 
-void normalPlay(uint8_t *songArray)
+void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -85,8 +85,8 @@ void normalPlay(uint8_t *songArray)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    _gpioa = g_i2c_gpio_rx[0];
-    _gpiob = g_i2c_gpio_rx[1];
+    _gpioa = *(i2c_gpio + 0);
+    _gpiob = *(i2c_gpio + 1);
 
     /* Correct switches order according to HW design */
     _gpioa = bitOrder(_gpioa);
@@ -137,7 +137,7 @@ void normalPlay(uint8_t *songArray)
   }
 }
 
-void lastInputInterruptPlay(uint8_t *songArray)
+void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -147,8 +147,8 @@ void lastInputInterruptPlay(uint8_t *songArray)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    _gpioa = g_i2c_gpio_rx[0];
-    _gpiob = g_i2c_gpio_rx[1];
+    _gpioa = *(i2c_gpio + 0);
+    _gpiob = *(i2c_gpio + 1);
 
     /* Correct switches order according to HW design */
     _gpioa = bitOrder(_gpioa);
@@ -205,7 +205,7 @@ void lastInputInterruptPlay(uint8_t *songArray)
   gpioa_prev = _gpioa;
 }
 
-void priorityPlay(uint8_t *songArray)
+void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -214,8 +214,8 @@ void priorityPlay(uint8_t *songArray)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    _gpioa = g_i2c_gpio_rx[0];
-    _gpiob = g_i2c_gpio_rx[1];
+    _gpioa = *(i2c_gpio + 0);
+    _gpiob = *(i2c_gpio + 1);
 
     /* Correct switches order according to HW design */
     _gpioa = bitOrder(_gpioa);
@@ -255,15 +255,15 @@ void priorityPlay(uint8_t *songArray)
   gpioa_prev = _gpioa;
 }
 
-void inputPlay(uint8_t *songArray)
+void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[8] = {0};
 
-  _gpioa = g_i2c_gpio_rx[0];
-  _gpiob = g_i2c_gpio_rx[1];
+  _gpioa = *(i2c_gpio + 0);
+  _gpiob = *(i2c_gpio + 1);
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
@@ -277,14 +277,7 @@ void inputPlay(uint8_t *songArray)
   {
     if((_nr_sw_pressed == 1) && (0 != (_gpiob & STOP)))
     {
-      //R_TPU0_Stop();
-      //LED_BusyOff();
-      do
-      {
-        _gpioa = g_i2c_gpio_rx[0];
-        _gpioa = bitOrder(_gpioa);
-      }
-      while(_gpioa);
+      irqTriggered = 1;
 
       g_systemStatus.flag_isPlaying = 0;
       *songArray = -1;
@@ -292,14 +285,17 @@ void inputPlay(uint8_t *songArray)
     }
     else if(_nr_sw_pressed == 1)
     {
-      for(char sw_pos = 0; sw_pos < 8; sw_pos++)
+      if(!irqTriggered)
       {
-        if(_sw_pressed[sw_pos])
+        for(char sw_pos = 0; sw_pos < 8; sw_pos++)
         {
-          *songArray = sw_pos;
-          prev_sw = sw_pos;
-          g_systemStatus.song_cnt = 1;
-          break;
+          if(_sw_pressed[sw_pos])
+          {
+            *songArray = sw_pos;
+            prev_sw = sw_pos;
+            g_systemStatus.song_cnt = 1;
+            break;
+          }
         }
       }
     }
@@ -308,16 +304,17 @@ void inputPlay(uint8_t *songArray)
   {
     g_systemStatus.flag_isPlaying = 0;
     *songArray = -1;
+    irqTriggered = 0;
   }
 }
 
-void binary128ch(uint8_t *songArray)
+void binary128ch(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
 
-  _gpioa = g_i2c_gpio_rx[0];
-  _gpiob = g_i2c_gpio_rx[1];
+  _gpioa = *(i2c_gpio + 0);
+  _gpiob = *(i2c_gpio + 1);
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
@@ -368,14 +365,14 @@ void binary128ch(uint8_t *songArray)
   }
 }
 
-void binary255_positive(uint8_t *songArray)
+void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint8_t vol_reduction[2] = {0, 1};
 
-  _gpioa = g_i2c_gpio_rx[0];
-  _gpiob = g_i2c_gpio_rx[1];
+  _gpioa = *(i2c_gpio + 0);
+  _gpiob = *(i2c_gpio + 1);
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
@@ -456,14 +453,14 @@ void binary255_positive(uint8_t *songArray)
   }
 }
 
-void binary255_negative(uint8_t *songArray)
+void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint8_t vol_reduction[2] = {0, 1};
 
-  _gpioa = g_i2c_gpio_rx[0];
-  _gpiob = g_i2c_gpio_rx[1];
+  _gpioa = *(i2c_gpio + 0);
+  _gpiob = *(i2c_gpio + 1);
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
