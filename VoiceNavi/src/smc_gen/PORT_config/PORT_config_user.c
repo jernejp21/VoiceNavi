@@ -192,4 +192,14 @@ uint8_t PIN_GetExtIRQ()
   return PORTC.PIDR.BIT.B6;
 }
 
+uint8_t PIN_GetSW2()
+{
+  // When switch is in middle position, pin status is HIGH.
+  // When switch is in voice position, PB3 is LOW.
+  // When switch is in chime position, PB4 is LOW.
+  // XOR bits to get positive logic - if voice, result is 1; if chime, result is 2
+  uint8_t port = ((PORTB.PIDR.BIT.B4 << 1) | PORTB.PIDR.BIT.B3) ^ 3;
+  return port;
+}
+
 /* End user code. Do not edit comment generated here */

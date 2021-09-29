@@ -161,6 +161,8 @@ static void playFromPlaylist(uint8_t playNr)
     return;
   }
 
+  g_systemStatus.vol_ctrl_nr = output_music[playNr].vol_ctrl - 1;
+
   LED_BusyOn();
   PIN_BusyReset();
   while(output_music[playNr].repeat > _repetitions)
@@ -318,6 +320,29 @@ static void I2C_Init()
   I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
 }
 
+static int getDataFromFlash()
+{
+  uint8_t is_data_in_flash;
+
+  /* Check if there is any data in flash. */
+  is_data_in_flash = NAND_CheckDataInFlash();
+
+  /* If data in flash, prepare lookout tables. */
+  if(is_data_in_flash)
+  {
+    NAND_Reset();
+    NAND_ReadFromFlash(NAND_FILE_LIST_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
+    NAND_ReadFromFlash(NAND_PLAYLIST_PAGE, sizeof(output_music), (uint8_t*)&output_music[0]);
+
+  }
+  else
+  {
+    return 0;
+  }
+
+  return 1;
+}
+
 void callBack_read()
 {
   volatile sci_iic_return_t ret;
@@ -333,7 +358,7 @@ void callBack_read()
 
 void CNT_USB_CntCallback()
 {
-  usb_cnt++;
+  LED_USBToggle();
 }
 
 static void sys_init()
@@ -390,7 +415,7 @@ void ISR_periodicPolling()
   uint8_t gpio_rx[2];
 
   //volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
-  _volume = (uint8_t)(volume[0] >> 1);
+  _volume = (uint8_t)(volume[g_systemStatus.vol_ctrl_nr] >> 1);
 
   // Activated when 0.
   if(0 == PIN_Get6dB() || 2 == g_binary_vol_reduction)
@@ -432,61 +457,16 @@ void main(void)
   usb_status_t event;
   uint8_t mode_select;
   uint8_t interval_time;
-  uint8_t is_data_in_flash = 0;
   modeSelect_t boardType;
+  int isDataInFlash;
+  nand_flash_status_t flash_status;
 
   sys_init();
 
-  //Create 500 ms counter for polling to check if USB is connected.
-  R_CMT_CreatePeriodic(2, &CNT_USB_CntCallback, &cmt_channel);
-  usb_cnt = 0;
-
-  /* With polling, check for 1s if USB is connected or not */
-  while(usb_cnt < 2)
+  isDataInFlash = getDataFromFlash();
+  if(!isDataInFlash)
   {
-    event = R_USB_GetEvent(&ctrl);  // Get event code
-
-    switch(event)
-    {
-      case USB_STS_CONFIGURED:
-
-        R_CMT_Stop(cmt_channel);
-        usb_cnt = 2;
-        LED_USBOn();
-        NAND_Reset();
-        NAND_CopyToFlash();
-        break;
-
-      case USB_STS_DETACH:
-        break;
-
-      case USB_STS_NOT_SUPPORT:
-        break;
-
-      case USB_STS_NONE:
-        break;
-
-      default:
-        break;
-    }
-  }
-  R_CMT_Stop(cmt_channel);
-  LED_USBOff();
-
-  /* Check if there is any data in flash. */
-  is_data_in_flash = NAND_CheckDataInFlash();
-
-  /* If data in flash, prepare lookout tables. */
-  if(is_data_in_flash)
-  {
-    NAND_Reset();
-    NAND_ReadFromFlash(NAND_FILE_LIST_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
-    NAND_ReadFromFlash(NAND_PLAYLIST_PAGE, sizeof(output_music), (uint8_t*)&output_music[0]);
-  }
-  else
-  {
-    LED_AlarmOn();
-    while(1);  // No data in flash, loop forever here.
+    ERROR_FlashEmpty();
   }
 
   /* Determine board type */
@@ -596,32 +576,76 @@ void main(void)
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)
   {
-    if(!g_systemStatus.flag_semaphoreLock)
-    {
-      while(cur_cnt < g_systemStatus.song_cnt)
-      {
-        if(0xFF != songBuffer[cur_cnt])
-        {
-          //cur_cnt++;
-          playFromPlaylist(songBuffer[cur_cnt++]);
-        }
-        else
-        {
-          break;
-        }
+    /* Check if USB is inserted and write switch is enabled */
+    event = R_USB_GetEvent(&ctrl);  // Get event code
 
-        /* Wait for interval time */
-        if(interval_time && g_systemStatus.flag_isSongAvailable)
+    if(PIN_GetSW2() == 1)
+    {
+      switch(event)
+      {
+        case USB_STS_CONFIGURED:
+          ERROR_ClearErrors();
+          LED_USBOn();
+          NAND_Reset();
+          flash_status = NAND_CopyToFlash();
+          if(flash_status == NAND_WRITE_OK)
+          {
+            isDataInFlash = getDataFromFlash();
+            //Create 500 ms counter for flashing USB LED.
+            R_CMT_CreatePeriodic(2, &CNT_USB_CntCallback, &cmt_channel);
+          }
+          break;
+
+        case USB_STS_DETACH:
+          if(flash_status == NAND_WRITE_OK)
+          {
+            R_CMT_Stop(cmt_channel);
+            LED_USBOff();
+          }
+          break;
+
+        case USB_STS_NOT_SUPPORT:
+          break;
+
+        case USB_STS_NONE:
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    /* Go to main part of program, only if data is available in flash. Otherwise loop and check if USB is attached. */
+    if(isDataInFlash)
+    {
+      /* Play song in anything is in queue */
+      if(!g_systemStatus.flag_semaphoreLock)
+      {
+        while(cur_cnt < g_systemStatus.song_cnt)
         {
-          LED_BusyOn();
-          PIN_BusyReset();
-          g_systemStatus.flag_waitForInterval = 1;
-          R_BSP_SoftwareDelay(interval_time, BSP_DELAY_SECS);
-          g_systemStatus.flag_waitForInterval = 0;
-          LED_BusyOff();
-          PIN_BusySet();
+          if(0xFF != songBuffer[cur_cnt])
+          {
+            //cur_cnt++;
+            playFromPlaylist(songBuffer[cur_cnt++]);
+          }
+          else
+          {
+            break;
+          }
+
+          /* Wait for interval time */
+          if(interval_time && g_systemStatus.flag_isSongAvailable)
+          {
+            LED_BusyOn();
+            PIN_BusyReset();
+            g_systemStatus.flag_waitForInterval = 1;
+            R_BSP_SoftwareDelay(interval_time, BSP_DELAY_SECS);
+            g_systemStatus.flag_waitForInterval = 0;
+            LED_BusyOff();
+            PIN_BusySet();
+          }
+          g_systemStatus.flag_semaphoreLock = 1;
         }
-        g_systemStatus.flag_semaphoreLock = 1;
       }
     }
   }

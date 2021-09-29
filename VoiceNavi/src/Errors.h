@@ -30,8 +30,11 @@
 void ERROR_FileSystem();
 void ERROR_WAVEFile();
 void ERROR_FlashECS();
+void ERROR_FlashEmpty();
+void ERROR_ClearErrors();
 
 void led_blink_busy();
 void led_blink_usb();
+void led_blink_alarm();
 
 #endif //__ERRORS_H

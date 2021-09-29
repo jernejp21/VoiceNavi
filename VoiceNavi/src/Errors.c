@@ -26,37 +26,44 @@
 
 #include "globals.h"
 
+static uint32_t err_cmt_channel = 255;
+
 void ERROR_FileSystem()
 {
   //500ms period
-  R_CMT_CreatePeriodic(2, &led_blink_busy, 0);
+  R_CMT_CreatePeriodic(2, &led_blink_busy, &err_cmt_channel);
   LED_USBOff();
-
-  while(1)
-  {
-    if(g_systemStatus.flag_isIRQ)
-    {
-      LED_AlarmOn();
-    }
-  }
 }
 
 void ERROR_WAVEFile()
 {
   //500ms period
-  R_CMT_CreatePeriodic(2, &led_blink_busy, 0);
+  R_CMT_CreatePeriodic(2, &led_blink_busy, &err_cmt_channel);
   LED_USBOff();
-
-  while(1);
 }
 
 void ERROR_FlashECS()
 {
-  //500ms period
-  R_CMT_CreatePeriodic(2, &led_blink_usb, 0);
+  //100ms period
+  R_CMT_CreatePeriodic(10, &led_blink_usb, &err_cmt_channel);
   LED_AlarmOn();
+}
 
-  while(1);
+void ERROR_FlashEmpty()
+{
+  //500ms period
+  R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
+}
+
+void ERROR_ClearErrors()
+{
+  if(err_cmt_channel != 255)
+  {
+    R_CMT_Stop(err_cmt_channel);
+  }
+  LED_AlarmOff();
+  LED_BusyOff();
+  LED_USBOff();
 }
 
 void led_blink_busy()
@@ -67,4 +74,9 @@ void led_blink_busy()
 void led_blink_usb()
 {
   LED_USBToggle();
+}
+
+void led_blink_alarm()
+{
+  LED_AlarmToggle();
 }

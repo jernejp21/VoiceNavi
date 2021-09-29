@@ -75,5 +75,6 @@ void PIN_AlarmReset();
 uint8_t PIN_Get6dB();
 uint8_t PIN_Get14dB();
 uint8_t PIN_GetExtIRQ();
+uint8_t PIN_GetSW2();
 /* End user code. Do not edit comment generated here */
 #endif

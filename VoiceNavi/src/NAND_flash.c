@@ -114,7 +114,7 @@ int NAND_CheckBlock()
   return 0;
 }
 
-void NAND_CopyToFlash()
+nand_flash_status_t NAND_CopyToFlash()
 {
 
   int cnt = 0;
@@ -126,6 +126,7 @@ void NAND_CopyToFlash()
   {
     //Error if FAT is not present on USB.
     ERROR_FileSystem();
+    return NAND_WRITE_NOK;
   }
 
   fr = f_findfirst(&dir, &filno, "", "*.wpj");
@@ -133,6 +134,7 @@ void NAND_CopyToFlash()
   {
     //Error if .wpj file is not present.
     ERROR_FileSystem();
+    return NAND_WRITE_NOK;
   }
 
   fr = f_open(&file, (const TCHAR*)&filno.fname, (FA_OPEN_ALWAYS | FA_READ));
@@ -140,6 +142,7 @@ void NAND_CopyToFlash()
   {
     //Error if .wpj file cannot be opened (bad file system or bad file).
     ERROR_FileSystem();
+    return NAND_WRITE_NOK;
   }
 
   nand_flash_status_t nand_status;
@@ -147,6 +150,7 @@ void NAND_CopyToFlash()
   if(NAND_ERASE_NOK == nand_status)
   {
     ERROR_FlashECS();
+    return NAND_WRITE_NOK;
   }
   NAND_Reset();
 
@@ -187,6 +191,7 @@ void NAND_CopyToFlash()
       if(FR_OK != fr)
       {
         ERROR_WAVEFile();
+        return NAND_WRITE_NOK;
       }
       fr = f_read(&file1, &wav_buffer[0], sizeof(wav_buffer), &size);
       WAV_Open(&wav_file, &wav_buffer[0]);
@@ -201,6 +206,7 @@ void NAND_CopyToFlash()
         if(NAND_WRITE_NOK == flash_status)
         {
           ERROR_FlashECS();
+          return NAND_WRITE_NOK;
         }
         fr = f_read(&file1, &wav_buffer[0], sizeof(wav_buffer), &size);
       }
@@ -213,6 +219,7 @@ void NAND_CopyToFlash()
       if(NAND_WRITE_NOK == flash_status)
       {
         ERROR_FlashECS();
+        return NAND_WRITE_NOK;
       }
       f_close(&file1);
       cnt++;
@@ -236,6 +243,7 @@ void NAND_CopyToFlash()
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
+    return NAND_WRITE_NOK;
   }
 
   //Copy file table to NAND flash
@@ -243,6 +251,7 @@ void NAND_CopyToFlash()
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
+    return NAND_WRITE_NOK;
   }
 
   //Copy playlist table to NAND flash
@@ -250,11 +259,13 @@ void NAND_CopyToFlash()
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
+    return NAND_WRITE_NOK;
   }
 
   /* After finishing wiriting to flash, lock flash for write protection */
   NAND_LockFlash();
 
+  return NAND_WRITE_OK;
 }
 
 nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
