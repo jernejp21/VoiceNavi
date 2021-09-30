@@ -33,6 +33,7 @@ void ERROR_FileSystem()
   //500ms period
   R_CMT_CreatePeriodic(2, &led_blink_busy, &err_cmt_channel);
   LED_USBOff();
+  LED_AlarmOn();
 }
 
 void ERROR_WAVEFile()
