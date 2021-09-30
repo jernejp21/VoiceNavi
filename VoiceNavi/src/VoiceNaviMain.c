@@ -30,6 +30,7 @@
 /** Function definition */
 void main(void);
 void CNT_USB_CntCallback();
+void CNT_IntervalDelay();
 void callBack_read();
 void ISR_periodicPolling();
 
@@ -65,7 +66,9 @@ st_memdrv_info_t memdrv_info;
 /** CMT counter related variables */
 uint32_t cmt_channel;
 uint32_t cmt_channel_i2c;
+uint32_t cmt_channel_interval_delay;
 int usb_cnt;
+uint8_t interval_time;
 
 static int decode_getp(void)
 {
@@ -356,11 +359,6 @@ void callBack_read()
   }
 }
 
-void CNT_USB_CntCallback()
-{
-  LED_USBToggle();
-}
-
 static void sys_init()
 {
   //SPI CS Pin
@@ -371,7 +369,6 @@ static void sys_init()
   // resetpgr.c in PowerON_Reset_PC function.
 
   playMode = emptyPlay;
-  LED_PowOn();
   R_DAC1_Start();
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
   I2C_Init();
@@ -405,6 +402,26 @@ static void sys_init()
   emptyPlayBuffer();
 
   memset(songBuffer, -1, 20);
+}
+
+void CNT_USB_CntCallback()
+{
+  LED_USBToggle();
+}
+
+void CNT_IntervalDelay()
+{
+  static int del_cnt;
+
+  //Because period is 100 ms, we have to multiply by 10 to get delay in seconds.
+  if((del_cnt == (interval_time * 10)) || (g_systemStatus.flag_waitForInterval == 0))
+  {
+    R_CMT_Stop(cmt_channel_interval_delay);
+    g_systemStatus.flag_waitForInterval = 0;
+    del_cnt = 0;
+  }
+
+  del_cnt++;
 }
 
 /* Periodic ISR for polling status on GPIO MUX */
@@ -444,10 +461,8 @@ void ISR_periodicPolling()
     g_systemStatus.song_cnt = 0;
   }
 
-  if(!g_systemStatus.flag_waitForInterval)
-  {
-    playMode(gpio_rx, songBuffer);
-  }
+  playMode(gpio_rx, songBuffer);
+
   g_systemStatus.flag_semaphoreLock = 0;
 }
 
@@ -456,12 +471,14 @@ void main(void)
 {
   usb_status_t event;
   uint8_t mode_select;
-  uint8_t interval_time;
   modeSelect_t boardType;
   int isDataInFlash;
   nand_flash_status_t flash_status;
 
   sys_init();
+
+  /* Turn LED on after init is compleate and system is ready to run */
+  LED_PowOn();
 
   isDataInFlash = getDataFromFlash();
   if(!isDataInFlash)
@@ -639,8 +656,9 @@ void main(void)
             LED_BusyOn();
             PIN_BusyReset();
             g_systemStatus.flag_waitForInterval = 1;
-            R_BSP_SoftwareDelay(interval_time, BSP_DELAY_SECS);
-            g_systemStatus.flag_waitForInterval = 0;
+            // 100 ms period
+            R_CMT_CreatePeriodic(10, &CNT_IntervalDelay, &cmt_channel_interval_delay);
+            while(g_systemStatus.flag_waitForInterval);
             LED_BusyOff();
             PIN_BusySet();
           }

@@ -121,6 +121,8 @@ nand_flash_status_t NAND_CopyToFlash()
   uint32_t flash_address = NAND_DATA_PAGE;
   nand_flash_status_t flash_status;
 
+  memset(output_music, 0, sizeof(output_music));
+
   fr = f_mount(&fs, "", 0);
   if(FR_OK != fr)
   {

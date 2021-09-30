@@ -95,8 +95,9 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.flag_waitForInterval = 0;
     }
-    else if(!g_systemStatus.flag_isPlaying)
+    else if((0 == g_systemStatus.flag_isPlaying) && (0 == g_systemStatus.flag_waitForInterval))
     {
       /* No interrupts. Play only if a song isn't played yet. */
       /* Get number of pressed switches and pressed positions. */
