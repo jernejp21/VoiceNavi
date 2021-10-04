@@ -27,11 +27,12 @@
 #include "globals.h"
 
 #define MAX_BIN_BUFF_SIZE 20
+#define MAX_NR_OF_SWITCHES 12
 
 #define STOP 0x01
 #define STB 0x02
 
-static uint8_t gpioa_prev;
+static uint8_t gpio_prev;
 
 static uint8_t prev_sw = 255;
 static uint8_t irqTriggered;
@@ -51,12 +52,12 @@ static uint8_t bitOrder(uint8_t order)
   return new_order;
 }
 
-static uint8_t switchToPlay(uint16_t bitField, uint8_t *sw_array_p)
+static uint8_t switchToPlay(uint32_t bitField, uint8_t *sw_array_p)
 {
 //Return value is number of switches pressed
   uint8_t cnt = 0;
 
-  for(int index = 0; index < 8; index++)
+  for(int index = 0; index < g_systemStatus.nr_of_switches; index++)
   {
     if(bitField & 1)
     {
@@ -79,8 +80,9 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
+  uint16_t _gpio;
   uint8_t _nr_sw_pressed;
-  uint8_t _sw_pressed[8] = {0};
+  uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -92,6 +94,9 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     _gpioa = bitOrder(_gpioa);
     _gpiob ^= 0xFF;  //Convert to positive logic.
 
+    //Combine gpioa and gpiob. HW dependent.
+    _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
+
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
@@ -101,9 +106,9 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     {
       /* No interrupts. Play only if a song isn't played yet. */
       /* Get number of pressed switches and pressed positions. */
-      _nr_sw_pressed = switchToPlay(_gpioa, _sw_pressed);
+      _nr_sw_pressed = switchToPlay(_gpio, _sw_pressed);
 
-      for(char sw_pos = 0; sw_pos < 8; sw_pos++)
+      for(char sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
       {
         if(_sw_pressed[sw_pos])
         {
@@ -139,8 +144,9 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
+  uint16_t _gpio;
   uint8_t _nr_sw_pressed;
-  uint8_t _sw_pressed[8] = {0};
+  uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -152,18 +158,21 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     _gpioa = bitOrder(_gpioa);
     _gpiob ^= 0xFF;  //Convert to positive logic.
 
+    //Combine gpioa and gpiob. HW dependent.
+    _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
+
     /* Get number of pressed switches and pressed positions. */
-    _nr_sw_pressed = switchToPlay(_gpioa, _sw_pressed);
+    _nr_sw_pressed = switchToPlay(_gpio, _sw_pressed);
 
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
     }
-    else if(gpioa_prev != _gpioa)
+    else if(gpio_prev != _gpio)
     {
       if((1 == _nr_sw_pressed) || ((2 == _nr_sw_pressed) && (0 == irqTriggered)))
       {
-        for(char sw_pos = 0; sw_pos < 8; sw_pos++)
+        for(char sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
         {
           if(_sw_pressed[sw_pos])
           {
@@ -185,14 +194,15 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
       }
     }
   }
-  gpioa_prev = _gpioa;
+  gpio_prev = _gpio;
 }
 
 void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
-  uint8_t _sw_pressed[8] = {0};
+  uint16_t _gpio;
+  uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -204,8 +214,11 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     _gpioa = bitOrder(_gpioa);
     _gpiob ^= 0xFF;  //Convert to positive logic.
 
+    //Combine gpioa and gpiob. HW dependent.
+    _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
+
     /* Get number of pressed switches and pressed positions. */
-    switchToPlay(_gpioa, _sw_pressed);
+    switchToPlay(_gpio, _sw_pressed);
 
     if(0 != (_gpiob & STOP))
     {
@@ -218,7 +231,7 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
         prev_sw = 255;
       }
 
-      for(char sw_pos = 0; sw_pos < 8; sw_pos++)
+      for(char sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
       {
         if(_sw_pressed[sw_pos])
         {
@@ -240,8 +253,9 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
+  uint16_t _gpio;
   uint8_t _nr_sw_pressed;
-  uint8_t _sw_pressed[8] = {0};
+  uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
 
   _gpioa = *(i2c_gpio + 0);
   _gpiob = *(i2c_gpio + 1);
@@ -250,8 +264,11 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   _gpioa = bitOrder(_gpioa);
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
+  //Combine gpioa and gpiob. HW dependent.
+  _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
+
   /* Get number of pressed switches and pressed positions. */
-  _nr_sw_pressed = switchToPlay(_gpioa, _sw_pressed);
+  _nr_sw_pressed = switchToPlay(_gpio, _sw_pressed);
 
   /* Stop if switch isn't triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -268,7 +285,7 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     {
       if(!irqTriggered)
       {
-        for(char sw_pos = 0; sw_pos < 8; sw_pos++)
+        for(char sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
         {
           if(_sw_pressed[sw_pos])
           {
@@ -299,6 +316,7 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -316,12 +334,10 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
       switch(_gpioa)
       {
         //STOP
+        case 0x00:
         case 0x7F:
           *(songArray + g_systemStatus.song_cnt) = 0xFF;
-          break;
-
-          //Not in use
-        case 0x00:
+          g_systemStatus.song_cnt++;
           break;
 
         default:
@@ -349,14 +365,13 @@ void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
-  uint8_t vol_reduction[2] = {0, 1};
+  //uint8_t vol_reduction[2] = {0, 1};
 
   _gpioa = *(i2c_gpio + 0);
   _gpiob = *(i2c_gpio + 1);
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -373,45 +388,51 @@ void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
       switch(_gpioa)
       {
         //STOP
+        case 0x00:
         case 0xFF:
           *(songArray + g_systemStatus.song_cnt) = 0xFF;
+          g_systemStatus.song_cnt++;
           break;
 
           //Not in use
         case 0xFE:
-        case 0x00:
-          break;
-
-          //Full volume
         case 0xFD:
-          //Rewrite existing address with 0, and write to next available address.
-          vol_reduction[1] = 1;
-          g_binary_vol_reduction = 1;
-          NAND_UnlockFlash();
-          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
-          NAND_LockFlash();
-          g_binary_vol_reduction_address++;
-          break;
-
-          //Fifth volume
         case 0xFC:
-          vol_reduction[1] = 5;
-          g_binary_vol_reduction = 5;
-          NAND_UnlockFlash();
-          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
-          NAND_LockFlash();
-          g_binary_vol_reduction_address++;
+        case 0xFB:
           break;
 
-          //Half volume
-        case 0xFB:
-          vol_reduction[1] = 2;
-          g_binary_vol_reduction = 2;
-          NAND_UnlockFlash();
-          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
-          NAND_LockFlash();
-          g_binary_vol_reduction_address++;
-          break;
+          /* NOT IN USE
+           //Full volume
+           case 0xFD:
+           //Rewrite existing address with 0, and write to next available address.
+           vol_reduction[1] = 1;
+           g_binary_vol_reduction = 1;
+           NAND_UnlockFlash();
+           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+           NAND_LockFlash();
+           g_binary_vol_reduction_address++;
+           break;
+
+           //Fifth volume
+           case 0xFC:
+           vol_reduction[1] = 5;
+           g_binary_vol_reduction = 5;
+           NAND_UnlockFlash();
+           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+           NAND_LockFlash();
+           g_binary_vol_reduction_address++;
+           break;
+
+           //Half volume
+           case 0xFB:
+           vol_reduction[1] = 2;
+           g_binary_vol_reduction = 2;
+           NAND_UnlockFlash();
+           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+           NAND_LockFlash();
+           g_binary_vol_reduction_address++;
+           break;
+           */
 
         default:
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
@@ -438,13 +459,14 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
-  uint8_t vol_reduction[2] = {0, 1};
+  //uint8_t vol_reduction[2] = {0, 1};
 
   _gpioa = *(i2c_gpio + 0);
   _gpiob = *(i2c_gpio + 1);
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -461,45 +483,51 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
       switch(_gpioa)
       {
         //STOP
+        case 0x00:
         case 0xFF:
           *(songArray + g_systemStatus.song_cnt) = 0xFF;
+          g_systemStatus.song_cnt++;
           break;
 
           //Not in use
         case 0xFE:
-        case 0x00:
-          break;
-
-          //Full volume
         case 0xFD:
-          //Rewrite existing address with 0, and wite to next available address.
-          vol_reduction[1] = 1;
-          g_binary_vol_reduction = 1;
-          NAND_UnlockFlash();
-          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
-          NAND_LockFlash();
-          g_binary_vol_reduction_address++;
-          break;
-
-          //Fifth volume
         case 0xFC:
-          vol_reduction[1] = 5;
-          g_binary_vol_reduction = 5;
-          NAND_UnlockFlash();
-          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
-          NAND_LockFlash();
-          g_binary_vol_reduction_address++;
+        case 0xFB:
           break;
 
-          //Half volume
-        case 0xFB:
-          vol_reduction[1] = 2;
-          g_binary_vol_reduction = 2;
-          NAND_UnlockFlash();
-          NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
-          NAND_LockFlash();
-          g_binary_vol_reduction_address++;
-          break;
+          /* NOT IN USE
+           //Full volume
+           case 0xFD:
+           //Rewrite existing address with 0, and wite to next available address.
+           vol_reduction[1] = 1;
+           g_binary_vol_reduction = 1;
+           NAND_UnlockFlash();
+           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+           NAND_LockFlash();
+           g_binary_vol_reduction_address++;
+           break;
+
+           //Fifth volume
+           case 0xFC:
+           vol_reduction[1] = 5;
+           g_binary_vol_reduction = 5;
+           NAND_UnlockFlash();
+           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+           NAND_LockFlash();
+           g_binary_vol_reduction_address++;
+           break;
+
+           //Half volume
+           case 0xFB:
+           vol_reduction[1] = 2;
+           g_binary_vol_reduction = 2;
+           NAND_UnlockFlash();
+           NAND_WriteToFlash(g_binary_vol_reduction_address, 2, vol_reduction);
+           NAND_LockFlash();
+           g_binary_vol_reduction_address++;
+           break;
+           */
 
         default:
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
@@ -532,7 +560,6 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -549,12 +576,10 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
       switch(_gpioa)
       {
         //STOP
+        case 0x00:
         case 0xFF:
           *(songArray + g_systemStatus.song_cnt) = 0xFF;
-          break;
-
-          //Not in use
-        case 0x00:
+          g_systemStatus.song_cnt++;
           break;
 
         default:
@@ -588,6 +613,7 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -604,12 +630,10 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
       switch(_gpioa)
       {
         //STOP
+        case 0x00:
         case 0xFF:
           *(songArray + g_systemStatus.song_cnt) = 0xFF;
-          break;
-
-          //Not in use
-        case 0x00:
+          g_systemStatus.song_cnt++;
           break;
 
         default:

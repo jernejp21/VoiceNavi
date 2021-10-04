@@ -372,8 +372,6 @@ static void sys_init()
   R_DAC1_Start();
   R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
   I2C_Init();
-  /* Periodic timer ~45 ms. Used for I2C communication */
-  R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);
 
   //Init USB Host Mass Storage Device controller
   ctrl.module = USB_IP0;
@@ -491,6 +489,20 @@ void main(void)
   //Only for testing, change for final version
   boardType = ((DIP_ReadState() ^ 0xFF) & 0x60) >> 5;  //Pins 6, 7
 
+  /* Number of switches */
+  if(boardType == WAV_5F1)
+  {
+    g_systemStatus.nr_of_switches = 4;
+  }
+  else if(boardType == WAV_5F9IH)
+  {
+    g_systemStatus.nr_of_switches = 12;
+  }
+  else
+  {
+    g_systemStatus.nr_of_switches = 8;
+  }
+
   /* Mode select */
   mode_select = DIP_ReadState() & 0x07;  //Switches 1, 2, 3 are mode select
   switch(mode_select)
@@ -500,15 +512,28 @@ void main(void)
       break;
 
     case 1:
-      playMode = lastInputInterruptPlay;
+      if(boardType == WAV_5F9IH)
+      {
+        playMode = binary255_positive;
+      }
+      else
+      {
+        playMode = lastInputInterruptPlay;
+      }
       break;
 
     case 2:
-      playMode = priorityPlay;
+      if(boardType != WAV_5F9IH)
+      {
+        playMode = priorityPlay;
+      }
       break;
 
     case 3:
-      playMode = inputPlay;
+      if(boardType != WAV_5F9IH)
+      {
+        playMode = inputPlay;
+      }
       break;
 
     case 4:
@@ -550,7 +575,7 @@ void main(void)
 
   /* Inverval select */
   uint8_t _interval_select = (DIP_ReadState() & 0x18) >> 3;  //Switches 4, 5 are interval select
-  if(mode_select == 0)
+  if((mode_select == 0) && (boardType != WAV_5F9IH))
   {
     switch(_interval_select)
     {
@@ -578,17 +603,22 @@ void main(void)
   }
 
   /* Find address for binary volume reduction */
-  uint8_t _vol_reduction_select = !!(DIP_ReadState() & 0x80);  //Switch 8 is vol reduction select
-  if((mode_select > 5) && _vol_reduction_select)
-  {
-    while(0 == g_binary_vol_reduction)
-    {
-      NAND_ReadFromFlash(g_binary_vol_reduction_address, 1, &g_binary_vol_reduction);
-      g_binary_vol_reduction_address++;
-    }
-    //Go back 1 so we can set value to 0 if command comes in.
-    g_binary_vol_reduction_address--;
-  }
+  /* NOT IN USE
+   uint8_t _vol_reduction_select = !!(DIP_ReadState() & 0x80);  //Switch 8 is vol reduction select
+   if((mode_select > 5) && _vol_reduction_select)
+   {
+   while(0 == g_binary_vol_reduction)
+   {
+   NAND_ReadFromFlash(g_binary_vol_reduction_address, 1, &g_binary_vol_reduction);
+   g_binary_vol_reduction_address++;
+   }
+   //Go back 1 so we can set value to 0 if command comes in.
+   g_binary_vol_reduction_address--;
+   }
+   */
+
+  /* Periodic timer for GPIO polling. About 22 ms. */
+  R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);
 
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)
@@ -647,7 +677,16 @@ void main(void)
           }
           else
           {
+            cur_cnt = 0;
+            g_systemStatus.song_cnt = 0;
             break;
+          }
+
+          if(boardType == WAV_5F9IH)
+          {
+            /* No buffer for binary mode */
+            cur_cnt = 0;
+            g_systemStatus.song_cnt = 0;
           }
 
           /* Wait for interval time */
