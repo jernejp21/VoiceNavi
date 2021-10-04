@@ -6,6 +6,7 @@ For operation manuals, refer to [VoiceNavi](http://www.voicenavi.co.jp/).
 - 5A2
 - 5F2
 - 5F1
+- 5F9IH
 
 To switch between different devices, use MS1<sup>*1</sup> and MS2<sup>*1</sup> solder pads.
 
@@ -14,6 +15,7 @@ MS2 | MS1 | Device
 Open | Open | 5A2
 Open | Closed | 5F2
 Closed | Open | 5F1
+Closed | Closed | 5F9IH
 
 ## How to use (on Windows)
 To edit source code, use [E2 Studio](https://www.renesas.com/us/en/software-tool/e-studio). Version used for this project is 2021-04 (21.4.0).
