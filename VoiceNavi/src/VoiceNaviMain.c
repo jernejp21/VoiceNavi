@@ -168,6 +168,7 @@ static void playFromPlaylist(uint8_t playNr)
 
   LED_BusyOn();
   PIN_BusyReset();
+  PIN_ShutdownSet();
   while(output_music[playNr].repeat > _repetitions)
   {
     while(output_music[playNr].playlist_len > _trackNr)
@@ -229,6 +230,7 @@ static void playFromPlaylist(uint8_t playNr)
 
   LED_BusyOff();
   PIN_BusySet();
+  PIN_ShutdownReset();
 }
 
 static uint8_t I2C_Receive(sci_iic_info_t *i2c_info, uint8_t dev_add, uint8_t reg_add)
@@ -390,7 +392,7 @@ static void sys_init()
   NAND_CheckBlock();
 
   /* Enable audio amp */
-  PIN_ShutdownSet();
+  //PIN_ShutdownSet();
 
   R_DMAC0_SetAddresses((void*)&S12AD.ADDR6, (void*)&volume);
   R_DMAC0_Start();
@@ -514,7 +516,7 @@ void main(void)
     case 1:
       if(boardType == WAV_5F9IH)
       {
-        playMode = binary255_positive;
+        playMode = binary255_negative;
       }
       else
       {
