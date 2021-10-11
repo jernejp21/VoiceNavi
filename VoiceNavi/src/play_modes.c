@@ -466,7 +466,6 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -530,9 +529,10 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
            */
 
         default:
+          //_gpioa ^= 0xFF;  //Convert again, to get negative logic
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
-            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
+            *(songArray + g_systemStatus.song_cnt) = 0xFA - _gpioa;
             g_systemStatus.song_cnt++;
           }
           break;
