@@ -632,6 +632,8 @@ void main(void)
       switch(event)
       {
         case USB_STS_CONFIGURED:
+          R_CMT_Stop(cmt_channel_i2c);  //Stop GPIO polling
+
           ERROR_ClearErrors();
           LED_USBOn();
           NAND_Reset();
@@ -642,6 +644,8 @@ void main(void)
             //Create 500 ms counter for flashing USB LED.
             R_CMT_CreatePeriodic(2, &CNT_USB_CntCallback, &cmt_channel);
           }
+
+          R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);  //Start GPIO polling
           break;
 
         case USB_STS_DETACH:
