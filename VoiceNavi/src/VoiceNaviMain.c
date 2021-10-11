@@ -393,7 +393,6 @@ static void sys_init()
 
   /* Enable audio amp */
   //PIN_ShutdownSet();
-
   R_DMAC0_SetAddresses((void*)&S12AD.ADDR6, (void*)&volume);
   R_DMAC0_Start();
   R_ADC0_Start();
