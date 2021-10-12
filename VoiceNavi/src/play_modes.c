@@ -316,7 +316,6 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -343,7 +342,7 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
         default:
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
-            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;  //Convert to positive logic
+            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
             g_systemStatus.song_cnt++;
           }
           break;
@@ -372,6 +371,7 @@ void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get positive logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -466,6 +466,7 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get positive logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -529,9 +530,9 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
            */
 
         default:
-          //_gpioa ^= 0xFF;  //Convert again, to get negative logic
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
+            //Subtract positive logic from 0xFA to get negative logic
             *(songArray + g_systemStatus.song_cnt) = 0xFA - _gpioa;
             g_systemStatus.song_cnt++;
           }
@@ -560,6 +561,7 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get positive logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -613,7 +615,6 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get negative logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
