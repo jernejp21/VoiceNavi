@@ -335,8 +335,8 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
         //STOP
         case 0x00:
         case 0x7F:
-          *(songArray + g_systemStatus.song_cnt) = 0xFF;
-          g_systemStatus.song_cnt++;
+          g_systemStatus.flag_isPlaying = 0;
+          g_systemStatus.song_cnt = 0;
           break;
 
         default:
@@ -390,8 +390,8 @@ void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
         //STOP
         case 0x00:
         case 0xFF:
-          *(songArray + g_systemStatus.song_cnt) = 0xFF;
-          g_systemStatus.song_cnt++;
+          g_systemStatus.flag_isPlaying = 0;
+          g_systemStatus.song_cnt = 0;
           break;
 
           //Not in use
@@ -485,8 +485,8 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
         //STOP
         case 0x00:
         case 0xFF:
-          *(songArray + g_systemStatus.song_cnt) = 0xFF;
-          g_systemStatus.song_cnt++;
+          g_systemStatus.flag_isPlaying = 0;
+          g_systemStatus.song_cnt = 0;
           break;
 
           //Not in use
@@ -580,8 +580,8 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
         //STOP
         case 0x00:
         case 0xFF:
-          *(songArray + g_systemStatus.song_cnt) = 0xFF;
-          g_systemStatus.song_cnt++;
+          g_systemStatus.flag_isPlaying = 0;
+          g_systemStatus.song_cnt = 0;
           break;
 
         default:
@@ -633,8 +633,8 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
         //STOP
         case 0x00:
         case 0xFF:
-          *(songArray + g_systemStatus.song_cnt) = 0xFF;
-          g_systemStatus.song_cnt++;
+          g_systemStatus.flag_isPlaying = 0;
+          g_systemStatus.song_cnt = 0;
           break;
 
         default:
