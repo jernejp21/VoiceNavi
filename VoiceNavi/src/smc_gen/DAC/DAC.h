@@ -18,11 +18,10 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : DAC.h
-* Version      : 1.8.4
-* Device(s)    : R5F565N9FxFP
-* Description  : This file implements device driver for DAC.
-* Creation Date: 2021-09-06
+* File Name        : DAC.h
+* Component Version: 1.10.0
+* Device(s)        : R5F565N9FxFP
+* Description      : This file implements device driver for DAC.
 ***********************************************************************************************************************/
 
 #ifndef CFG_DAC_H

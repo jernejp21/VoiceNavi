@@ -18,11 +18,10 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : ADC0.h
-* Version      : 1.10.1
-* Device(s)    : R5F565N9FxFP
-* Description  : This file implements device driver for ADC0.
-* Creation Date: 2021-09-06
+* File Name        : ADC0.h
+* Component Version: 1.12.0
+* Device(s)        : R5F565N9FxFP
+* Description      : This file implements device driver for ADC0.
 ***********************************************************************************************************************/
 
 #ifndef CFG_ADC0_H

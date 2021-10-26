@@ -168,6 +168,7 @@ static void playFromPlaylist(uint8_t playNr)
 
   LED_BusyOn();
   PIN_BusyReset();
+  /* Enable audio amp */
   PIN_ShutdownSet();
   while(output_music[playNr].repeat > _repetitions)
   {
@@ -230,6 +231,7 @@ static void playFromPlaylist(uint8_t playNr)
 
   LED_BusyOff();
   PIN_BusySet();
+  /* Disable audio amp */
   PIN_ShutdownReset();
 }
 
@@ -391,8 +393,6 @@ static void sys_init()
   NAND_Reset();
   NAND_CheckBlock();
 
-  /* Enable audio amp */
-  //PIN_ShutdownSet();
   R_DMAC0_SetAddresses((void*)&S12AD.ADDR6, (void*)&volume);
   R_DMAC0_Start();
   R_ADC0_Start();
@@ -509,7 +509,14 @@ void main(void)
   switch(mode_select)
   {
     case 0:
-      playMode = normalPlay;
+      if(boardType == WAV_5F9IH)
+      {
+        playMode = lastInputInterruptPlay;
+      }
+      else
+      {
+        playMode = normalPlay;
+      }
       break;
 
     case 1:
