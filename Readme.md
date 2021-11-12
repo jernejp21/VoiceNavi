@@ -17,6 +17,10 @@ Open | Closed | 5F2
 Closed | Open | 5F1
 Closed | Closed | 5F9IH
 
+## Volume adjustment
+
+If SW2 is put into "Chime" position, 1st song in flash will be consciously played. This can be used to adjust volume. If neutral or "Voice" position is selected, normal operation mode is selected.
+
 ## How to use (on Windows)
 To edit source code, use [E2 Studio](https://www.renesas.com/us/en/software-tool/e-studio). Version used for this project is 2021-04 (21.4.0).
 
@@ -45,7 +49,7 @@ To copy data from USB drive to flash, next procedure must be done. Before insert
 - Set DIP switch 7<sup>*2</sup> to ON.
 - Insert USB flash drive.
 - During copy process, USB LED (green LED) will be turned on.
-- If copying was successful, USB LED will blink in 0,5 s intervals. If errors occure, see error table.
+- If copying was successful, USB LED will blink in 0,5 s intervals. If errors occur, see error table.
 - Remove USB flash drive.
 - Set DIP switch 7<sup>*2</sup> to OFF (to avoid overwriting data if USB is inserted again).
 
@@ -66,6 +70,8 @@ ALARM LED on <br> USB LED blinking (100 ms interval) | Flash ECC error | Bit err
 ALARM LED blinking <br> (500 ms interval) | Empty flash error | No data in flash. Copy data from USB to internal flash.
 
 ## Notes
-*1 - On test hardware use DIP switch 6 and 7. MS2 is 7, MS1 is 6
+Above described procedures apply to normal operation mode. If JP1 jumper is soldered, device is in debug mode. Device mode allows user to switch between board types using DIP switch.
 
-*2 - On test hardware use SW2. For program enable, set SW2 to Voice position.
+*1 - In debug mode use DIP switch 7 and 8. MS1 is 7, MS2 is 8
+
+*2 - In debug mode use DIP switch 6.

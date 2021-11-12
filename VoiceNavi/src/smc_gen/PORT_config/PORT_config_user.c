@@ -201,4 +201,9 @@ uint8_t PIN_GetSW2()
   return port;
 }
 
+uint8_t PIN_GetDebugMode()
+{
+  return PORTE.PIDR.BIT.B6;
+}
+
 /* End user code. Do not edit comment generated here */

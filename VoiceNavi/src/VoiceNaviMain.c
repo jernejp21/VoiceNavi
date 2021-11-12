@@ -403,6 +403,34 @@ static void sys_init()
   memset(songBuffer, -1, 20);
 }
 
+static uint8_t board_selection()
+{
+  if(PIN_GetDebugMode() == 1)
+  {
+    //Normal mode
+    return PIN_BoardSelection();  //Solder jumpers MS1, MS2
+  }
+  else
+  {
+    //Debug mode
+    return (((DIP_ReadState() ^ 0xFF) & 0xC0) >> 6);  //Pins 7, 8
+  }
+}
+
+static uint8_t usb_copy_enable()
+{
+  if(PIN_GetDebugMode() == 1)
+  {
+    //Normal mode
+    return ((DIP_ReadState() & 0x40) >> 6);  //Pin 7
+  }
+  else
+  {
+    //Debug mode
+    return ((DIP_ReadState() & 0x20) >> 5);  //Pin 6
+  }
+}
+
 void CNT_USB_CntCallback()
 {
   LED_USBToggle();
@@ -486,9 +514,7 @@ void main(void)
   }
 
   /* Determine board type */
-  //boardType = PIN_BoardSelection();
-  //Only for testing, change for final version
-  boardType = ((DIP_ReadState() ^ 0xFF) & 0x60) >> 5;  //Pins 6, 7
+  boardType = board_selection();
 
   /* Number of switches */
   if(boardType == WAV_5F1)
@@ -634,7 +660,7 @@ void main(void)
     /* Check if USB is inserted and write switch is enabled */
     event = R_USB_GetEvent(&ctrl);  // Get event code
 
-    if(PIN_GetSW2() == 1)
+    if(usb_copy_enable() == 1)
     {
       switch(event)
       {
@@ -677,46 +703,53 @@ void main(void)
     /* Go to main part of program, only if data is available in flash. Otherwise loop and check if USB is attached. */
     if(isDataInFlash)
     {
-      /* Play song in anything is in queue */
-      if(!g_systemStatus.flag_semaphoreLock)
+      if(PIN_GetSW2() == 2)
       {
-        while(cur_cnt < g_systemStatus.song_cnt)
+        //Chime position, continuous play of song nr. 1
+        playFromPlaylist(0);
+      }
+      else
+      {
+        /* Play song in anything is in queue */
+        if(!g_systemStatus.flag_semaphoreLock)
         {
-          if(0xFF != songBuffer[cur_cnt])
+          while(cur_cnt < g_systemStatus.song_cnt)
           {
-            //cur_cnt++;
-            playFromPlaylist(songBuffer[cur_cnt++]);
-          }
-          else
-          {
-            cur_cnt = 0;
-            g_systemStatus.song_cnt = 0;
-            break;
-          }
+            if(0xFF != songBuffer[cur_cnt])
+            {
+              //cur_cnt++;
+              playFromPlaylist(songBuffer[cur_cnt++]);
+            }
+            else
+            {
+              cur_cnt = 0;
+              g_systemStatus.song_cnt = 0;
+              break;
+            }
 
-          if(boardType == WAV_5F9IH)
-          {
-            /* No buffer for binary mode */
-            cur_cnt = 0;
-            g_systemStatus.song_cnt = 0;
-          }
+            if(boardType == WAV_5F9IH)
+            {
+              /* No buffer for binary mode */
+              cur_cnt = 0;
+              g_systemStatus.song_cnt = 0;
+            }
 
-          /* Wait for interval time */
-          if(interval_time && g_systemStatus.flag_isSongAvailable)
-          {
-            LED_BusyOn();
-            PIN_BusyReset();
-            g_systemStatus.flag_waitForInterval = 1;
-            // 100 ms period
-            R_CMT_CreatePeriodic(10, &CNT_IntervalDelay, &cmt_channel_interval_delay);
-            while(g_systemStatus.flag_waitForInterval);
-            LED_BusyOff();
-            PIN_BusySet();
+            /* Wait for interval time */
+            if(interval_time && g_systemStatus.flag_isSongAvailable)
+            {
+              LED_BusyOn();
+              PIN_BusyReset();
+              g_systemStatus.flag_waitForInterval = 1;
+              // 100 ms period
+              R_CMT_CreatePeriodic(10, &CNT_IntervalDelay, &cmt_channel_interval_delay);
+              while(g_systemStatus.flag_waitForInterval);
+              LED_BusyOff();
+              PIN_BusySet();
+            }
+            g_systemStatus.flag_semaphoreLock = 1;
           }
-          g_systemStatus.flag_semaphoreLock = 1;
         }
       }
     }
   }
-
 }
