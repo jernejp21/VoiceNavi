@@ -14,13 +14,13 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2021 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2022 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : r_pinset.h.h
 * Version      : 1.0.1
 * Description  : Declares all pin code headers into a single file
-* Creation Date: 2021-10-26
+* Creation Date: 2022-02-08
 ***********************************************************************************************************************/
 
 #ifndef R_PINSET_H

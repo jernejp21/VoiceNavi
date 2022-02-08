@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2021 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2022 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : r_rspi_rx_pinset.h
@@ -22,7 +22,7 @@
 * Device(s)    : R5F565N9FxFP
 * Tool-Chain   : RXC toolchain
 * Description  : Setting of port and mpc registers
-* Creation Date: 2021-10-26
+* Creation Date: 2022-02-08
 ***********************************************************************************************************************/
 
 #ifndef R_RSPI_RX_H

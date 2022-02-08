@@ -14,14 +14,14 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2018 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name        : Pin.c
-* Version          : 1.0.2
+* File Name        : IRQs.c
+* Component Version: 2.2.0
 * Device(s)        : R5F565N9FxFP
-* Description      : This file implements SMC pin code generation.
+* Description      : This file implements device driver for IRQs.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -34,6 +34,7 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
+#include "IRQs.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -45,56 +46,65 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Pins_Create
-* Description  : This function initializes Smart Configurator pins
+* Function Name: R_IRQs_Create
+* Description  : This function initializes the ICU module
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
-void R_Pins_Create(void)
+void R_IRQs_Create(void)
 {
-    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
+    /* Disable IRQ interrupts */
+    ICU.IER[0x08].BYTE = 0x00U;
+    ICU.IER[0x09].BYTE = 0x00U;
 
-    /* Set AN006 pin */
-    MPC.P46PFS.BYTE = 0x80U;
-    PORT4.PMR.BYTE &= 0xBFU;
-    PORT4.PDR.BYTE &= 0xBFU;
+    /* Disable software interrupt */
+    IEN(ICU,SWINT) = 0U;
+    IEN(ICU,SWINT2) = 0U;
 
-    /* Set AN007 pin */
-    MPC.P47PFS.BYTE = 0x80U;
-    PORT4.PMR.BYTE &= 0x7FU;
-    PORT4.PDR.BYTE &= 0x7FU;
-
-    /* Set DA1 pin */
-    MPC.P05PFS.BYTE = 0x80U;
-    PORT0.PMR.BYTE &= 0xDFU;
-    PORT0.PDR.BYTE &= 0xDFU;
+    /* Disable IRQ digital filter */
+    ICU.IRQFLTE1.BYTE &= ~(_20_ICU_IRQ13_FILTER_ENABLE);
 
     /* Set IRQ13 pin */
     MPC.PC6PFS.BYTE = 0x40U;
-    PORTC.PMR.BYTE &= 0xBFU;
     PORTC.PDR.BYTE &= 0xBFU;
+    PORTC.PMR.BYTE &= 0xBFU;
 
-    /* Set MISOC pin */
-    MPC.PD2PFS.BYTE = 0x0DU;
-    PORTD.PMR.BYTE |= 0x04U;
+    /* Set IRQ detection type */
+    ICU.IRQCR[13].BYTE = _08_ICU_IRQ_EDGE_RISING;
+    IR(ICU,IRQ13) = 0U;
 
-    /* Set MOSIC pin */
-    MPC.PD1PFS.BYTE = 0x0DU;
-    PORTD.PMR.BYTE |= 0x02U;
+    /* Set IRQ13 priority level */
+    IPR(ICU,IRQ13) = _04_ICU_PRIORITY_LEVEL4;
 
-    /* Set RSPCKC pin */
-    MPC.PD3PFS.BYTE = 0x0DU;
-    PORTD.PMR.BYTE |= 0x08U;
-
-    /* Set SSCL11 pin */
-    MPC.PB6PFS.BYTE = 0x24U;
-    PORTB.PMR.BYTE |= 0x40U;
-
-    /* Set SSDA11 pin */
-    MPC.PB7PFS.BYTE = 0x24U;
-    PORTB.PMR.BYTE |= 0x80U;
-
-    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
+    R_IRQs_Create_UserInit();
 }
 
+/***********************************************************************************************************************
+* Function Name: R_IRQs_IRQ13_Start
+* Description  : This function enables IRQ13 interrupt
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_IRQs_IRQ13_Start(void)
+{
+    /* Enable IRQ13 interrupt */
+    IEN(ICU,IRQ13) = 1U;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_IRQs_IRQ13_Stop
+* Description  : This function disables IRQ13 interrupt
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_IRQs_IRQ13_Stop(void)
+{
+    /* Disable IRQ13 interrupt */
+    IEN(ICU,IRQ13) = 0U;
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */

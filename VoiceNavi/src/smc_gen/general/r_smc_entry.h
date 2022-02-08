@@ -37,6 +37,7 @@ Includes
 #include "ADC0.h"
 #include "DMAC1.h"
 #include "TPU0.h"
+#include "IRQs.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)

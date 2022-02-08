@@ -37,5 +37,7 @@ void binary250_positive(uint8_t*, uint8_t*);
 void binary250_negative(uint8_t*, uint8_t*);
 void binary255_positive(uint8_t*, uint8_t*);
 void binary255_negative(uint8_t*, uint8_t*);
+void binary255_5F9IH(uint8_t*, uint8_t*);
+void IRQ_handler();
 
 #endif //__PLAY_MODES_H

@@ -44,6 +44,7 @@ void ISR_periodicPolling();
 /** Global variables */
 uint32_t g_binary_vol_reduction_address = NAND_VOL_PAGE;
 system_status_t g_systemStatus;
+uint8_t g_binary_vol_reduction;
 
 /** Song, play mode and output related variables */
 void (*playMode)();
@@ -54,8 +55,9 @@ wav_header_t wav_file;
 uint16_t volume[2] __attribute__((aligned(4)));
 uint8_t songBuffer[20];
 uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(4096)));
-uint8_t g_binary_vol_reduction;
 int cur_cnt = 0;
+uint8_t mode_select;
+modeSelect_t boardType;
 
 /** Communication structures */
 sci_iic_info_t iic_info;
@@ -276,7 +278,6 @@ static void I2C_Send(sci_iic_info_t *i2c_info, uint8_t dev_add, uint8_t reg_add,
 }
 static void I2C_Init()
 {
-  /* GPIO Mux Init */
   /* GPIO Mux Reset pin */
   PIN_RstReset();
   R_BSP_SoftwareDelay(5, BSP_DELAY_MILLISECS);
@@ -293,6 +294,7 @@ static void I2C_Init()
   /* Potentiometer init - do not write to EEPROM */
   I2C_Send(&iic_info, I2C_POTENT_ADDR, 2, 0x80);
 
+  /* GPIO Mux Init */
   //IOCON
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x0A, 0xC2);  //INT is active HIGH
 
@@ -451,6 +453,28 @@ void CNT_IntervalDelay()
   del_cnt++;
 }
 
+void IRQ_handler()
+{
+  uint8_t gpio_rx[2];
+  uint8_t IRQ_pin;
+
+  /* STB pin signal ----|_____|-------
+   * IRQ pin signal ____|-|___|-|_____
+   *
+   * IRQ pin is active HIGH. GPIO MUX sends IRQ signal on status change.
+   * HIGH -> LOW or LOW -> HIGH. It is triggered only on STOP and STB pins.
+   * IRQ in MCU is triggered on rising edge.
+   */
+
+  g_systemStatus.flag_isIRQ ^= 1;
+
+  /* Read gpioa, gpiob from GPIO mux. */
+  gpio_rx[0] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
+  gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
+  playMode(gpio_rx, songBuffer);
+
+}
+
 /* Periodic ISR for polling status on GPIO MUX */
 void ISR_periodicPolling()
 {
@@ -476,19 +500,22 @@ void ISR_periodicPolling()
   /* Send volume data to potentiometer */
   I2C_Send(&iic_info, I2C_POTENT_ADDR, 0, _volume);
 
-  /* Read gpioa, gpiob from GPIO mux */
-  gpio_rx[0] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
-  gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
-
-  g_systemStatus.flag_isIRQ = PIN_GetExtIRQ();
-
-  if((cur_cnt == g_systemStatus.song_cnt) && (0 != g_systemStatus.song_cnt))
+  if((boardType != WAV_5F9IH) || (mode_select != 1))
   {
-    cur_cnt = 0;
-    g_systemStatus.song_cnt = 0;
-  }
+    /* Read gpioa, gpiob from GPIO mux */
+    gpio_rx[0] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
+    gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
 
-  playMode(gpio_rx, songBuffer);
+    g_systemStatus.flag_isIRQ = PIN_GetExtIRQ();
+
+    if((cur_cnt == g_systemStatus.song_cnt) && (0 != g_systemStatus.song_cnt))
+    {
+      cur_cnt = 0;
+      g_systemStatus.song_cnt = 0;
+    }
+
+    playMode(gpio_rx, songBuffer);
+  }
 
   g_systemStatus.flag_semaphoreLock = 0;
 }
@@ -497,8 +524,6 @@ void ISR_periodicPolling()
 void main(void)
 {
   usb_status_t event;
-  uint8_t mode_select;
-  modeSelect_t boardType;
   int isDataInFlash;
   nand_flash_status_t flash_status;
 
@@ -548,7 +573,18 @@ void main(void)
     case 1:
       if(boardType == WAV_5F9IH)
       {
-        playMode = binary255_negative;
+        playMode = binary255_5F9IH;
+        //Clear interrupt flab before enabling interrupt
+        IR(ICU, IRQ13)= 0;
+        R_IRQs_IRQ13_Start();
+        //GPINTENA
+        I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x02, 0);
+        //INTCONA
+        I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x04, 0);
+        //GPINTENB
+        I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x12, 0x03);
+        //INTCONB
+        I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x14, 0);
       }
       else
       {
@@ -636,21 +672,6 @@ void main(void)
     interval_time = 0;
   }
 
-  /* Find address for binary volume reduction */
-  /* NOT IN USE
-   uint8_t _vol_reduction_select = !!(DIP_ReadState() & 0x80);  //Switch 8 is vol reduction select
-   if((mode_select > 5) && _vol_reduction_select)
-   {
-   while(0 == g_binary_vol_reduction)
-   {
-   NAND_ReadFromFlash(g_binary_vol_reduction_address, 1, &g_binary_vol_reduction);
-   g_binary_vol_reduction_address++;
-   }
-   //Go back 1 so we can set value to 0 if command comes in.
-   g_binary_vol_reduction_address--;
-   }
-   */
-
   /* Periodic timer for GPIO polling. About 22 ms. */
   R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);
 
@@ -710,7 +731,7 @@ void main(void)
       }
       else
       {
-        /* Play song in anything is in queue */
+        /* Play song if anything is in queue */
         if(!g_systemStatus.flag_semaphoreLock)
         {
           while(cur_cnt < g_systemStatus.song_cnt)

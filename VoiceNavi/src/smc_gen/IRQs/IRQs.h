@@ -14,49 +14,43 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2022 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
+
 /***********************************************************************************************************************
-* File Name    : r_rspi_rx_pinset.c
-* Version      : 1.0.2
-* Device(s)    : R5F565N9FxFP
-* Tool-Chain   : RXC toolchain
-* Description  : Setting of port and mpc registers
-* Creation Date: 2022-02-08
+* File Name        : IRQs.h
+* Component Version: 2.2.0
+* Device(s)        : R5F565N9FxFP
+* Description      : This file implements device driver for IRQs.
 ***********************************************************************************************************************/
+
+#ifndef CFG_IRQs_H
+#define CFG_IRQs_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_rspi_rx_pinset.h"
-#include "platform.h"
+#include "r_cg_icu.h"
 
 /***********************************************************************************************************************
-Global variables and functions
+Macro definitions (Register bit)
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* Function Name: R_RSPI_PinSet_RSPI2
-* Description  : This function initializes pins for r_rspi_rx module
-* Arguments    : none
-* Return Value : none
+Macro definitions
 ***********************************************************************************************************************/
-void R_RSPI_PinSet_RSPI2()
-{
-    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
 
-    /* Set RSPCKC pin */
-    MPC.PD3PFS.BYTE = 0x0DU;
-    PORTD.PMR.BIT.B3 = 1U;
+/***********************************************************************************************************************
+Typedef definitions
+***********************************************************************************************************************/
 
-    /* Set MOSIC pin */
-    MPC.PD1PFS.BYTE = 0x0DU;
-    PORTD.PMR.BIT.B1 = 1U;
-
-    /* Set MISOC pin */
-    MPC.PD2PFS.BYTE = 0x0DU;
-    PORTD.PMR.BIT.B2 = 1U;
-
-    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
-}
-
+/***********************************************************************************************************************
+Global functions
+***********************************************************************************************************************/
+void R_IRQs_Create(void);
+void R_IRQs_Create_UserInit(void);
+void R_IRQs_IRQ13_Start(void);
+void R_IRQs_IRQ13_Stop(void);
+/* Start user code for function. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+#endif

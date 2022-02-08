@@ -657,3 +657,56 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
     prev_sw = 0;
   }
 }
+
+void binary255_5F9IH(uint8_t *i2c_gpio, uint8_t *songArray)
+{
+  uint8_t _gpioa;
+  uint8_t _gpiob;
+
+  _gpioa = *(i2c_gpio + 0);
+  _gpiob = *(i2c_gpio + 1);
+
+  /* Correct switches order according to HW design */
+  _gpioa = bitOrder(_gpioa);
+  _gpiob ^= 0xFF;  //Convert to positive logic.
+
+  /* This mode has negative logic */
+  if(g_systemStatus.flag_isIRQ)
+  {
+    if(0 != (_gpiob & STOP))
+    {
+      g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.song_cnt = 0;
+    }
+
+    if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
+    {
+      switch(_gpioa)
+      {
+        //STOP
+        case 0x00:
+        case 0xFF:
+          g_systemStatus.flag_isPlaying = 0;
+          g_systemStatus.song_cnt = 0;
+          break;
+
+        default:
+          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
+          {
+            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
+            g_systemStatus.song_cnt++;
+          }
+          break;
+      }
+      prev_sw = _gpiob & STB;
+    }
+    else if(0 == (_gpiob & STB))
+    {
+      prev_sw = 0;
+    }
+  }
+  else
+  {
+    prev_sw = 0;
+  }
+}
