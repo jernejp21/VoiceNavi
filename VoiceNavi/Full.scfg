@@ -483,47 +483,47 @@
         <Item currentVect="255" id="PERIA_INTA255" priority="15" usedState="Not Use"/>
     </tool>
     <tool id="Pins" version="1.0.1.0">
-        <pinItem allocation="2" comments="" direction="None" id="EMLE" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="11" comments="" direction="None" id="XTAL" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="46" comments="" direction="None" id="IRQ13" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="70" comments="" direction="I" id="PA0" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="68" comments="" direction="I" id="PA2" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="69" comments="" direction="I" id="PA1" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="66" comments="" direction="I" id="PA4" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="67" comments="" direction="I" id="PA3" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="64" comments="" direction="I" id="PA6" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="65" comments="" direction="I" id="PA5" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="63" comments="" direction="I" id="PA7" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="57" comments="" direction="I" id="PB3" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="2" comments="" direction="None" id="EMLE" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="56" comments="" direction="I" id="PB4" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="11" comments="" direction="None" id="XTAL" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="84$A" comments="" direction="None" id="MISOC" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="13" comments="" direction="None" id="EXTAL" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="52" comments="" direction="I" id="PC0" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="50" comments="" direction="I" id="PC2" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="48" comments="" direction="O" id="PC4" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="47" comments="" direction="O" id="PC5" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="72" comments="" direction="I" id="PE6" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="71" comments="" direction="I" id="PE7" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="83$A" comments="" direction="None" id="RSPCKC" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="54" comments="" direction="None" id="SSCL11" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="19" comments="" direction="None" id="TMS" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="88" comments="" direction="None" id="AN006" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="87" comments="" direction="None" id="AN007" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="84$A" comments="" direction="None" id="MISOC" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="13" comments="" direction="None" id="EXTAL" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="16" comments="" direction="None" id="TRST#" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="85$A" comments="" direction="None" id="MOSIC" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="21" comments="" direction="None" id="TCK" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="46" comments="" direction="None" id="IRQ13" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="91" comments="" direction="I" id="P43" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="92" comments="" direction="I" id="P42" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="88" comments="" direction="None" id="AN006" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="87" comments="" direction="None" id="AN007" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="100" comments="" direction="None" id="DA1" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="20" comments="" direction="None" id="TDI" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="70" comments="" direction="I" id="PA0" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="22" comments="" direction="None" id="TDO" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="68" comments="" direction="I" id="PA2" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="72" comments="" direction="I" id="PE6" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="69" comments="" direction="I" id="PA1" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="66" comments="" direction="I" id="PA4" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="16" comments="" direction="None" id="TRST#" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="67" comments="" direction="I" id="PA3" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="71" comments="" direction="I" id="PE7" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="64" comments="" direction="I" id="PA6" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="65" comments="" direction="I" id="PA5" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="63" comments="" direction="I" id="PA7" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="83$A" comments="" direction="None" id="RSPCKC" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="44" comments="" direction="O" id="P50" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="42" comments="" direction="O" id="P52" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="43" comments="" direction="O" id="P51" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="40" comments="" direction="O" id="P54" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="53" comments="" direction="None" id="SSDA11" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="41" comments="" direction="O" id="P53" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="39" comments="" direction="O" id="P55" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="100" comments="" direction="None" id="DA1" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="85$A" comments="" direction="None" id="MOSIC" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="21" comments="" direction="None" id="TCK" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="20" comments="" direction="None" id="TDI" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="22" comments="" direction="None" id="TDO" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="53" comments="" direction="None" id="SSDA11" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="54" comments="" direction="None" id="SSCL11" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="19" comments="" direction="None" id="TMS" isUsedBySoftware="true" locked="false" status="0"/>
     </tool>
     <tool id="Summary" version="1.0.0.0">
         <option id="com.renesas.smc.code.path" value="src\smc_gen"/>
@@ -850,7 +850,7 @@
                 <gridItem id="SCI_IIC_CFG_CH8_BITRATE_BPS" selectedIndex="384000"/>
                 <gridItem id="SCI_IIC_CFG_CH9_BITRATE_BPS" selectedIndex="384000"/>
                 <gridItem id="SCI_IIC_CFG_CH10_BITRATE_BPS" selectedIndex="384000"/>
-                <gridItem id="SCI_IIC_CFG_CH11_BITRATE_BPS" selectedIndex="100000"/>
+                <gridItem id="SCI_IIC_CFG_CH11_BITRATE_BPS" selectedIndex="384000"/>
                 <gridItem id="SCI_IIC_CFG_CH12_BITRATE_BPS" selectedIndex="384000"/>
                 <gridItem id="SCI_IIC_CFG_CH0_INT_PRIORITY" selectedIndex="1"/>
                 <gridItem id="SCI_IIC_CFG_CH1_INT_PRIORITY" selectedIndex="1"/>
