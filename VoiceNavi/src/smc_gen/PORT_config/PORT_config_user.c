@@ -130,8 +130,8 @@ uint8_t DIP_ReadState()
 modeSelect_t PIN_BoardSelection()
 {
   modeSelect_t ret;
-  ret = PORT4.PIDR.BIT.B2; //MS1
-  ret |= (1 << PORT4.PIDR.BIT.B3); //MS2
+  ret = PORT4.PIDR.BIT.B3; //MS2
+  ret |= (1 << PORT4.PIDR.BIT.B2); //MS1
 
   return ret;
 }

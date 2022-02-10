@@ -456,7 +456,6 @@ void CNT_IntervalDelay()
 void IRQ_handler()
 {
   uint8_t gpio_rx[2];
-  uint8_t IRQ_pin;
 
   /* STB pin signal ----|_____|-------
    * IRQ pin signal ____|-|___|-|_____
