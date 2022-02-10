@@ -68,7 +68,7 @@
     <intAttribute key="com.renesas.hardwaredebug.e1.hook_work_ram_Addr" value="261584"/>
     <intAttribute key="com.renesas.hardwaredebug.e1.hook_work_ram_Size" value="560"/>
     <stringAttribute key="com.renesas.hardwaredebug.e1.id_code" value="FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"/>
-    <stringAttribute key="com.renesas.hardwaredebug.e1.inputclock" value="27.0"/>
+    <stringAttribute key="com.renesas.hardwaredebug.e1.inputclock" value="12"/>
     <stringAttribute key="com.renesas.hardwaredebug.e1.jtag.clock.freq" value="16.5"/>
     <stringAttribute key="com.renesas.hardwaredebug.e1.jtag.or.fine" value="0"/>
     <booleanAttribute key="com.renesas.hardwaredebug.e1.le" value="true"/>

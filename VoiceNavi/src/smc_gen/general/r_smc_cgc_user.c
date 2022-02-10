@@ -19,7 +19,7 @@
 
 /***********************************************************************************************************************
 * File Name        : r_smc_cgc_user.c
-* Version          : 1.8.0
+* Version          : 2.0.0
 * Device(s)        : R5F565N9FxFP
 * Description      : This file implements CGC setting.
 ***********************************************************************************************************************/
@@ -59,4 +59,3 @@ void R_CGC_Create_UserInit(void)
 
 /* Start user code for adding. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-
