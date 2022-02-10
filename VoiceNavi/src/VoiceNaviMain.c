@@ -472,6 +472,7 @@ void IRQ_handler()
   gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
   playMode(gpio_rx, songBuffer);
 
+
 }
 
 /* Periodic ISR for polling status on GPIO MUX */
