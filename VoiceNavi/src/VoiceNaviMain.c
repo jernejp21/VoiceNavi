@@ -146,7 +146,7 @@ static void emptyPlayBuffer()
   R_DAC1_Set_ConversionValue(2048);
 }
 
-static void playFromPlaylist(uint8_t playNr)
+static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
 {
   int _index = 0;
   int _fileToPlay;
@@ -166,7 +166,10 @@ static void playFromPlaylist(uint8_t playNr)
     return;
   }
 
-  g_systemStatus.vol_ctrl_nr = output_music[playNr].vol_ctrl - 1;
+  if(!isInfineteLoop)
+  {
+    g_systemStatus.vol_ctrl_nr = output_music[playNr].vol_ctrl - 1;
+  }
 
   LED_BusyOn();
   PIN_BusyReset();
@@ -472,7 +475,6 @@ void IRQ_handler()
   gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
   playMode(gpio_rx, songBuffer);
 
-
 }
 
 /* Periodic ISR for polling status on GPIO MUX */
@@ -726,8 +728,15 @@ void main(void)
     {
       if(PIN_GetSW2() == 2)
       {
-        //Chime position, continuous play of song nr. 1
-        playFromPlaylist(0);
+        //Position 1 (chime), continuous play of song nr. 1, volume adjustment on VR3
+        g_systemStatus.vol_ctrl_nr = 0;
+        playFromPlaylist(0, 1);
+      }
+      else if(PIN_GetSW2() == 1)
+      {
+        //Position 3 (voice), continuous play of song nr. 1, volume adjustment on VR4
+        g_systemStatus.vol_ctrl_nr = 1;
+        playFromPlaylist(0, 1);
       }
       else
       {
@@ -739,7 +748,7 @@ void main(void)
             if(0xFF != songBuffer[cur_cnt])
             {
               //cur_cnt++;
-              playFromPlaylist(songBuffer[cur_cnt++]);
+              playFromPlaylist(songBuffer[cur_cnt++], 0);
             }
             else
             {

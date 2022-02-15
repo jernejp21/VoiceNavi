@@ -19,10 +19,12 @@ Closed | Closed | 5F9IH
 
 ## Volume adjustment
 
-If SW2 is put into "Chime" position, 1st song in flash will be consciously played. This can be used to adjust volume. If neutral or "Voice" position is selected, normal operation mode is selected.
+If SW2 is put into position 1, 1st song in flash will continuously play and VR3 volume can be adjusted. If position 3 is selected, 1st song in flash will continuously play and VR4 volume can be adjusted. This can be used to adjust volume. Normal operation mode is position 2.
 
 ## How to use (on Windows)
-To edit source code, use [E2 Studio](https://www.renesas.com/us/en/software-tool/e-studio). Version used for this project is 2021-04 (21.4.0).
+To edit source code, use [E2 Studio](https://www.renesas.com/us/en/software-tool/e-studio). Version used for this project is 2021-04 (22.1.0).
+
+**IMPORTANT! Use GCC compiler version 8.3.0.202004. Do not use 8.3.202102 or newer. Compiling doesn't work in 202102 version.**
 
 For updating FW, use [Renesas Flash Programmer V3](https://www.renesas.com/us/en/software-tool/renesas-flash-programmer-programming-gui#download).
  - Power off the device and set **boot** jumper.
@@ -75,3 +77,4 @@ Above described procedures apply to normal operation mode. If JP1 jumper is sold
 *1 - In debug mode use DIP switch 7 and 8. MS1 is 7, MS2 is 8
 
 *2 - In debug mode use DIP switch 6.
+
