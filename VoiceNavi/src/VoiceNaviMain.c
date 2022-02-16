@@ -484,8 +484,15 @@ void ISR_periodicPolling()
   uint8_t _volume;
   uint8_t gpio_rx[2];
 
-  //volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
-  _volume = (uint8_t)(volume[g_systemStatus.vol_ctrl_nr] >> 1);
+  if(boardType == WAV_5F9IH)
+  {
+    //volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
+    _volume = (uint8_t)(volume[g_systemStatus.vol_ctrl_nr] >> 1);
+  }
+  else
+  {
+    _volume = 127;
+  }
 
   // Activated when 0.
   if(0 == PIN_Get6dB() || 2 == g_binary_vol_reduction)
