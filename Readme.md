@@ -48,12 +48,14 @@ For updating FW, use [Renesas Flash Programmer V3](https://www.renesas.com/us/en
 To copy data from USB drive to flash, next procedure must be done. Before inserting USB drive, make sure it is formatted to FAT (FAT16, FAT32, exFAT) format and all needed wav files and only one wpj file is on USB drive. If this is not true, error will occur during copy procedure.
 
 **Copy procedure:**
-- Set DIP switch 7<sup>*2</sup> to ON.
+- Turn off power.
 - Insert USB flash drive.
+- Turn on power.
 - During copy process, USB LED (green LED) will be turned on.
 - If copying was successful, USB LED will blink in 0,5 s intervals. If errors occur, see error table.
+- Turn off power.
 - Remove USB flash drive.
-- Set DIP switch 7<sup>*2</sup> to OFF (to avoid overwriting data if USB is inserted again).
+- Turn on power.
 
 ## Errors table
 If error occurs during any time when using VoiceNavi, check error table for details what the cause may be.
@@ -75,6 +77,4 @@ ALARM LED blinking <br> (500 ms interval) | Empty flash error | No data in flash
 Above described procedures apply to normal operation mode. If JP1 jumper is soldered, device is in debug mode. Device mode allows user to switch between board types using DIP switch.
 
 *1 - In debug mode use DIP switch 7 and 8. MS1 is 7, MS2 is 8
-
-*2 - In debug mode use DIP switch 6.
 
