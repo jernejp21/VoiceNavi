@@ -186,6 +186,12 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
       NAND_ReadFromFlash(_fileAddress, WAV_HEADER_SIZE, file_data);
 
       WAV_Open(&wav_file, file_data);
+      if(wav_file.channel != 1)
+      {
+        //Mono has 1 channel, stereo has 2 channels.
+        // Theoretically there can be more than 2 channels, but we only play mono.
+        return;
+      }
       _dataSize = wav_file.data_size;
       _fileAddress += WAV_HEADER_SIZE;
 
@@ -217,6 +223,8 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
           emptyPlayBuffer();
           LED_BusyOff();
           PIN_BusySet();
+          /* Disable audio amp */
+          PIN_ShutdownReset();
           return;
         }
         songBuffer[g_systemStatus.song_cnt] = 0xFF;
@@ -423,19 +431,19 @@ static uint8_t board_selection()
   }
 }
 
-static uint8_t usb_copy_enable()
-{
-  if(PIN_GetDebugMode() == 1)
-  {
-    //Normal mode
-    return ((DIP_ReadState() & 0x40) >> 6);  //Pin 7
-  }
-  else
-  {
-    //Debug mode
-    return ((DIP_ReadState() & 0x20) >> 5);  //Pin 6
-  }
-}
+/*static uint8_t usb_copy_enable()
+ {
+ if(PIN_GetDebugMode() == 1)
+ {
+ //Normal mode
+ return ((DIP_ReadState() & 0x40) >> 6);  //Pin 7
+ }
+ else
+ {
+ //Debug mode
+ return ((DIP_ReadState() & 0x20) >> 5);  //Pin 6
+ }
+ }*/
 
 void CNT_USB_LedCallback()
 {
@@ -543,9 +551,6 @@ void main(void)
   nand_flash_status_t flash_status;
 
   sys_init();
-
-  /* Turn LED on after init is compleate and system is ready to run */
-  LED_PowOn();
 
   isDataInFlash = getDataFromFlash();
   if(!isDataInFlash)
@@ -735,6 +740,9 @@ void main(void)
     }
   }
   R_CMT_Stop(cmt_channel_usb);
+
+  /* Turn LED on after init is compleate and system is ready to run */
+  LED_PowOn();
 
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)
