@@ -69,7 +69,7 @@ If error occurs during any time when using VoiceNavi, check error table for deta
 LED status | Error message | Possible causes
 :---: | :---: | :---:
 ALARM LED on <br> BUSY LED blinking (500 ms interval) | File system error | USB is formatted in wrong file system. Use FAT file system.
-BUSY LED blinking <br> (500 ms interval) | Wave file error | WAV file is missing or WPJ file is missing.
+BUSY LED blinking <br> (500 ms interval) | Wave file error | WAV file is missing or WPJ file is missing or WAV file is in stereo.
 ALARM LED on <br> USB LED blinking (100 ms interval) | Flash ECC error | Bit error was detected and not corrected. Possibly deteriorated flash.
 ALARM LED blinking <br> (500 ms interval) | Empty flash error | No data in flash. Copy data from USB to internal flash.
 
