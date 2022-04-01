@@ -190,6 +190,8 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
       {
         //Mono has 1 channel, stereo has 2 channels.
         // Theoretically there can be more than 2 channels, but we only play mono.
+        ERROR_WAVEFile();
+        R_CMT_Stop(cmt_channel_i2c); //Stop GPIO polling
         return;
       }
       _dataSize = wav_file.data_size;
@@ -594,8 +596,9 @@ void main(void)
       if(boardType == WAV_5F9IH)
       {
         playMode = binary255_5F9IH;
-        //Clear interrupt flab before enabling interrupt
+        //Clear interrupt flag before enabling interrupt
         IR(ICU, IRQ13)= 0;
+        //Enable interrupt on pin change. Interrupt is triggered from GPIO mux.
         R_IRQs_IRQ13_Start();
         //GPINTENA
         I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x02, 0);
@@ -707,7 +710,7 @@ void main(void)
       case USB_STS_CONFIGURED:
         R_CMT_Stop(cmt_channel_i2c);  //Stop GPIO polling
 
-        ERROR_ClearErrors();
+        //ERROR_ClearErrors();
         LED_USBOn();
         NAND_Reset();
         flash_status = NAND_CopyToFlash();
@@ -716,9 +719,8 @@ void main(void)
           isDataInFlash = getDataFromFlash();
           //Create 500 ms counter for flashing USB LED.
           R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
+          R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);  //Start GPIO polling
         }
-
-        R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);  //Start GPIO polling
         break;
 
       case USB_STS_DETACH:

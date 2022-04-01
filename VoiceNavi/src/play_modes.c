@@ -41,7 +41,7 @@ static uint8_t bitOrder(uint8_t order)
 {
   uint8_t new_order = 0;
 
-  order ^= 0xFF;  //Reverse all bits, to show only active gpios.
+  order ^= 0xFF;  //Reverse all bits, to show only active gpios (unpressed state).
 
   new_order = order >> 4;
   new_order |= (order & 0x01) << 7;
@@ -87,8 +87,8 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    _gpioa = *(i2c_gpio + 0);
-    _gpiob = *(i2c_gpio + 1);
+    _gpioa = i2c_gpio[0];
+    _gpiob = i2c_gpio[1];
 
     /* Correct switches order according to HW design */
     _gpioa = bitOrder(_gpioa);
@@ -151,8 +151,8 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    _gpioa = *(i2c_gpio + 0);
-    _gpiob = *(i2c_gpio + 1);
+    _gpioa = i2c_gpio[0];
+    _gpiob = i2c_gpio[1];
 
     /* Correct switches order according to HW design */
     _gpioa = bitOrder(_gpioa);
@@ -207,8 +207,8 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    _gpioa = *(i2c_gpio + 0);
-    _gpiob = *(i2c_gpio + 1);
+    _gpioa = i2c_gpio[0];
+    _gpiob = i2c_gpio[1];
 
     /* Correct switches order according to HW design */
     _gpioa = bitOrder(_gpioa);
@@ -257,8 +257,8 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
 
-  _gpioa = *(i2c_gpio + 0);
-  _gpiob = *(i2c_gpio + 1);
+  _gpioa = i2c_gpio[0];
+  _gpiob = i2c_gpio[1];
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
@@ -311,11 +311,12 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
   uint8_t _gpioa;
   uint8_t _gpiob;
 
-  _gpioa = *(i2c_gpio + 0);
-  _gpiob = *(i2c_gpio + 1);
+  _gpioa = i2c_gpio[0];
+  _gpiob = i2c_gpio[1];
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get positive logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -343,7 +344,7 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
         default:
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
-            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
+            *(songArray + g_systemStatus.song_cnt) = 0x7E - _gpioa;
             g_systemStatus.song_cnt++;
           }
           break;
@@ -367,8 +368,8 @@ void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
   uint8_t _gpiob;
   //uint8_t vol_reduction[2] = {0, 1};
 
-  _gpioa = *(i2c_gpio + 0);
-  _gpiob = *(i2c_gpio + 1);
+  _gpioa = i2c_gpio[0];
+  _gpiob = i2c_gpio[1];
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
@@ -463,8 +464,8 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
   uint8_t _gpiob;
   //uint8_t vol_reduction[2] = {0, 1};
 
-  _gpioa = *(i2c_gpio + 0);
-  _gpiob = *(i2c_gpio + 1);
+  _gpioa = i2c_gpio[0];
+  _gpiob = i2c_gpio[1];
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
@@ -559,8 +560,8 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
   uint8_t _gpioa;
   uint8_t _gpiob;
 
-  _gpioa = *(i2c_gpio + 0);
-  _gpiob = *(i2c_gpio + 1);
+  _gpioa = i2c_gpio[0];
+  _gpiob = i2c_gpio[1];
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
@@ -614,11 +615,12 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
   uint8_t _gpioa;
   uint8_t _gpiob;
 
-  _gpioa = *(i2c_gpio + 0);
-  _gpiob = *(i2c_gpio + 1);
+  _gpioa = i2c_gpio[0];
+  _gpiob = i2c_gpio[1];
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get positive logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -645,7 +647,7 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
         default:
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
-            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
+            *(songArray + g_systemStatus.song_cnt) = 0xFE - _gpioa;
             g_systemStatus.song_cnt++;
           }
           break;
@@ -668,11 +670,12 @@ void binary255_5F9IH(uint8_t *i2c_gpio, uint8_t *songArray)
   uint8_t _gpioa;
   uint8_t _gpiob;
 
-  _gpioa = *(i2c_gpio + 0);
-  _gpiob = *(i2c_gpio + 1);
+  _gpioa = i2c_gpio[0];
+  _gpiob = i2c_gpio[1];
 
   /* Correct switches order according to HW design */
   _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get positive logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
   /* This mode has negative logic */
@@ -695,7 +698,7 @@ void binary255_5F9IH(uint8_t *i2c_gpio, uint8_t *songArray)
         default:
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
           {
-            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
+            *(songArray + g_systemStatus.song_cnt) = 0xFE - _gpioa;
             g_systemStatus.song_cnt++;
           }
           break;
