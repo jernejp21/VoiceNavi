@@ -554,6 +554,54 @@ void main(void)
 
   sys_init();
 
+  /* Periodic timer for GPIO polling. About 22 ms. */
+    R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);
+
+    /* Check if USB is inserted */
+    //Create 100 ms counter for polling to check if USB is connected.
+    R_CMT_CreatePeriodic(10, &CNT_USB_CntCallback, &cmt_channel_usb);
+    while(usb_cnt < 10)
+    {
+      event = R_USB_GetEvent(&ctrl);  // Get event code
+
+      switch(event)
+      {
+        case USB_STS_CONFIGURED:
+          R_CMT_Stop(cmt_channel_i2c);  //Stop GPIO polling
+
+          //ERROR_ClearErrors();
+          LED_USBOn();
+          NAND_Reset();
+          flash_status = NAND_CopyToFlash();
+          if(flash_status == NAND_WRITE_OK)
+          {
+            isDataInFlash = getDataFromFlash();
+            //Create 500 ms counter for flashing USB LED.
+            R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
+            R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);  //Start GPIO polling
+          }
+          break;
+
+        case USB_STS_DETACH:
+          if(flash_status == NAND_WRITE_OK)
+          {
+            R_CMT_Stop(cmt_channel);
+            LED_USBOff();
+          }
+          break;
+
+        case USB_STS_NOT_SUPPORT:
+          break;
+
+        case USB_STS_NONE:
+          break;
+
+        default:
+          break;
+      }
+    }
+    R_CMT_Stop(cmt_channel_usb);
+
   isDataInFlash = getDataFromFlash();
   if(!isDataInFlash)
   {
@@ -694,54 +742,6 @@ void main(void)
   {
     interval_time = 0;
   }
-
-  /* Periodic timer for GPIO polling. About 22 ms. */
-  R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);
-
-  /* Check if USB is inserted */
-  //Create 100 ms counter for polling to check if USB is connected.
-  R_CMT_CreatePeriodic(10, &CNT_USB_CntCallback, &cmt_channel_usb);
-  while(usb_cnt < 10)
-  {
-    event = R_USB_GetEvent(&ctrl);  // Get event code
-
-    switch(event)
-    {
-      case USB_STS_CONFIGURED:
-        R_CMT_Stop(cmt_channel_i2c);  //Stop GPIO polling
-
-        //ERROR_ClearErrors();
-        LED_USBOn();
-        NAND_Reset();
-        flash_status = NAND_CopyToFlash();
-        if(flash_status == NAND_WRITE_OK)
-        {
-          isDataInFlash = getDataFromFlash();
-          //Create 500 ms counter for flashing USB LED.
-          R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
-          R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);  //Start GPIO polling
-        }
-        break;
-
-      case USB_STS_DETACH:
-        if(flash_status == NAND_WRITE_OK)
-        {
-          R_CMT_Stop(cmt_channel);
-          LED_USBOff();
-        }
-        break;
-
-      case USB_STS_NOT_SUPPORT:
-        break;
-
-      case USB_STS_NONE:
-        break;
-
-      default:
-        break;
-    }
-  }
-  R_CMT_Stop(cmt_channel_usb);
 
   /* Turn LED on after init is compleate and system is ready to run */
   LED_PowOn();
