@@ -333,8 +333,6 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
       _gpioa &= 0x7F;  //Pass through mask in case of 8-bit value (mistake).
       switch(_gpioa)
       {
-        case 0x00:
-          break;
         case 0x7F:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
@@ -586,8 +584,6 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
           g_systemStatus.flag_isPlaying = 0;
           g_systemStatus.song_cnt = 0;
           break;
-        case 0xFF:
-          break;
 
         default:
           if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
@@ -636,8 +632,6 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
     {
       switch(_gpioa)
       {
-        case 0x00:
-          break;
         case 0xFF:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
@@ -692,7 +686,7 @@ void binary255_5F9IH(uint8_t *i2c_gpio, uint8_t *songArray)
       switch(_gpioa)
       {
         //No STOP command
-        case 0x00:
+        case 0xFF:
           break;
 
         default:
