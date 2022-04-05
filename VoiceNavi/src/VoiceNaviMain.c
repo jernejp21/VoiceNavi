@@ -173,7 +173,14 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
   }
 
   LED_BusyOn();
-  PIN_BusyReset();
+  if((boardType == WAV_5A2) && (mode_select == 7))
+  {
+    PIN_BusySet();
+  }
+  else
+  {
+    PIN_BusyReset();
+  }
   /* Enable audio amp */
   PIN_ShutdownSet();
   while(output_music[playNr].repeat > _repetitions)
@@ -191,7 +198,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
         //Mono has 1 channel, stereo has 2 channels.
         // Theoretically there can be more than 2 channels, but we only play mono.
         ERROR_WAVEFile();
-        R_CMT_Stop(cmt_channel_i2c); //Stop GPIO polling
+        R_CMT_Stop(cmt_channel_i2c);  //Stop GPIO polling
         return;
       }
       _dataSize = wav_file.data_size;
@@ -246,7 +253,14 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
   }
 
   LED_BusyOff();
-  PIN_BusySet();
+  if((boardType == WAV_5A2) && (mode_select == 7))
+  {
+    PIN_BusyReset();
+  }
+  else
+  {
+    PIN_BusySet();
+  }
   /* Disable audio amp */
   PIN_ShutdownReset();
 }
@@ -555,52 +569,52 @@ void main(void)
   sys_init();
 
   /* Periodic timer for GPIO polling. About 22 ms. */
-    R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);
+  R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);
 
-    /* Check if USB is inserted */
-    //Create 100 ms counter for polling to check if USB is connected.
-    R_CMT_CreatePeriodic(10, &CNT_USB_CntCallback, &cmt_channel_usb);
-    while(usb_cnt < 10)
+  /* Check if USB is inserted */
+  //Create 100 ms counter for polling to check if USB is connected.
+  R_CMT_CreatePeriodic(10, &CNT_USB_CntCallback, &cmt_channel_usb);
+  while(usb_cnt < 10)
+  {
+    event = R_USB_GetEvent(&ctrl);  // Get event code
+
+    switch(event)
     {
-      event = R_USB_GetEvent(&ctrl);  // Get event code
+      case USB_STS_CONFIGURED:
+        R_CMT_Stop(cmt_channel_i2c);  //Stop GPIO polling
 
-      switch(event)
-      {
-        case USB_STS_CONFIGURED:
-          R_CMT_Stop(cmt_channel_i2c);  //Stop GPIO polling
+        //ERROR_ClearErrors();
+        LED_USBOn();
+        NAND_Reset();
+        flash_status = NAND_CopyToFlash();
+        if(flash_status == NAND_WRITE_OK)
+        {
+          isDataInFlash = getDataFromFlash();
+          //Create 500 ms counter for flashing USB LED.
+          R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
+          R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);  //Start GPIO polling
+        }
+        break;
 
-          //ERROR_ClearErrors();
-          LED_USBOn();
-          NAND_Reset();
-          flash_status = NAND_CopyToFlash();
-          if(flash_status == NAND_WRITE_OK)
-          {
-            isDataInFlash = getDataFromFlash();
-            //Create 500 ms counter for flashing USB LED.
-            R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
-            R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);  //Start GPIO polling
-          }
-          break;
+      case USB_STS_DETACH:
+        if(flash_status == NAND_WRITE_OK)
+        {
+          R_CMT_Stop(cmt_channel);
+          LED_USBOff();
+        }
+        break;
 
-        case USB_STS_DETACH:
-          if(flash_status == NAND_WRITE_OK)
-          {
-            R_CMT_Stop(cmt_channel);
-            LED_USBOff();
-          }
-          break;
+      case USB_STS_NOT_SUPPORT:
+        break;
 
-        case USB_STS_NOT_SUPPORT:
-          break;
+      case USB_STS_NONE:
+        break;
 
-        case USB_STS_NONE:
-          break;
-
-        default:
-          break;
-      }
+      default:
+        break;
     }
-    R_CMT_Stop(cmt_channel_usb);
+  }
+  R_CMT_Stop(cmt_channel_usb);
 
   isDataInFlash = getDataFromFlash();
   if(!isDataInFlash)
@@ -706,6 +720,7 @@ void main(void)
       if(boardType == WAV_5A2)
       {
         playMode = binary250_positive;
+        PIN_BusyReset();
       }
       if(boardType == WAV_5F2)
       {
