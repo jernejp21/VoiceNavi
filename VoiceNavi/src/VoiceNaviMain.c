@@ -783,7 +783,7 @@ void main(void)
               break;
             }
 
-            if(boardType == WAV_5F9IH)
+            if((boardType == WAV_5F9IH) && (mode_select == 1))
             {
               /* No buffer for binary mode */
               cur_cnt = 0;
