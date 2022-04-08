@@ -29,12 +29,14 @@
 
 /* This are device dependent values. Change if needed */
 #define NAND_NR_OF_BLOCKS 2048
+#define NAND_NR_OF_PAGES 64
 #define NAND_PAGE_SIZE 2048
 #define NAND_MAX_BAD_BLOCKS 40  //Size of all blocks minus min. number of valid blocks
 #define NAND_SPARE_AREA_SIZE 0x11  //Size of Spare Area 01
 #define NAND_SPARE_AREA_ADD 0x800  //Size of Spare 01 Column Address
 #define NAND_DELAY_TIME 1
 #define NAND_DELAY_UNIT BSP_DELAY_MICROSECS
+#define NAND_FLASH_SIZE (NAND_PAGE_SIZE * NAND_NR_OF_PAGES * NAND_NR_OF_BLOCKS) // Flash size in bits
 
 /* Macro for MEMDEV library */
 #define NAND_DEVNO 0
@@ -74,6 +76,7 @@ typedef enum nand_flash_status
 {
   NAND_WRITE_OK = 0,
   NAND_WRITE_NOK,
+  NAND_WRITE_OVERFLOW,
   NAND_READ_OK,
   NAND_READ_NOK,
   NAND_ERASE_OK,
@@ -85,9 +88,9 @@ int NAND_CheckBlock();
 void NAND_Reset(void);
 nand_flash_status_t NAND_Erase(void);
 nand_flash_status_t NAND_CopyToFlash(void);
-nand_flash_status_t NAND_ReadFromFlash(uint32_t, uint32_t, uint8_t*);
+nand_flash_status_t NAND_ReadFromFlash(uint32_t*, uint32_t, uint8_t*);
 int NAND_CheckDataInFlash(void);
-nand_flash_status_t NAND_WriteToFlash(uint32_t, uint32_t, uint8_t*);
+nand_flash_status_t NAND_WriteToFlash(uint32_t*, uint32_t, uint8_t*);
 nand_flash_status_t nand_wait_operation_complete(void);
 void NAND_LockFlash(void);
 void NAND_UnlockFlash(void);

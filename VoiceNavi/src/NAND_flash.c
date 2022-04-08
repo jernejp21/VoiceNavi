@@ -203,21 +203,24 @@ nand_flash_status_t NAND_CopyToFlash()
       do
       {
         LED_USBToggle();
-        flash_status = NAND_WriteToFlash(flash_address, size, wav_buffer);
-        flash_address += size;
+        flash_status = NAND_WriteToFlash(&flash_address, size, wav_buffer);
         if(NAND_WRITE_NOK == flash_status)
         {
           ERROR_FlashECS();
           return NAND_WRITE_NOK;
+        }
+        if(NAND_WRITE_OVERFLOW == flash_status)
+        {
+          ERROR_FileSystem();
+          return NAND_WRITE_OVERFLOW;
         }
         fr = f_read(&file1, &wav_buffer[0], sizeof(wav_buffer), &size);
       }
       while(size == sizeof(wav_buffer));
 
       /* Copy last part of read file to flash */
-      flash_status = NAND_WriteToFlash(flash_address, size, wav_buffer);
+      flash_status = NAND_WriteToFlash(&flash_address, size, wav_buffer);
       // Write always on new page
-      flash_address += sizeof(wav_buffer);
       if(NAND_WRITE_NOK == flash_status)
       {
         ERROR_FlashECS();
@@ -241,7 +244,8 @@ nand_flash_status_t NAND_CopyToFlash()
 
   //Mark that data is in flash
   uint8_t data[4] = {0xEF, 0xBE, 0xAD, 0xDE};  //0xdeadbeef in little endian
-  flash_status = NAND_WriteToFlash(0, sizeof(data), data);
+  flash_address = 0;
+  flash_status = NAND_WriteToFlash(&flash_address, sizeof(data), data);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
@@ -249,7 +253,8 @@ nand_flash_status_t NAND_CopyToFlash()
   }
 
   //Copy file table to NAND flash
-  flash_status = NAND_WriteToFlash(NAND_FILE_LIST_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
+  flash_address = NAND_FILE_LIST_PAGE;
+  flash_status = NAND_WriteToFlash(&flash_address, sizeof(flash_table), (uint8_t*)&flash_table[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
@@ -257,7 +262,8 @@ nand_flash_status_t NAND_CopyToFlash()
   }
 
   //Copy playlist table to NAND flash
-  flash_status = NAND_WriteToFlash(NAND_PLAYLIST_PAGE, sizeof(output_music), (uint8_t*)&output_music[0]);
+  flash_address = NAND_PLAYLIST_PAGE;
+  flash_status = NAND_WriteToFlash(&flash_address, sizeof(output_music), (uint8_t*)&output_music[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
     ERROR_FlashECS();
@@ -270,7 +276,7 @@ nand_flash_status_t NAND_CopyToFlash()
   return NAND_WRITE_OK;
 }
 
-nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t *p_data)
+nand_flash_status_t NAND_ReadFromFlash(uint32_t *p_address, uint32_t size, uint8_t *p_data)
 {
   nand_flash_status_t ret;
   uint16_t column_address;
@@ -280,13 +286,14 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t 
   uint32_t read_size;
 
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
-  row_address = (uint32_t)(address / NAND_PAGE_SIZE);
-  column_address = (uint16_t)(address % NAND_PAGE_SIZE);
+  row_address = (uint32_t)(*p_address / NAND_PAGE_SIZE);
+  column_address = (uint16_t)(*p_address % NAND_PAGE_SIZE);
 
   while(1)
   {
     if(0 == size)
     {
+      *p_address = row_address * NAND_PAGE_SIZE;
       return NAND_READ_OK;
     }
 
@@ -304,9 +311,9 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t 
     {
       if((row_address >> 6) == bad_blocks[i])
       {
-        // Bits 15:6 are block - mask is 0x7FC0
+        // Bits 17:6 are block - mask is 0x3FFC0
         // When we add one block we have to add bit 6 - 0x40
-        row_address = (row_address & 0x7FC0) + 0x40;
+        row_address = (row_address & 0x3FFC0) + 0x40;
         continue;
       }
     }
@@ -358,8 +365,8 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t address, uint32_t size, uint8_t 
 int NAND_CheckDataInFlash()
 {
   uint8_t data[4];
-  uint32_t cast_data;
-  NAND_ReadFromFlash(0, sizeof(data), data);
+  uint32_t cast_data = 0;
+  NAND_ReadFromFlash(&cast_data, sizeof(data), data);
   cast_data = *(uint32_t*)&data;
 
   if(0xDEADBEEF == cast_data)
@@ -496,7 +503,7 @@ nand_flash_status_t NAND_Erase()
   return NAND_ERASE_OK;
 }
 
-nand_flash_status_t NAND_WriteToFlash(uint32_t address, uint32_t size, uint8_t *p_data)
+nand_flash_status_t NAND_WriteToFlash(uint32_t *p_address, uint32_t size, uint8_t *p_data)
 {
   uint16_t column_address;
   uint32_t row_address;
@@ -506,13 +513,20 @@ nand_flash_status_t NAND_WriteToFlash(uint32_t address, uint32_t size, uint8_t *
   uint32_t write_size;
 
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
-  row_address = (uint32_t)(address / NAND_PAGE_SIZE);
-  column_address = (uint16_t)(address % NAND_PAGE_SIZE);
+  row_address = (uint32_t)(*p_address / NAND_PAGE_SIZE);
+  column_address = (uint16_t)(*p_address % NAND_PAGE_SIZE);
 
   while(1)
   {
+    if(*p_address > NAND_FLASH_SIZE)
+    {
+      //Flash overflow
+      return NAND_WRITE_OVERFLOW;
+    }
+
     if(0 == size)
     {
+      *p_address = row_address * NAND_PAGE_SIZE;
       return NAND_WRITE_OK;
     }
 
@@ -530,9 +544,9 @@ nand_flash_status_t NAND_WriteToFlash(uint32_t address, uint32_t size, uint8_t *
     {
       if((row_address >> 6) == bad_blocks[i])
       {
-        // Bits 15:6 are block - mask is 0x7FC0
+        // Bits 17:6 are blocks - mask is 0x3FFC0
         // When we add one block we have to add bit 6 - 0x40
-        row_address = (row_address & 0x7FC0) + 0x40;
+        row_address = (row_address & 0x3FFC0) + 0x40;
         continue;
       }
     }

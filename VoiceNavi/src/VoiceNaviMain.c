@@ -190,7 +190,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
       _fileToPlay = output_music[playNr].file_nr[_index];
       _fileAddress = flash_table[_fileToPlay].address;
 
-      NAND_ReadFromFlash(_fileAddress, WAV_HEADER_SIZE, file_data);
+      NAND_ReadFromFlash(&_fileAddress, WAV_HEADER_SIZE, file_data);
 
       WAV_Open(&wav_file, file_data);
       if(wav_file.channel != 1)
@@ -219,10 +219,9 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
           _sizeToRead = _dataSize;
         }
 
-        NAND_ReadFromFlash(_fileAddress, _sizeToRead, file_data);
+        NAND_ReadFromFlash(&_fileAddress, _sizeToRead, file_data);
 
         wav_put(file_data, _sizeToRead);
-        _fileAddress += sizeof(file_data);
         _dataSize -= _sizeToRead;
 
         if(!g_systemStatus.flag_isPlaying)
@@ -360,6 +359,7 @@ static void I2C_Init()
 static int getDataFromFlash()
 {
   uint8_t is_data_in_flash;
+  uint32_t flash_address;
 
   /* Check if there is any data in flash. */
   is_data_in_flash = NAND_CheckDataInFlash();
@@ -368,8 +368,10 @@ static int getDataFromFlash()
   if(is_data_in_flash)
   {
     NAND_Reset();
-    NAND_ReadFromFlash(NAND_FILE_LIST_PAGE, sizeof(flash_table), (uint8_t*)&flash_table[0]);
-    NAND_ReadFromFlash(NAND_PLAYLIST_PAGE, sizeof(output_music), (uint8_t*)&output_music[0]);
+    flash_address = NAND_FILE_LIST_PAGE;
+    NAND_ReadFromFlash(&flash_address, sizeof(flash_table), (uint8_t*)&flash_table[0]);
+    flash_address = NAND_PLAYLIST_PAGE;
+    NAND_ReadFromFlash(&flash_address, sizeof(output_music), (uint8_t*)&output_music[0]);
 
   }
   else
