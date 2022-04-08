@@ -761,7 +761,10 @@ void main(void)
   }
 
   /* Turn LED on after init is compleate and system is ready to run */
-  LED_PowOn();
+  if(isDataInFlash)
+  {
+    LED_PowOn();
+  }
 
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)

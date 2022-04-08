@@ -66,12 +66,47 @@ If error occurs during any time when using VoiceNavi, check error table for deta
 - BUSY - yellow (LED2)
 - USB - green (LED3)
 
-LED status | Error message | Possible causes
-:---: | :---: | :---:
-ALARM LED on <br> BUSY LED blinking (500 ms interval) | File system error | USB is formatted in wrong file system. Use FAT file system.
-BUSY LED blinking <br> (500 ms interval) | Wave file error | WAV file is missing or WPJ file is missing or WAV file is in stereo.
-ALARM LED on <br> USB LED blinking (100 ms interval) | Flash ECC error | Bit error was detected and not corrected. Possibly deteriorated flash.
-ALARM LED blinking <br> (500 ms interval) | Empty flash error | No data in flash. Copy data from USB to internal flash.
+<table>
+<thead>
+  <tr>
+    <th colspan="2">LED status</th>
+    <th>Error type</th>
+    <th>Possible cause</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>USB LED</td>
+    <td>ALARM LED</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>ON</td>
+    <td>ON</td>
+    <td>File system error</td>
+    <td>USB is formatted in wrong file system. Use FAT file system.<br>Flash overflow.</td>
+  </tr>
+  <tr>
+    <td>ON</td>
+    <td>blinking (500 ms)</td>
+    <td>Wave file error</td>
+    <td>WAV file is missing.<br>WPJ file is missing.<br>WAV file is in stereo.</td>
+  </tr>
+  <tr>
+    <td>OFF</td>
+    <td>blinking (100 ms)</td>
+    <td>Flash ECC error</td>
+    <td>Bit error was detected and not corrected. Possibly deteriorated flash.</td>
+  </tr>
+  <tr>
+    <td>OFF</td>
+    <td>blinking (500 ms)</td>
+    <td>Empty flash error</td>
+    <td>No data in flash. Copy data from USB to internal flash.</td>
+  </tr>
+</tbody>
+</table>
 
 ## Notes
 Above described procedures apply to normal operation mode. If JP1 jumper is soldered, device is in debug mode. Device mode allows user to switch between board types using DIP switch.

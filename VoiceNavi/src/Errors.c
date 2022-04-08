@@ -31,29 +31,29 @@ static uint32_t err_cmt_channel = 255;
 void ERROR_FileSystem()
 {
   //500ms period
-  R_CMT_CreatePeriodic(2, &led_blink_busy, &err_cmt_channel);
-  LED_USBOff();
+  LED_USBOn();
   LED_AlarmOn();
 }
 
 void ERROR_WAVEFile()
 {
   //500ms period
-  R_CMT_CreatePeriodic(2, &led_blink_busy, &err_cmt_channel);
-  LED_USBOff();
+  R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
+  LED_USBOn();
 }
 
 void ERROR_FlashECS()
 {
   //100ms period
-  R_CMT_CreatePeriodic(10, &led_blink_usb, &err_cmt_channel);
-  LED_AlarmOn();
+  R_CMT_CreatePeriodic(10, &led_blink_alarm, &err_cmt_channel);
+  LED_USBOff();
 }
 
 void ERROR_FlashEmpty()
 {
   //500ms period
   R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
+  LED_USBOff();
 }
 
 void ERROR_ClearErrors()
