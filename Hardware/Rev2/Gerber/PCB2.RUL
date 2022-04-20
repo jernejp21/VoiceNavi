@@ -1,0 +1,7 @@
+DRC Rules Export File for PCB: C:\project data\PCB artwork\??????\IHA8001 N 80 111221(latest)\IHA80_8001_Final 110322\IHA8001_230322 (Last)\Pjt0323\PCB2.PcbDoc
+RuleKind=Clearance|RuleName=Clearance-poly_1|Scope=Board|Minimum=15.75
+RuleKind=Clearance|RuleName=Clearance_1|Scope=Board|Minimum=7.87
+RuleKind=SolderMaskExpansion|RuleName=SolderMaskExpansion|Scope=Board|Minimum=0.00
+RuleKind=Width|RuleName=Width|Scope=Board|Minimum=3.94
+RuleKind=Clearance|RuleName=Clearance-BoardEdge-poly|Scope=Board|Minimum=19.69
+RuleKind=ShortCircuit|RuleName=ShortCircuit|Scope=Board|Allowed=1

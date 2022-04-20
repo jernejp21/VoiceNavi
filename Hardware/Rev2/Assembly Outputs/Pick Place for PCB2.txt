@@ -1,0 +1,294 @@
+Altium Designer Pick and Place Locations
+C:\project data\PCB artwork\??????\IHA8001 N 80 111221(latest)\IHA80_8001_Final 110322\IHA8001_230322 (Last)\Pjt0323\Project Outputs for Audio Prj\Pick Place for PCB2.txt
+
+========================================================================================================================
+File Design Information:
+
+Date:       24/03/22
+Time:       14:25
+Revision:   Not in VersionControl
+Variant:    No variations
+Units used: mm
+
+Designator Comment                    Layer    Footprint         Center-X(mm) Center-Y(mm) Rotation Description                         
+R140       ERJ-PA3F1003V              TopLayer R1608             110.9917     63.4000      270      ???????1608???                      
+R139       RR0816P-271-D              TopLayer R1608             53.8000      41.2000      180      ???????1608???                      
+U6         MCP23017-E/ML              TopLayer QFN28             55.4000      10.8000      0        "I/O Expander 16 SPI 10MHz 28-SOIC" 
+R138       ERJ-PA3F1002V              TopLayer R1608             77.2000      40.7000      180      ???????1608???                      
+OPT2       AQY212G2SX                 TopLayer SOP4-2.54         47.4000      44.8000      180      "60V 550mA ?????"                   
+OPT1       AQY212G2SX                 TopLayer SOP4-2.54         47.4000      38.7000      180      "60V 550mA ?????"                   
+TR3        DTC114YUBHZGTL             TopLayer SOT-323F          53.7000      39.1002      90       "NPN  TR 0.1A SC85 2x2.1 SOC323"    
+R137       RR0816P-271-D              TopLayer R1608             53.8000      42.9625      180      ???????1608???                      
+R117       ERJ-PA3F2001V              TopLayer R1608             82.3000      35.1000      180      ???????1608???                      
+LED5       APT1608LSECK/J4-PRV        TopLayer LED1608           86.6500      35.1000      180      "LED 1608 orange"                   
+R108       ERJ-PA3F1003V              TopLayer R1608             92.3000      48.3000      180      ???????1608???                      
+L4         DLW5BTM142TQ2L             TopLayer DLW5BTM           63.5000      61.6000      90       ??????,1A,4??                       
+L3         DLW5BTM142TQ2              TopLayer DLW5BTM           39.3000      61.0000      0        ??????,1A,4??                       
+L2         DLW5BTM142TQ2L             TopLayer DLW5BTM           54.4000      61.4000      270      ??????,1A,4??                       
+C75        UCQ1C101MCL1GS             TopLayer 6.6mmX6.6mm       61.8000      52.3000      270      "6.3f ???????"                      
+C63        UCQ1C101MCL1GS             TopLayer 6.6mmX6.6mm       61.9500      42.0000      90       "6.3f ???????"                      
+D2         CUS08F30                   TopLayer SOD-323           92.7000      59.2000      180      "DIODE SCHOTTKY 30V 800MA USC"      
+R136       ERJ-PA3F4701V              TopLayer R1608             108.6000     76.5000      90       ???????1608???                      
+R135       ERJ-PA3F4701V              TopLayer R1608             102.6000     76.5000      90       ???????1608???                      
+JP4        SMD_JAMPER                 TopLayer SMD_JAMPER_-CUT   14.4000      78.2000      180      ""                                  
+JP3        SMD_JAMPER                 TopLayer SMD_JAMPER_-CUT   10.1000      8.9000       180      ""                                  
+CN1        B2P-SHF-1AA                TopLayer B2P-SHF-1AA       79.3500      4.6000       180      ?,?????,1?2??                       
+J3         B12P-SHF-1AA               TopLayer B12P-SHF-1AA      4.5000       44.6500      90       "?,?????,1?12?? PCB"                
+J2         B5P-SHF-1AA                TopLayer B5P-SHF-1AA       4.5000       18.4000      90       ?,?????,1?3??                       
+J1         B18P-SHF-1AA               TopLayer B18P-SHF-1AA      13.5000      45.4500      90       "?,?????,1?12?? PCB"                
+CN5        B3P-SHF-1AA                TopLayer B3P-SHF-1AA       90.1000      4.6000       180      ?,?????,1?3??                       
+CN4        B3P-SHF-1AA                TopLayer B3P-SHF-1AA       68.6000      4.6000       180      ?,?????,1?3??                       
+U5         TPSM84203EAB               TopLayer TO220-3           64.7000      75.0000      0        "DC DC CONVERTER 3.3V"              
+U2         R5F5651EHDFP#30            TopLayer LQFP100           105.6000     40.3000      270      MCU                                 
+R15        ERJ-PA3F22R0V              TopLayer R1608             123.6667     32.9000      270      ???????1608???                      
+R13        ERJ-PA3F22R0V              TopLayer R1608             119.1167     32.9000      90       ???????1608???                      
+C19        CGA3E2X7R1H104K080AA       TopLayer C1608             85.1000      59.8000      180      ????1608???                         
+AGND1      TP0.5mm                    TopLayer TP0.5MM           70.7000      64.2000      90       "Test-Point 0.5mm"                  
+TP2        TP0.5mm                    TopLayer TP0.5MM           78.5000      17.0000      90       "Test-Point 0.5mm"                  
+R106       RK73Z1JTTD                 TopLayer R1608             18.1000      75.1000      180      ???????1608???                      
+C23        UMK325C7106MM-T            TopLayer C3225             31.3000      60.9000      90       ????3225???                         
+D1         SIPS3150U                  TopLayer DO-214AA          25.3000      76.2500      180      "Schottky Rectifier"                
+R55        RK73Z1JTTD                 TopLayer R1608             67.9000      64.8000      0        ???????1608???                      
+C66        TMK212BJ105KG-T            TopLayer C2012             55.6000      47.1000      180      ????2012???                         
+3.3V       TP0.5mm                    TopLayer TP0.5MM           70.7000      66.5000      90       "Test-Point 0.5mm"                  
+R101       ERJ-PA3F1002V              TopLayer R1608             55.1000      3.5000       180      ???????1608???                      
+R104       ERJ-PA3F1002V              TopLayer R1608             50.7000      3.5000       0        ???????1608???                      
+CN3        B2P-SHF-1AA                TopLayer B2P-SHF-1AA       5.1000       66.2500      270      ?,?????,1?2??                       
+C4         CGA3E2X7R1H104K080AA       TopLayer C1608             86.3950      46.3000      180      ????1608???                         
+R107       ERJ-PA3F1002V              TopLayer R1608             60.6000      30.0000      180      ???????1608???                      
+C50        CGA3E2X7R1H104K080AA       TopLayer C1608             59.0000      3.4750       180      ????1608???                         
+R48        RK73B2ATTD392J             TopLayer R2012             93.1000      17.7000      90       ???????2012???                      
+R46        RK73B2ATTD392J             TopLayer R2012             91.2000      17.7000      90       ???????2012???                      
+R34        ERJ-PA3F1003V              TopLayer R1608             91.8501      31.5000      180      ???????1608???                      
+R33        ERJ-PA3F1003V              TopLayer R1608             87.1300      31.5000      0        ???????1608???                      
+PC4        TLP291(SE                  TopLayer SOP4              89.4001      27.9650      0        "PHOTOCOUPLER 1ch"                  
+PC2        TLP291(SE                  TopLayer SOP4              89.4001      24.3999      0        "PHOTOCOUPLER 1ch"                  
+VR4        ST4ETB503                  TopLayer ST4ETB202         123.2000     42.4000      180      "CERMET TRIMMER  Top adjustmet"     
+VR3        ST4ETB503                  TopLayer ST4ETB202         123.2000     49.8000      180      "CERMET TRIMMER  Top adjustmet"     
+POWS1      SS12D01G4                  TopLayer SS12D01G4         64.8400      34.5000      180      SPDT????????                        
+R132       ERJ-PA3F3601V              TopLayer R1608             78.2000      56.4200      90       ???????1608???                      
+R131       ERJ-PA3F3601V              TopLayer R1608             80.3150      56.4200      270      ???????1608???                      
+SW2        CJS-1201TB                 TopLayer SLIDE_SWITCH_SPDT 100.1000     21.5000      270      "SWITCH SLIDE SPDT 100MA 6V"        
+U8         DS3502U+T&R                TopLayer MSOP10            81.3000      26.3000      180      "IC DGTL POT 10KOHM 128TAP 10UMAX"  
+R112       RK73B2ATTD911J             TopLayer R2012             77.6000      22.8000      180      ???????2012???                      
+C61        CGA3E2X7R1H104K080AA       TopLayer C1608             81.9000      30.3000      180      ????1608???                         
+JP2        SMD_JAMPER                 TopLayer SMD_JAMPER_-CUT   113.6000     18.0000      270      ""                                  
+JP1        SMD_JAMPER                 TopLayer SMD_JAMPER_-CUT   116.4000     18.0000      270      ""                                  
+MS2        SMD_JAMPER                 TopLayer SMD_JAMPER_-CUT   126.6540     68.2000      180      ""                                  
+C36        CGA3E2X7R1H104K080AA       TopLayer C1608             37.9000      44.6000      0        ????1608???                         
+C35        CGA3E2X7R1H104K080AA       TopLayer C1608             46.4000      5.3000       0        ????1608???                         
+C33        CGA3E2X7R1H104K080AA       TopLayer C1608             11.8000      73.8000      0        ????1608???                         
+U7         TL074CPWR                  TopLayer TSSOP14           61.5000      26.2000      0        "IC OPAMP JFET 4 CIRCUIT 14TSSOP"   
+R37        ERJ-PA3F1003V              TopLayer R1608             106.4000     16.7000      270      ???????1608???                      
+R47        ERJ-PA3F1001V              TopLayer R1608             26.9000      2.8651       0        ???????1608???                      
+R44        RK73B2ATTD472J             TopLayer R2012             11.0000      3.7651       270      ???????2012???                      
+C38        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      21.5000      0        ????1608???                         
+VRS1       SS12D01G4                  TopLayer SS12D01G4         70.3000      12.0000      0        SPDT????????                        
+C8         TMK107BJ105MA-T            TopLayer C1608             124.5000     60.0000      270      ????1608???                         
+R21        ERJ-PA3F1003V              TopLayer R1608             120.7000     59.4050      270      ???????1608???                      
+ED1        SMD_JAMPER                 TopLayer SMD_JAMPER_-CUT   118.5000     59.5540      270      ""                                  
+MS1        SMD_JAMPER                 TopLayer SMD_JAMPER_-CUT   126.6540     65.6000      180      ""                                  
+C14        GCM1885C2A102JA16D         TopLayer C1608             108.1000     63.4000      270      ????1608???                         
+R129       ERJ-PA3F2002V              TopLayer R1608             74.8900      35.2000      0        ???????1608???                      
+RESET1     "HEDDER2 2mm"              TopLayer HDR1X2_2MM        108.1000     67.8000      180      ?,?????,1?2??                       
+TP1        TP0.5mm                    TopLayer TP0.5MM           42.3000      3.1000       90       "Test-Point 0.5mm"                  
+R45        ERJ-PA3F1001V              TopLayer R1608             26.9000      4.9000       0        ???????1608???                      
+USBPOW1    SS12D01G4                  TopLayer SS12D01G4         96.3000      64.4000      180      SPDT????????                        
+R25        ERJ-PA3F1002V              TopLayer R1608             92.3050      51.7000      0        ???????1608???                      
+R23        ERJ-PA3F1002V              TopLayer R1608             98.8400      55.6000      270      ???????1608???                      
+R22        ERJ-PA3F1002V              TopLayer R1608             105.6000     55.7000      180      ???????1608???                      
+R20        ERJ-PA3F1002V              TopLayer R1608             110.9000     53.6000      180      ???????1608???                      
+R19        ERJ-PA3F4701V              TopLayer R1608             112.6000     76.4995      90       ???????1608???                      
+BOOT       "HEDDER2 2mm"              TopLayer HDR1X2_2MM        110.6000     56.7000      0        ?,?????,1?2??                       
+C16        CGA3E2X7R1H104K080AA       TopLayer C1608             92.3000      49.9000      0        ????1608???                         
+U3         LTC3245EMSE#PBF            TopLayer MSOP12            87.0000      55.9250      0        "IC REG CHARG PUMP ADJ/PRG 12MSOP"  
+R29        ERJ-PA3F1003V              TopLayer R1608             93.1000      55.6000      90       ???????1608???                      
+C18        CGA3E2X7R1H104K080AA       TopLayer C1608             91.5000      56.2500      90       ????1608???                         
+C17        CGA3E2X7R1H104K080AA       TopLayer C1608             87.7000      61.5000      180      ????1608???                         
+DGND1      TP3.2mm                    TopLayer TP3.2MM           5.0000       75.0000      90       "Test-Point 3.2mm"                  
+"EXT GND1" TP3.2mm                    TopLayer TP3.2MM           5.0000       5.0000       90       "Test-Point 3.2mm"                  
+C31        EMK325ABJ107MM-T           TopLayer C3225             68.5000      69.0000      0        ????3225???                         
+X2         SIT2001BI-S2-33E-12.000000 TopLayer SOT-23-5          119.6000     64.0000      90       "OSC MEMS SOT-23-5"                 
+U9         TPA3140D2PWPR              TopLayer TSSOP28           70.8400      48.2250      180      "IC AMP CLASS D STER 10W 28HTSSOP"  
+U4         LMZ14202HTZ/NOPB           TopLayer TO-PMOD-7         42.6000      72.4900      180      "DC DC CONVERTER 5-30V"             
+U1         AS5F34G04SND-08LIN         TopLayer 8LGA(6X8)         121.4000     23.8150      180      "IC FLASH 4GBIT SPI/QUAD I/O 8LGA"  
+TR2        DTDG14GPT100               TopLayer SOT-89-3          19.7000      14.4000      90       "NPN  TR 1A with  Resi"             
+TR1        DTDG14GPT100               TopLayer SOT-89-3          12.7000      14.5000      90       "NPN  TR 1A with  Resi"             
+TP3        TP0.5mm                    TopLayer TP0.5MM           71.8450      32.9255      90       "Test-Point 0.5mm"                  
+SW1        219-8MST                   TopLayer 219-8MST          108.2900     8.0000       270      "SMD DIP Switch"                    
+R134       RK73Z1JTTD                 TopLayer R1608             74.9000      32.0000      180      ???????1608???                      
+R133       ERJ-PA3F1002V              TopLayer R1608             74.9000      33.6000      0        ???????1608???                      
+R130       ERJ-PA3F22R0V              TopLayer R1608             71.4000      55.7000      180      ???????1608???                      
+R126       ERJ-PA3F3601V              TopLayer R1608             74.8900      36.8000      180      ???????1608???                      
+R128       ERJ-PA3F22R0V              TopLayer R1608             71.4000      57.5000      180      ???????1608???                      
+R119       RK73Z1JTTD                 TopLayer R1608             74.9000      26.8000      0        ???????1608???                      
+R125       ERJ-PA3F1003V              TopLayer R1608             82.2500      46.2000      0        ???????1608???                      
+R124       ERJ-PA3F3902V              TopLayer R1608             78.3000      47.7000      270      ???????1608???                      
+R123       ERJ-PA3F1002V              TopLayer R1608             77.2000      42.1000      180      ???????1608???                      
+R127       ERJ-PA3F1002V              TopLayer R1608             74.9000      38.4000      0        ???????1608???                      
+VR2        ST4ETB503                  TopLayer ST4ETB202         71.1000      18.2000      0        "CERMET TRIMMER  Top adjustmet"     
+R120       RK73Z1JTTD                 TopLayer R1608             63.3000      19.4000      0        ???????1608???                      
+R122       ERJ-PA3F1002V              TopLayer R1608             56.9000      33.3000      180      ???????1608???                      
+R118       ERJ-PA3F5100V              TopLayer R1608             79.0000      14.5000      180      ???????1608???                      
+R121       ERJ-PA3F1002V              TopLayer R1608             53.6000      33.3000      180      ???????1608???                      
+R116       ERJ-PA3F1002V              TopLayer R1608             79.0000      11.3000      0        ???????1608???                      
+VR1        ST4ETB202                  TopLayer ST4ETB202         84.4588      18.2000      0        "CERMET TRIMMER  Top adjustmet"     
+R114       ERJ-PA3F1302V              TopLayer R1608             71.0000      26.8000      0        ???????1608???                      
+R113       ERJ-PA3F1201V              TopLayer R1608             53.5950      27.5437      180      ???????1608???                      
+R115       ERJ-PA3F4701V              TopLayer R1608             74.9000      28.5000      0        ???????1608???                      
+R111       ERJ-PA3F4701V              TopLayer R1608             71.0000      28.5000      0        ???????1608???                      
+R110       ERJ-PA3F3601V              TopLayer R1608             53.5950      20.7000      0        ???????1608???                      
+R109       ERJ-PA3F3601V              TopLayer R1608             53.5950      24.2000      180      ???????1608???                      
+R105       RK73Z1JTTD                 TopLayer R1608             18.2000      72.1000      180      ???????1608???                      
+R103       RK73B2ATTD392J             TopLayer R2012             21.8000      48.2760      180      ???????2012???                      
+R102       RK73B2ATTD392J             TopLayer R2012             38.0000      3.0901       180      ???????2012???                      
+R100       ERJ-PA3F1002V              TopLayer R1608             26.7000      46.2400      90       ???????1608???                      
+R99        RK73B2ATTD392J             TopLayer R2012             21.8000      51.8480      180      ???????2012???                      
+R98        RK73B2ATTD392J             TopLayer R2012             26.9000      7.2000       0        ???????2012???                      
+R97        ERJ-PA3F1002V              TopLayer R1608             25.3000      49.3000      90       ???????1608???                      
+R96        ERJ-PA3F1002V              TopLayer R1608             30.5000      9.6000       90       ???????1608???                      
+R95        RK73B2ATTD392J             TopLayer R2012             21.8000      55.4200      180      ???????2012???                      
+R94        RK73B2ATTD392J             TopLayer R2012             26.9000      10.9625      0        ???????2012???                      
+R93        ERJ-PA3F1002V              TopLayer R1608             26.7000      52.4000      90       ???????1608???                      
+R92        ERJ-PA3F1002V              TopLayer R1608             31.9000      12.2000      90       ???????1608???                      
+R91        RK73B2ATTD392J             TopLayer R2012             21.8000      58.9920      180      ???????2012???                      
+R90        RK73B2ATTD392J             TopLayer R2012             26.9000      14.7250      0        ???????2012???                      
+R89        ERJ-PA3F1002V              TopLayer R1608             25.3000      55.0000      90       ???????1608???                      
+R88        ERJ-PA3F1002V              TopLayer R1608             30.5000      15.3000      90       ???????1608???                      
+R87        RK73B2ATTD392J             TopLayer R2012             21.8000      33.9880      180      ???????2012???                      
+R86        RK73B2ATTD392J             TopLayer R2012             21.8000      19.7000      0        ???????2012???                      
+R85        ERJ-PA3F1002V              TopLayer R1608             26.7000      33.9200      90       ???????1608???                      
+R84        ERJ-PA3F1002V              TopLayer R1608             26.5002      21.6000      90       ???????1608???                      
+R83        RK73B2ATTD392J             TopLayer R2012             21.8000      37.5600      180      ???????2012???                      
+R82        RK73B2ATTD392J             TopLayer R2012             21.8000      23.2720      0        ???????2012???                      
+R81        ERJ-PA3F1002V              TopLayer R1608             25.2000      36.4600      90       ???????1608???                      
+R80        ERJ-PA3F1002V              TopLayer R1608             25.1000      24.1000      90       ???????1608???                      
+R79        RK73B2ATTD392J             TopLayer R2012             21.8000      41.1320      180      ???????2012???                      
+R78        RK73B2ATTD392J             TopLayer R2012             21.8000      26.8440      0        ???????2012???                      
+R77        ERJ-PA3F1002V              TopLayer R1608             26.7000      39.6000      90       ???????1608???                      
+R76        ERJ-PA3F1002V              TopLayer R1608             26.5002      26.8000      90       ???????1608???                      
+R75        RK73B2ATTD392J             TopLayer R2012             21.8000      44.7040      180      ???????2012???                      
+R74        RK73B2ATTD392J             TopLayer R2012             21.8000      30.4160      0        ???????2012???                      
+R73        ERJ-PA3F1002V              TopLayer R1608             25.2000      42.6400      90       ???????1608???                      
+R72        ERJ-PA3F1002V              TopLayer R1608             25.2000      30.2800      90       ???????1608???                      
+R71        ERJ-PA3F1002V              TopLayer R1608             40.7950      47.9650      0        ???????1608???                      
+R70        ERJ-PA3F1002V              TopLayer R1608             40.8000      50.5350      0        ???????1608???                      
+R69        ERJ-PA3F1002V              TopLayer R1608             40.8000      53.0750      0        ???????1608???                      
+R68        ERJ-PA3F1002V              TopLayer R1608             40.8000      55.6150      0        ???????1608???                      
+R67        ERJ-PA3F1002V              TopLayer R1608             40.9000      35.1000      0        ???????1608???                      
+R66        ERJ-PA3F1002V              TopLayer R1608             40.9000      37.7000      0        ???????1608???                      
+R65        ERJ-PA3F1002V              TopLayer R1608             40.9000      40.2000      0        ???????1608???                      
+R64        ERJ-PA3F1002V              TopLayer R1608             40.9000      42.7450      0        ???????1608???                      
+R63        ERJ-PA3F1002V              TopLayer R1608             46.4000      15.2450      0        ???????1608???                      
+R62        ERJ-PA3F1002V              TopLayer R1608             46.4000      12.7000      0        ???????1608???                      
+R61        ERJ-PA3F1002V              TopLayer R1608             46.4000      10.1650      0        ???????1608???                      
+R60        ERJ-PA3F1002V              TopLayer R1608             46.4000      7.6000       0        ???????1608???                      
+R59        ERJ-PA3F1002V              TopLayer R1608             40.9000      29.9400      0        ???????1608???                      
+R58        ERJ-PA3F1002V              TopLayer R1608             40.9000      27.4000      0        ???????1608???                      
+R57        ERJ-PA3F1002V              TopLayer R1608             40.9000      24.9000      0        ???????1608???                      
+R56        ERJ-PA3F1002V              TopLayer R1608             40.9000      22.3000      0        ???????1608???                      
+R54        ERJ-PA3F1001V              TopLayer R1608             52.3000      68.9000      270      ???????1608???                      
+R53        ERJ-PA3F1001V              TopLayer R1608             55.4000      68.9000      90       ???????1608???                      
+R52        ERJ-PA3F1001V              TopLayer R1608             53.9000      68.9000      90       ???????1608???                      
+R51        ERJ-PA3F3301V              TopLayer R1608             56.2050      72.4000      180      ???????1608???                      
+R50        ERJ-PA3F3602V              TopLayer R1608             53.9000      75.7000      270      ???????1608???                      
+R49        ERJ-PA3F1003V              TopLayer R1608             49.9000      65.7000      0        ???????1608???                      
+R32        ERJ-PA3F2001V              TopLayer R1608             82.2500      44.3000      0        ???????1608???                      
+R31        ERJ-PA3F2001V              TopLayer R1608             82.2500      37.5000      0        ???????1608???                      
+R28        ERJ-PA3F2001V              TopLayer R1608             82.2500      39.7667      0        ???????1608???                      
+R26        ERJ-PA3F2001V              TopLayer R1608             82.2500      42.0333      0        ???????1608???                      
+R43        RK73B2ATTD472J             TopLayer R2012             13.0000      3.7651       270      ???????2012???                      
+R42        ERJ-PA3F1003V              TopLayer R1608             120.6000     17.9000      0        ???????1608???                      
+R41        ERJ-PA3F1003V              TopLayer R1608             120.6000     16.1333      0        ???????1608???                      
+R40        ERJ-PA3F1003V              TopLayer R1608             125.7000     14.4556      0        ???????1608???                      
+R39        ERJ-PA3F1003V              TopLayer R1608             125.7000     12.7778      0        ???????1608???                      
+R38        ERJ-PA3F1003V              TopLayer R1608             125.7000     11.1000      0        ???????1608???                      
+R36        ERJ-PA3F1003V              TopLayer R1608             104.8000     16.7000      270      ???????1608???                      
+R35        ERJ-PA3F1003V              TopLayer R1608             103.0000     16.7000      270      ???????1608???                      
+R24        ERJ-PA3F1002V              TopLayer R1608             96.2000      55.6000      270      ???????1608???                      
+R30        ERJ-PA3F22R0V              TopLayer R1608             86.4000      47.9625      180      ???????1608???                      
+R27        ERJ-PA3F22R0V              TopLayer R1608             86.4000      49.6000      180      ???????1608???                      
+R6         ERJ-PA3F4701V              TopLayer R1608             112.4000     23.8000      90       ???????1608???                      
+R5         ERJ-PA3F4701V              TopLayer R1608             126.0000     36.3000      0        ???????1608???                      
+R1         ERJ-PA3F4701V              TopLayer R1608             126.7000     32.9000      90       ???????1608???                      
+R17        ERJ-PA3F4701V              TopLayer R1608             104.6000     76.4995      90       ???????1608???                      
+R11        ERJ-PA3F4701V              TopLayer R1608             95.3000      76.4995      90       ???????1608???                      
+R10        ERJ-PA3F4701V              TopLayer R1608             98.6000      76.5000      90       ???????1608???                      
+R9         ERJ-PA3F4701V              TopLayer R1608             100.6000     76.5000      90       ???????1608???                      
+R8         ERJ-PA3F4701V              TopLayer R1608             106.6000     76.5000      90       ???????1608???                      
+R7         ERJ-PA3F4701V              TopLayer R1608             110.6000     76.4995      90       ???????1608???                      
+PC8        PS2801-4-F3-A              TopLayer SO16              32.9000      51.1700      0        "4 Channel 16-SO"                   
+PC7        PS2801-4-F3-A              TopLayer SO16              38.4000      10.7800      0        "4 Channel 16-SO"                   
+PC6        PS2801-4-F3-A              TopLayer SO16              33.0000      38.3000      0        "4 Channel 16-SO"                   
+PC5        PS2801-4-F3-A              TopLayer SO16              33.0000      25.4950      0        "4 Channel 16-SO"                   
+PC3        TLP291(SE                  TopLayer SOP4              18.7999      4.4001       180      "PHOTOCOUPLER 1ch"                  
+PC1        TLP291(SE                  TopLayer SOP4              18.7999      7.5001       180      "PHOTOCOUPLER 1ch"                  
+LED4       APT1608LSECK/J3-PRV        TopLayer LED1608           86.6500      44.3000      180      "LED 1608 RED"                      
+LED3       APT1608LZGCK               TopLayer LED1608           86.6500      37.5000      180      "LED 1608 green"                    
+LED2       APT1608LSYCK/J3-PRV        TopLayer LED1608           86.6500      39.8000      180      "LED 1608 yellow"                   
+LED1       APT1608LSECK/J4-PRV        TopLayer LED1608           86.6500      42.0333      180      "LED 1608 orange"                   
+L6         "NR6028T330M  33uH"        TopLayer NR6028T           47.6000      52.4000      90       "Shielded Inductor"                 
+L5         "NR6028T330M  33uH"        TopLayer NR6028T           47.6000      31.3000      90       "Shielded Inductor"                 
+L1         MLZ2012N101LT000           TopLayer R2012             125.4000     55.9000      0        "SMD Inductor 2012size"             
+JTAG1      "HEDDER12 2mm"             TopLayer HDR1X12_2MM       107.6000     72.0000      0        "HEDDER12 2mm"                      
+FUSE1      ERB-RE3R00V                TopLayer R1608             18.1000      77.0000      0        "3A 1608???"                        
+USB1       87583-3010RPALF            TopLayer USB_2.0           82.5000      68.4000      180      "CONN RCPT USB2.0 TYPEA 4P SMD RA"  
+C77        CGA3E2X7R1H104K080AA       TopLayer C1608             71.0000      40.2000      180      ????1608???                         
+C76        TMK107BJ105MA-T            TopLayer C1608             75.0400      55.7250      180      ????1608???                         
+C74        GCM1885C2A102JA16D         TopLayer C1608             67.0000      54.6000      90       ????1608???                         
+C73        TMK107BJ105MA-T            TopLayer C1608             79.7400      50.5000      180      ????1608???                         
+C70        TMK107BJ105MA-T            TopLayer C1608             82.2450      48.4000      180      ????1608???                         
+C72        TMK107BJ105MA-T            TopLayer C1608             79.7400      52.0000      0        ????1608???                         
+C71        UMK107B7474KA-TR           TopLayer C1608             55.6000      51.4000      0        ????1608???                         
+C67        TMK212BJ105KG-T            TopLayer C2012             55.6000      48.8000      0        ????2012???                         
+C65        UMK107B7474KA-TR           TopLayer C1608             53.8000      44.7000      0        ????1608???                         
+C53        CGA3E2X7R1H104K080AA       TopLayer C1608             60.6000      31.4750      180      ????1608???                         
+C62        GCM1885C2A102JA16D         TopLayer C1608             71.0000      38.3750      180      ????1608???                         
+C69        CGA3E2X7R1H104K080AA       TopLayer C1608             53.6000      30.8000      0        ????1608???                         
+C68        CGA3E2X7R1H104K080AA       TopLayer C1608             53.6000      29.2000      0        ????1608???                         
+C78        CGA3E2X7R1H104K080AA       TopLayer C1608             66.8525      30.3000      180      ????1608???                         
+C64        CGA3E2X7R1H104K080AA       TopLayer C1608             56.9000      30.8000      180      ????1608???                         
+C60        GCM1885C2A102JA16D         TopLayer C1608             71.0000      30.3000      0        ????1608???                         
+C59        GCM1885C2A682JA16D         TopLayer C1608             53.6000      22.4000      180      ????1608???                         
+C55        TMK107BJ105MA-T            TopLayer C1608             79.0000      12.9000      180      ????1608???                         
+C57        GCM1885C2A221JA16D         TopLayer C1608             53.6000      25.9000      180      ????1608???                         
+C56        GCM1885C2A471JA16D         TopLayer C1608             71.0000      25.2000      0        ????1608???                         
+C58        TMK107BJ105MA-T            TopLayer C1608             74.9000      30.3000      0        ????1608???                         
+C52        GRM21BR71H474MA88          TopLayer C2012             11.8000      71.1000      0        ????2012???                         
+C51        GRM21BR71H474MA88          TopLayer C2012             22.7000      71.5000      270      ????2012???                         
+C49        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      60.8000      0        ????1608???                         
+C48        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      57.2273      0        ????1608???                         
+C47        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      53.6545      0        ????1608???                         
+C46        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      50.0818      0        ????1608???                         
+C45        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      46.5091      0        ????1608???                         
+C44        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      42.9364      0        ????1608???                         
+C43        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      39.3636      0        ????1608???                         
+C42        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      35.7909      0        ????1608???                         
+C41        CGA3E2X7R1H104K080AA       TopLayer C1608             27.1000      9.1000       0        ????1608???                         
+C40        CGA3E2X7R1H104K080AA       TopLayer C1608             27.1000      12.8500      0        ????1608???                         
+C39        CGA3E2X7R1H104K080AA       TopLayer C1608             27.1000      17.4000      0        ????1608???                         
+C37        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      25.0727      0        ????1608???                         
+C34        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      28.6455      0        ????1608???                         
+C32        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000      32.2182      0        ????1608???                         
+C30        CGA3E2X7R1H104K080AA       TopLayer C1608             67.9000      66.5000      0        ????1608???                         
+C29        GRM21BR71H474MA88          TopLayer C2012             63.5000      69.6000      180      ????2012???                         
+C28        GCD188R71H103KA01D         TopLayer C1608             52.2750      73.0600      90       ????1608???                         
+C27        TMK212BBJ106MG-T           TopLayer C2012             58.7000      67.5750      0        ????2012???                         
+C26        TMK212BBJ106MG-T           TopLayer C2012             58.7000      69.7900      0        ????2012???                         
+C25        TMK212BBJ106MG-T           TopLayer C2012             72.8000      61.5000      270      ????2012???                         
+C24        TMK212BBJ106MG-T           TopLayer C2012             70.8000      61.5000      270      ????2012???                         
+C22        GRM21BR71H474MA88          TopLayer C2012             45.7000      60.9000      90       ????2012???                         
+C21        GCD188R71H103KA01D         TopLayer C1608             56.9000      75.7000      90       ????1608???                         
+C20        GCD188R71H103KA01D         TopLayer C1608             55.3750      75.7000      90       ????1608???                         
+C3         CGA3E2X7R1H104K080AA       TopLayer C1608             97.7000      51.0000      0        ????1608???                         
+C2         TMK107BJ105MA-T            TopLayer C1608             104.3000     28.6000      180      ????1608???                         
+C1         TMK107BJ105MA-T            TopLayer C1608             97.7000      52.8000      0        ????1608???                         
+C6         CGA3E2X7R1H104K080AA       TopLayer C1608             94.2000      45.2000      270      ????1608???                         
+C5         CGA3E2X7R1H104K080AA       TopLayer C1608             104.3000     26.9000      180      ????1608???                         
+C15        CGA3E2X7R1H104K080AA       TopLayer C1608             120.1516     67.1000      0        ????1608???                         
+C7         GCD188R71H103KA01D         TopLayer C1608             127.9000     29.6000      90       ????1608???                         
+C13        GCM1885C2A150FA16D         TopLayer C1608             109.5333     63.4000      270      ????1608???                         
+C12        GCM1885C2A150FA16D         TopLayer C1608             112.4000     63.4000      270      ????1608???                         
+C11        CGA3E2X7R1H104K080AA       TopLayer C1608             116.1000     59.4000      270      ????1608???                         
+C10        CGA3E2X7R1H104K080AA       TopLayer C1608             114.5000     59.4000      270      ????1608???                         
+C9         TMK107BJ105MA-T            TopLayer C1608             126.9000     60.0000      270      ????1608???                         
