@@ -202,7 +202,6 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
         return;
       }
       _dataSize = wav_file.data_size;
-      _fileAddress += WAV_HEADER_SIZE;
 
       g_systemStatus.flag_isPlaying = 1;
       R_TPU0_SetFrequency(wav_file.sample_rate);
