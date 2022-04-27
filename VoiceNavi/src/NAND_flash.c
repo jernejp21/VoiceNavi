@@ -293,7 +293,7 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t *p_address, uint32_t size, uint8
   {
     if(0 == size)
     {
-      *p_address = row_address * NAND_PAGE_SIZE;
+      *p_address = row_address * NAND_PAGE_SIZE + column_address;
       return NAND_READ_OK;
     }
 
@@ -354,8 +354,15 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t *p_address, uint32_t size, uint8
     NAND_CS_HIGH;  //CS HIGH
 
     /* Prepare for next read if needed */
-    row_address++;
-    column_address = 0;
+    if(column_address + read_size >= NAND_PAGE_SIZE)
+    {
+      row_address++;
+      column_address = 0;
+    }
+    else
+    {
+      column_address = column_address + read_size;
+    }
     size = size - read_size;
     p_data += read_size;
   }

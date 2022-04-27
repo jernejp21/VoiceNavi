@@ -24,7 +24,6 @@
  * SOFTWARE.
  */
 
-//5A2 board
 #include "globals.h"
 
 /** Function definition */
@@ -45,6 +44,7 @@ void ISR_periodicPolling();
 uint32_t g_binary_vol_reduction_address = NAND_VOL_PAGE;
 system_status_t g_systemStatus;
 uint8_t g_binary_vol_reduction;
+int g_decode_putp = 0;
 
 /** Song, play mode and output related variables */
 void (*playMode)();
@@ -80,17 +80,16 @@ static int decode_getp(void)
 
 static int decode_put(uint16_t audio_data)
 {
-  static int decode_putp = 0;
   int ret = 0;
 
-  unsigned int putp = p_inc(decode_putp, RINGBUF_SIZE);
+  unsigned int putp = p_inc(g_decode_putp, RINGBUF_SIZE);
 
   if(putp != decode_getp())
   {
 
-    ringbuf[decode_putp] = audio_data;
+    ringbuf[g_decode_putp] = audio_data;
 
-    decode_putp = putp;
+    g_decode_putp = putp;
     ret = 1;
   }
 
@@ -195,16 +194,23 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
       WAV_Open(&wav_file, file_data);
       if(wav_file.channel != 1)
       {
-        //Mono has 1 channel, stereo has 2 channels.
+        // Mono has 1 channel, stereo has 2 channels.
         // Theoretically there can be more than 2 channels, but we only play mono.
         ERROR_WAVEFile();
-        R_CMT_Stop(cmt_channel_i2c);  //Stop GPIO polling
+        R_CMT_Stop(cmt_channel_i2c);  // Stop GPIO polling
         return;
       }
       _dataSize = wav_file.data_size;
 
       g_systemStatus.flag_isPlaying = 1;
       R_TPU0_SetFrequency(wav_file.sample_rate);
+
+      // Fill the buffer before enabling DMA to avoid blank interval.
+      NAND_ReadFromFlash(&_fileAddress, sizeof(file_data), file_data);
+      g_decode_putp = 0;
+      _sizeToRead = sizeof(file_data);
+      wav_put(file_data, _sizeToRead);
+      _dataSize -= _sizeToRead;
 
       R_TPU0_Start();
       while(_dataSize > 0)
@@ -238,6 +244,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
       }
 
       R_TPU0_Stop();
+      R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);
       emptyPlayBuffer();
       g_systemStatus.flag_isPlaying = 0;
 
@@ -321,36 +328,36 @@ static void I2C_Init()
   I2C_Send(&iic_info, I2C_POTENT_ADDR, 2, 0x80);
 
   /* GPIO Mux Init */
-  //IOCON
-  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x0A, 0xC2);  //INT is active HIGH
+  // IOCON
+  I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x0A, 0xC2);  // INT is active HIGH
 
-  //IODIRA
+  // IODIRA
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x00, 0xFF);
-  //IOPOLA
+  // IOPOLA
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x01, 0);
-  //GPINTENA
+  // GPINTENA
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x02, 0xFF);
-  //DEFVALA
+  // DEFVALA
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x03, 0xFF);
-  //INTCONA
+  // INTCONA
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x04, 0xFF);
-  //GPPUA
+  // GPPUA
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x06, 0xFF);
 
-  //IODIRB
+  // IODIRB
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x10, 0xFF);
-  //IOPOLB
+  // IOPOLB
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x11, 0);
-  //GPINTENB
+  // GPINTENB
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x12, 0xFF);
-  //DEFVALB
+  // DEFVALB
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x13, 0xFF);
-  //INTCONB
+  // INTCONB
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x14, 0xFF);
-  //GPPUB
+  // GPPUB
   I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x16, 0xFF);
 
-  //Clear interrupts
+  // Clear interrupts
   I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
   I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
 }
@@ -396,8 +403,8 @@ void callBack_read()
 
 static void sys_init()
 {
-  //SPI CS Pin
-  PORTD.PDR.BIT.B4 = 1;  //Set pin as output
+  // SPI CS Pin
+  PORTD.PDR.BIT.B4 = 1;  // Set pin as output
   NAND_CS_HIGH;
 
   // CPU init (cloks, RAM, etc.) and peripheral init is done in
@@ -405,17 +412,17 @@ static void sys_init()
 
   playMode = emptyPlay;
   R_DAC1_Start();
-  R_DAC1_Set_ConversionValue(0x800);  //This is to avoid popping sound at the start
+  R_DAC1_Set_ConversionValue(0x800);  // This is to avoid popping sound at the start
   I2C_Init();
 
-  //Init USB Host Mass Storage Device controller
+  // Init USB Host Mass Storage Device controller
   ctrl.module = USB_IP0;
   ctrl.type = USB_HMSC;
   cfg.usb_speed = USB_FS;
   cfg.usb_mode = USB_HOST;
   R_USB_Open(&ctrl, &cfg);
 
-  //Init SPI for NAND Flash
+  // Init SPI for NAND Flash
   memdrv_info.cnt = 0;
   memdrv_info.p_data = NULL;
   memdrv_info.io_mode = MEMDRV_MODE_SINGLE;
@@ -438,13 +445,13 @@ static uint8_t board_selection()
 {
   if(PIN_GetDebugMode() == 1)
   {
-    //Normal mode
-    return PIN_BoardSelection();  //Solder jumpers MS1, MS2
+    // Normal mode
+    return PIN_BoardSelection();  // Solder jumpers MS1, MS2
   }
   else
   {
-    //Debug mode
-    return (((DIP_ReadState() ^ 0xFF) & 0xC0) >> 6);  //Pins 7, 8
+    // Debug mode
+    return (((DIP_ReadState() ^ 0xFF) & 0xC0) >> 6);  // Pins 7, 8
   }
 }
 
@@ -476,7 +483,7 @@ void CNT_IntervalDelay()
 {
   static int del_cnt;
 
-  //Because period is 100 ms, we have to multiply by 10 to get delay in seconds.
+  // Because period is 100 ms, we have to multiply by 10 to get delay in seconds.
   if((del_cnt == (interval_time * 10)) || (g_systemStatus.flag_waitForInterval == 0))
   {
     R_CMT_Stop(cmt_channel_interval_delay);
@@ -517,7 +524,7 @@ void ISR_periodicPolling()
 
   if(boardType == WAV_5F9IH)
   {
-    //volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
+    // volume[0] is 16-bit variable, but contains 8-bit value. Potentiometer can accept only values from 0 to 127.
     _volume = (uint8_t)(volume[g_systemStatus.vol_ctrl_nr] >> 1);
   }
   else
@@ -573,7 +580,7 @@ void main(void)
   R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);
 
   /* Check if USB is inserted */
-  //Create 100 ms counter for polling to check if USB is connected.
+  // Create 100 ms counter for polling to check if USB is connected.
   R_CMT_CreatePeriodic(10, &CNT_USB_CntCallback, &cmt_channel_usb);
   while(usb_cnt < 10)
   {
@@ -582,18 +589,17 @@ void main(void)
     switch(event)
     {
       case USB_STS_CONFIGURED:
-        R_CMT_Stop(cmt_channel_i2c);  //Stop GPIO polling
+        R_CMT_Stop(cmt_channel_i2c);  // Stop GPIO polling
 
-        //ERROR_ClearErrors();
         LED_USBOn();
         NAND_Reset();
         flash_status = NAND_CopyToFlash();
         if(flash_status == NAND_WRITE_OK)
         {
           isDataInFlash = getDataFromFlash();
-          //Create 500 ms counter for flashing USB LED.
+          // Create 500 ms counter for flashing USB LED.
           R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
-          R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);  //Start GPIO polling
+          R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);  // Start GPIO polling
         }
         break;
 
@@ -641,7 +647,7 @@ void main(void)
   }
 
   /* Mode select */
-  mode_select = DIP_ReadState() & 0x07;  //Switches 1, 2, 3 are mode select
+  mode_select = DIP_ReadState() & 0x07;  // Switches 1, 2, 3 are mode select
   switch(mode_select)
   {
     case 0:
@@ -659,17 +665,17 @@ void main(void)
       if(boardType == WAV_5F9IH)
       {
         playMode = binary255_5F9IH;
-        //Clear interrupt flag before enabling interrupt
+        // Clear interrupt flag before enabling interrupt
         IR(ICU, IRQ13)= 0;
-        //Enable interrupt on pin change. Interrupt is triggered from GPIO mux.
+        // Enable interrupt on pin change. Interrupt is triggered from GPIO mux.
         R_IRQs_IRQ13_Start();
-        //GPINTENA
+        // GPINTENA
         I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x02, 0);
-        //INTCONA
+        // INTCONA
         I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x04, 0);
-        //GPINTENB
+        // GPINTENB
         I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x12, 0x03);
-        //INTCONB
+        // INTCONB
         I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x14, 0);
       }
       else
@@ -731,7 +737,7 @@ void main(void)
   }
 
   /* Inverval select */
-  uint8_t _interval_select = (DIP_ReadState() & 0x18) >> 3;  //Switches 4, 5 are interval select
+  uint8_t _interval_select = (DIP_ReadState() & 0x18) >> 3;  // Switches 4, 5 are interval select
   if((mode_select == 0) && (boardType != WAV_5F9IH))
   {
     switch(_interval_select)
@@ -773,13 +779,13 @@ void main(void)
     {
       if(PIN_GetSW2() == 2)
       {
-        //Position 1 (chime), continuous play of song nr. 1, volume adjustment on VR3
+        // Position 1 (chime), continuous play of song nr. 1, volume adjustment on VR3
         g_systemStatus.vol_ctrl_nr = 0;
         playFromPlaylist(0, 1);
       }
       else if(PIN_GetSW2() == 1)
       {
-        //Position 3 (voice), continuous play of song nr. 1, volume adjustment on VR4
+        // Position 3 (voice), continuous play of song nr. 1, volume adjustment on VR4
         g_systemStatus.vol_ctrl_nr = 1;
         playFromPlaylist(0, 1);
       }
@@ -792,7 +798,6 @@ void main(void)
           {
             if(0xFF != songBuffer[cur_cnt])
             {
-              //cur_cnt++;
               playFromPlaylist(songBuffer[cur_cnt++], 0);
             }
             else
