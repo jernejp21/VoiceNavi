@@ -98,7 +98,7 @@ int NAND_CheckBlock()
 
     for(int i = 0; i < NAND_SPARE_AREA_SIZE; i++)
     {
-      if(0 == data[i])
+      if(0xFF != data[i])
       {
         isBadBlock = 1;
       }
@@ -118,8 +118,17 @@ nand_flash_status_t NAND_CopyToFlash()
 {
 
   int cnt = 0;
-  uint32_t flash_address = NAND_DATA_PAGE;
+  uint32_t flash_address;
   nand_flash_status_t flash_status;
+
+  for(int i = 0; i < NAND_SPARE_AREA_SIZE; i++)
+  {
+    if(bad_blocks[i] == cnt)
+    {
+      cnt++;
+    }
+  }
+  flash_address = ((cnt << 6) * NAND_PAGE_SIZE) + NAND_DATA_PAGE;
 
   memset(output_music, 0, sizeof(output_music));
 
@@ -242,9 +251,10 @@ nand_flash_status_t NAND_CopyToFlash()
   }
   f_close(&file);
 
-  //Mark that data is in flash
+  /* Mark that data is in flash. If 0th page is available, write to 0th page. */
   uint8_t data[4] = {0xEF, 0xBE, 0xAD, 0xDE};  //0xdeadbeef in little endian
   flash_address = 0;
+  // return flash address points to next page
   flash_status = NAND_WriteToFlash(&flash_address, sizeof(data), data);
   if(NAND_WRITE_NOK == flash_status)
   {
@@ -252,8 +262,8 @@ nand_flash_status_t NAND_CopyToFlash()
     return NAND_WRITE_NOK;
   }
 
-  //Copy file table to NAND flash
-  flash_address = NAND_FILE_LIST_PAGE;
+  /* Copy file table to NAND flash. Write to flash mark + 1 page. */
+  // return flash address points to next page
   flash_status = NAND_WriteToFlash(&flash_address, sizeof(flash_table), (uint8_t*)&flash_table[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
@@ -261,8 +271,8 @@ nand_flash_status_t NAND_CopyToFlash()
     return NAND_WRITE_NOK;
   }
 
-  //Copy playlist table to NAND flash
-  flash_address = NAND_PLAYLIST_PAGE;
+  /* Copy playlist table to NAND flash. Write to flash_table + 1 page. */
+  // return flash address points to next page
   flash_status = NAND_WriteToFlash(&flash_address, sizeof(output_music), (uint8_t*)&output_music[0]);
   if(NAND_WRITE_NOK == flash_status)
   {
@@ -270,7 +280,7 @@ nand_flash_status_t NAND_CopyToFlash()
     return NAND_WRITE_NOK;
   }
 
-  /* After finishing wiriting to flash, lock flash for write protection */
+  /* After finishing writing to flash, lock flash for write protection */
   NAND_LockFlash();
 
   return NAND_WRITE_OK;
@@ -369,11 +379,11 @@ nand_flash_status_t NAND_ReadFromFlash(uint32_t *p_address, uint32_t size, uint8
 
 }
 
-int NAND_CheckDataInFlash()
+int NAND_CheckDataInFlash(uint32_t *p_address)
 {
   uint8_t data[4];
   uint32_t cast_data = 0;
-  NAND_ReadFromFlash(&cast_data, sizeof(data), data);
+  NAND_ReadFromFlash(p_address, sizeof(data), data);
   cast_data = *(uint32_t*)&data;
 
   if(0xDEADBEEF == cast_data)

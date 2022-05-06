@@ -89,7 +89,7 @@ void NAND_Reset(void);
 nand_flash_status_t NAND_Erase(void);
 nand_flash_status_t NAND_CopyToFlash(void);
 nand_flash_status_t NAND_ReadFromFlash(uint32_t*, uint32_t, uint8_t*);
-int NAND_CheckDataInFlash(void);
+int NAND_CheckDataInFlash(uint32_t*);
 nand_flash_status_t NAND_WriteToFlash(uint32_t*, uint32_t, uint8_t*);
 nand_flash_status_t nand_wait_operation_complete(void);
 void NAND_LockFlash(void);

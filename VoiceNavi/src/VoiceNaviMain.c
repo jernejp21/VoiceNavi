@@ -197,6 +197,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
         // Mono has 1 channel, stereo has 2 channels.
         // Theoretically there can be more than 2 channels, but we only play mono.
         ERROR_WAVEFile();
+        LED_BusyOff();
         R_CMT_Stop(cmt_channel_i2c);  // Stop GPIO polling
         return;
       }
@@ -365,18 +366,18 @@ static void I2C_Init()
 static int getDataFromFlash()
 {
   uint8_t is_data_in_flash;
-  uint32_t flash_address;
+  uint32_t flash_address = 0;
 
   /* Check if there is any data in flash. */
-  is_data_in_flash = NAND_CheckDataInFlash();
+  is_data_in_flash = NAND_CheckDataInFlash(&flash_address);
 
   /* If data in flash, prepare lookout tables. */
   if(is_data_in_flash)
   {
     NAND_Reset();
-    flash_address = NAND_FILE_LIST_PAGE;
+    flash_address = (flash_address & 0xFFFF0000) + NAND_PAGE_SIZE;
     NAND_ReadFromFlash(&flash_address, sizeof(flash_table), (uint8_t*)&flash_table[0]);
-    flash_address = NAND_PLAYLIST_PAGE;
+    flash_address = (flash_address & 0xFFFF0000) + 2 * NAND_PAGE_SIZE;
     NAND_ReadFromFlash(&flash_address, sizeof(output_music), (uint8_t*)&output_music[0]);
 
   }
