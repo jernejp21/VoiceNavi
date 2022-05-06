@@ -38,7 +38,7 @@ void ISR_periodicPolling();
 #define I2C_POTENT_ADDR 0x28
 
 #define RINGBUF_SIZE 2048
-#define p_inc(p, max) (((p + 1) >= max) ? 0 : (p + 1))
+#define p_inc(p, max) (((p + 1) > max) ? 0 : (p + 1))
 
 /** Global variables */
 uint32_t g_binary_vol_reduction_address = NAND_VOL_PAGE;
