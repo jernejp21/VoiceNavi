@@ -43,6 +43,7 @@ playlist_t output_music[255];
 wav_header_t wav_file;
 int startOfFileNames;
 int startOfPlaylist;
+int isWpjCorrupted = 1;
 
 file_name_t file_name;
 
@@ -208,6 +209,7 @@ nand_flash_status_t NAND_CopyToFlash()
       WAV_Open(&wav_file, &wav_buffer[0]);
       flash_table[cnt].address = flash_address;
       flash_table[cnt].file_size = wav_file.file_size;
+      isWpjCorrupted = 0;
 
       do
       {
@@ -250,6 +252,12 @@ nand_flash_status_t NAND_CopyToFlash()
     }
   }
   f_close(&file);
+
+  if(isWpjCorrupted)
+  {
+    ERROR_WAVEFile();
+    return NAND_WRITE_NOK;
+  }
 
   /* Mark that data is in flash. If 0th page is available, write to 0th page. */
   uint8_t data[4] = {0xEF, 0xBE, 0xAD, 0xDE};  //0xdeadbeef in little endian
