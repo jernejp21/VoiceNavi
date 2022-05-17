@@ -234,6 +234,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
         {
           cur_cnt = 0;
           R_TPU0_Stop();
+          R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);  // Reset DMA address
           emptyPlayBuffer();
           LED_BusyOff();
           PIN_BusySet();
@@ -245,7 +246,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
       }
 
       R_TPU0_Stop();
-      R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);
+      R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);  // Reset DMA address
       emptyPlayBuffer();
       g_systemStatus.flag_isPlaying = 0;
 
