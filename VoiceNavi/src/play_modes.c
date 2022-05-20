@@ -32,7 +32,7 @@
 #define STOP 0x01
 #define STB 0x02
 
-static uint8_t gpio_prev;
+static uint16_t gpio_prev;
 
 static uint8_t prev_sw = 255;
 static uint8_t irqTriggered;
