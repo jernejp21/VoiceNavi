@@ -73,6 +73,7 @@
         <Setting id="r_tfat_rx" value="FIT"/>
         <Setting id="DMAC1" value="CG"/>
         <Setting id="r_tfat_driver_rx" value="FIT"/>
+        <Setting id="WDT" value="CG"/>
         <Setting id="DAC" value="CG"/>
         <Setting id="DMAC0" value="CG"/>
         <Setting id="r_sci_iic_rx" value="FIT"/>

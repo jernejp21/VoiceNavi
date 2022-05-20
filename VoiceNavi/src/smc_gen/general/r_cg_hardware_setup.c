@@ -19,7 +19,7 @@
 
 /***********************************************************************************************************************
 * File Name        : r_cg_hardware_setup.c
-* Version          : 1.2.104
+* Version          : 1.2.110
 * Device(s)        : R5F565N9FxFP
 * Description      : Initialization file for code generation configurations.
 ***********************************************************************************************************************/
@@ -41,6 +41,7 @@ Includes
 #include "DMAC1.h"
 #include "TPU0.h"
 #include "IRQs.h"
+#include "WDT.h"
 #include "r_smc_cgc.h"
 #include "r_smc_interrupt.h"
 /* Start user code for include. Do not edit comment generated here */

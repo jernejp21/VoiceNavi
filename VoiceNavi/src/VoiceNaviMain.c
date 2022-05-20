@@ -587,6 +587,7 @@ void main(void)
   while(usb_cnt < 10)
   {
     event = R_USB_GetEvent(&ctrl);  // Get event code
+    R_WDT_Restart();
 
     switch(event)
     {
@@ -776,6 +777,7 @@ void main(void)
   /* Wait for interrupt from GPIO pins to start playing */
   while(1)
   {
+    R_WDT_Restart();
     /* Go to main part of program, only if data is available in flash. Otherwise loop and check if USB is attached. */
     if(isDataInFlash)
     {

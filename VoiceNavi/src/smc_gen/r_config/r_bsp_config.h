@@ -414,7 +414,7 @@ Configuration Options
        b0      Reserved (set to 1)
    Default value is 0xFFFFFFFF.
 */
-#define BSP_CFG_OFS0_REG_VALUE  (0xFFFFFFFF) /* Generated value. Do not edit this manually */
+#define BSP_CFG_OFS0_REG_VALUE  (0xFF85FFFF) /* Generated value. Do not edit this manually */
 
 /* Configure whether voltage detection 0 circuit and HOCO are enabled after reset.
    OFS1 - Option Function Select Register 1
@@ -503,7 +503,7 @@ Configuration Options
    4 = Renesas ITRON OS (RI600V4 or RI600PX) is used.
    5 = Azure RTOS is used.(This is not available.)
 */
-#define BSP_CFG_RTOS_USED               (0) /* Generated value. Do not edit this manually */
+#define BSP_CFG_RTOS_USED               (0)
 
 /* This macro is used to select which Renesas ITRON OS.
    0 = RI600V4 is used.

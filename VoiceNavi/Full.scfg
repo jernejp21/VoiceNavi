@@ -4,6 +4,7 @@
         <configuration active="true" id="com.renesas.smc.toolchain.gccrx.configuration.release">
             <property id="com.renesas.smc.service.project.buildArtefactType" values="com.renesas.smc.service.project.buildArtefactType.exe"/>
             <toolchain id="com.renesas.smc.toolchain.gccrx.toolchain.gccrx">
+                <option id="com.renesas.smc.toolchain.option.language" key="com.renesas.smc.toolchain.option.language.c"/>
                 <option id="com.renesas.smc.toolchain.option.buildArtefactType" key="com.renesas.smc.toolchain.option.buildArtefactType.exe"/>
                 <option id="com.renesas.smc.toolchain.option.rtos" key="com.renesas.smc.toolchain.option.rtos.none"/>
             </toolchain>
@@ -483,47 +484,47 @@
         <Item currentVect="255" id="PERIA_INTA255" priority="15" usedState="Not Use"/>
     </tool>
     <tool id="Pins" version="1.0.1.0">
-        <pinItem allocation="57" comments="" direction="I" id="PB3" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="2" comments="" direction="None" id="EMLE" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="56" comments="" direction="I" id="PB4" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="11" comments="" direction="None" id="XTAL" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="84$A" comments="" direction="None" id="MISOC" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="13" comments="" direction="None" id="EXTAL" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="52" comments="" direction="I" id="PC0" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="50" comments="" direction="I" id="PC2" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="48" comments="" direction="O" id="PC4" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="47" comments="" direction="O" id="PC5" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="85$A" comments="" direction="None" id="MOSIC" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="21" comments="" direction="None" id="TCK" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="46" comments="" direction="None" id="IRQ13" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="91" comments="" direction="I" id="P43" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="92" comments="" direction="I" id="P42" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="88" comments="" direction="None" id="AN006" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="87" comments="" direction="None" id="AN007" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="100" comments="" direction="None" id="DA1" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="20" comments="" direction="None" id="TDI" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="70" comments="" direction="I" id="PA0" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="22" comments="" direction="None" id="TDO" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="68" comments="" direction="I" id="PA2" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="72" comments="" direction="I" id="PE6" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="69" comments="" direction="I" id="PA1" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="66" comments="" direction="I" id="PA4" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="16" comments="" direction="None" id="TRST#" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="67" comments="" direction="I" id="PA3" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="71" comments="" direction="I" id="PE7" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="64" comments="" direction="I" id="PA6" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="65" comments="" direction="I" id="PA5" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="63" comments="" direction="I" id="PA7" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="83$A" comments="" direction="None" id="RSPCKC" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="44" comments="" direction="O" id="P50" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="42" comments="" direction="O" id="P52" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="43" comments="" direction="O" id="P51" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="40" comments="" direction="O" id="P54" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="53" comments="" direction="None" id="SSDA11" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="41" comments="" direction="O" id="P53" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="39" comments="" direction="O" id="P55" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="54" comments="" direction="None" id="SSCL11" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="19" comments="" direction="None" id="TMS" isUsedBySoftware="true" locked="false" status="0"/>
+        <pinItem allocation="2" comments="" direction="None" id="EMLE" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="11" comments="" direction="None" id="XTAL" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="46" comments="" direction="None" id="IRQ13" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="70" comments="" direction="I" id="PA0" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="68" comments="" direction="I" id="PA2" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="69" comments="" direction="I" id="PA1" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="66" comments="" direction="I" id="PA4" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="67" comments="" direction="I" id="PA3" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="64" comments="" direction="I" id="PA6" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="65" comments="" direction="I" id="PA5" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="63" comments="" direction="I" id="PA7" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="57" comments="" direction="I" id="PB3" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="56" comments="" direction="I" id="PB4" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="52" comments="" direction="I" id="PC0" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="50" comments="" direction="I" id="PC2" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="48" comments="" direction="O" id="PC4" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="47" comments="" direction="O" id="PC5" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="72" comments="" direction="I" id="PE6" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="71" comments="" direction="I" id="PE7" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="83$A" comments="" direction="None" id="RSPCKC" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="54" comments="" direction="None" id="SSCL11" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="19" comments="" direction="None" id="TMS" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="88" comments="" direction="None" id="AN006" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="87" comments="" direction="None" id="AN007" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="84$A" comments="" direction="None" id="MISOC" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="13" comments="" direction="None" id="EXTAL" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="16" comments="" direction="None" id="TRST#" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="91" comments="" direction="I" id="P43" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="92" comments="" direction="I" id="P42" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="44" comments="" direction="O" id="P50" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="42" comments="" direction="O" id="P52" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="43" comments="" direction="O" id="P51" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="40" comments="" direction="O" id="P54" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="41" comments="" direction="O" id="P53" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="39" comments="" direction="O" id="P55" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="100" comments="" direction="None" id="DA1" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="85$A" comments="" direction="None" id="MOSIC" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="21" comments="" direction="None" id="TCK" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="20" comments="" direction="None" id="TDI" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="22" comments="" direction="None" id="TDO" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="53" comments="" direction="None" id="SSDA11" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
     </tool>
     <tool id="Summary" version="1.0.0.0">
         <option id="com.renesas.smc.code.path" value="src\smc_gen"/>
@@ -4520,6 +4521,70 @@
             </allocatable>
             <component description="Interrupt Controller configures the interrupt requests generated by ICU: Software interrupt, NMI pin interrupt and IRQ External pin interrupts." detailDescription="" display="Interrupt Controller" id="com.renesas.smc.tools.swcomponent.codegenerator.icu" version="2.2.0"/>
             <allocator channelLevel0="" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Interrupt Controller" display="ICU" id="com.renesas.smc.tools.swcomponent.codegenerator.icu.rx651.icu" type="ICU">
+                <context/>
+            </allocator>
+            <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
+        </configuration>
+        <configuration id="9b09a2d4-8850-4e49-9a74-998d9555f12c" inuse="true" name="WDT">
+            <allocatable id="WDT">
+                <osocket id="OFS0Byte" value="true"/>
+                <isocket id="PCLKBClock" selection="Clock.tool_clock_pclkb" value="6.0E7"/>
+                <option enabled="true" id="StartMdSel" selection="AutoMd">
+                    <item id="RegMd" input="" vlaue="0"/>
+                    <item id="AutoMd" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="ClkDiv" selection="8192">
+                    <item id="4" input="" vlaue="0"/>
+                    <item id="64" input="" vlaue="0"/>
+                    <item id="128" input="" vlaue="0"/>
+                    <item id="512" input="" vlaue="0"/>
+                    <item id="2048" input="" vlaue="0"/>
+                    <item id="8192" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="TmoutCycle" selection="4096">
+                    <item id="1024" input="" vlaue="0"/>
+                    <item id="4096" input="" vlaue="0"/>
+                    <item id="8192" input="" vlaue="0"/>
+                    <item id="16384" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="StartPos" selection="100">
+                    <item id="25" input="" vlaue="0"/>
+                    <item id="50" input="" vlaue="0"/>
+                    <item id="75" input="" vlaue="0"/>
+                    <item id="100" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="EndPos" selection="0">
+                    <item id="75" input="" vlaue="0"/>
+                    <item id="50" input="" vlaue="0"/>
+                    <item id="25" input="" vlaue="0"/>
+                    <item id="0" input="" vlaue="0"/>
+                </option>
+                <option enabled="true" id="ResetInterruptRequest" selection="Res">
+                    <item id="NmiInt" input="" vlaue="0"/>
+                    <item id="Int" input="" vlaue="0"/>
+                    <item id="Res" input="" vlaue="0"/>
+                </option>
+                <option enabled="false" id="IntPriority" selection="Level15">
+                    <item id="Level0" input="" vlaue="0"/>
+                    <item id="Level1" input="" vlaue="0"/>
+                    <item id="Level2" input="" vlaue="0"/>
+                    <item id="Level3" input="" vlaue="0"/>
+                    <item id="Level4" input="" vlaue="0"/>
+                    <item id="Level5" input="" vlaue="0"/>
+                    <item id="Level6" input="" vlaue="0"/>
+                    <item id="Level7" input="" vlaue="0"/>
+                    <item id="Level8" input="" vlaue="0"/>
+                    <item id="Level9" input="" vlaue="0"/>
+                    <item id="Level10" input="" vlaue="0"/>
+                    <item id="Level11" input="" vlaue="0"/>
+                    <item id="Level12" input="" vlaue="0"/>
+                    <item id="Level13" input="" vlaue="0"/>
+                    <item id="Level14" input="" vlaue="0"/>
+                    <item id="Level15" input="" vlaue="0"/>
+                </option>
+            </allocatable>
+            <component description="The watchdog timer (WDT) is a 14-bit down-counter. It can be used to reset this MCU when the counter underflows." detailDescription="" display="Watchdog Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.wdtiwdt" version="1.10.0"/>
+            <allocator channelLevel0="" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Watchdog Timer" display="WDT" id="com.renesas.smc.tools.swcomponent.codegenerator.wdtiwdt.rx651.wdt" type="WDT">
                 <context/>
             </allocator>
             <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>

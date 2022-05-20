@@ -18,43 +18,46 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name        : r_cg_interrupt_handlers.h
-* Version          : 1.2.110
+* File Name        : WDT.c
+* Component Version: 1.10.0
 * Device(s)        : R5F565N9FxFP
-* Description      : This file declares interrupt handlers.
+* Description      : This file implements device driver for WDT.
 ***********************************************************************************************************************/
 
-#ifndef INTERRUPT_HANDLERS_H
-#define INTERRUPT_HANDLERS_H
+/***********************************************************************************************************************
+Pragma directive
+***********************************************************************************************************************/
+/* Start user code for pragma. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Macro definitions (Register bit)
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Typedef definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Global functions
-***********************************************************************************************************************/
-/* ICU IRQ13 */
-void r_IRQs_irq13_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(ICU,IRQ13))));
-
-/* TPU0 TGI0A */
-void r_TPU0_tgi0a_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB130))));
-
-/* S12AD S12ADI */
-void r_ADC0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB186))));
-
-/* Start user code for function. Do not edit comment generated here */
+#include "r_cg_macrodriver.h"
+#include "WDT.h"
+/* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-#endif
+#include "r_cg_userdefine.h"
+
+/***********************************************************************************************************************
+Global variables and functions
+***********************************************************************************************************************/
+/* Start user code for global. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: R_WDT_Restart
+* Description  : This function restarts WDT module
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_WDT_Restart(void)
+{
+    /* Refreshed by writing 00h and then writing FFh */
+    WDT.WDTRR = 0x00U;
+    WDT.WDTRR = 0xFFU;
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */

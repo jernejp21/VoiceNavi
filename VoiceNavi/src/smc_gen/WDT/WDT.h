@@ -18,18 +18,19 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name        : r_cg_interrupt_handlers.h
-* Version          : 1.2.110
+* File Name        : WDT.h
+* Component Version: 1.10.0
 * Device(s)        : R5F565N9FxFP
-* Description      : This file declares interrupt handlers.
+* Description      : This file implements device driver for WDT.
 ***********************************************************************************************************************/
 
-#ifndef INTERRUPT_HANDLERS_H
-#define INTERRUPT_HANDLERS_H
+#ifndef CFG_WDT_H
+#define CFG_WDT_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
+#include "r_cg_wdt.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)
@@ -38,6 +39,7 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
+#define WDT_PCLK_COUNTER_DIVISION      (8192)
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -46,15 +48,7 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
-/* ICU IRQ13 */
-void r_IRQs_irq13_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(ICU,IRQ13))));
-
-/* TPU0 TGI0A */
-void r_TPU0_tgi0a_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB130))));
-
-/* S12AD S12ADI */
-void r_ADC0_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB186))));
-
+void R_WDT_Restart(void);
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #endif

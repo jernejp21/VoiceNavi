@@ -678,6 +678,8 @@ nand_flash_status_t nand_wait_operation_complete()
   }
   while(0 != (rx_buff[0] & NAND_STATUS_OIP));
 
+  R_WDT_Restart();
+
   if(rx_buff[0] & NAND_STATUS_ECCS1)
     return NAND_READ_NOK;
 
