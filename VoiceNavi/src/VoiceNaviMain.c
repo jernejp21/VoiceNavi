@@ -826,7 +826,10 @@ void main(void)
               g_systemStatus.flag_waitForInterval = 1;
               // 100 ms period
               R_CMT_CreatePeriodic(10, &CNT_IntervalDelay, &cmt_channel_interval_delay);
-              while(g_systemStatus.flag_waitForInterval);
+              while(g_systemStatus.flag_waitForInterval)
+              {
+                R_WDT_Restart();
+              }
               LED_BusyOff();
               PIN_BusySet();
             }
