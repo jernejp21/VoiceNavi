@@ -36,6 +36,7 @@ static uint16_t gpio_prev;
 
 static uint8_t prev_sw = 255;
 static uint8_t irqTriggered;
+static uint8_t isDoubleSwitch;
 
 static uint8_t bitOrder(uint8_t order)
 {
@@ -287,7 +288,7 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     }
     else if(_nr_sw_pressed == 1)
     {
-      if(!irqTriggered)
+      if(!irqTriggered && !isDoubleSwitch)
       {
         for(char sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
         {
@@ -300,6 +301,16 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
           }
         }
       }
+      else
+      {
+        isDoubleSwitch = 0;
+        g_systemStatus.flag_isPlaying = 0;
+        *songArray = -1;
+      }
+    }
+    else
+    {
+      isDoubleSwitch = 1;
     }
   }
   else
