@@ -24,6 +24,8 @@
  * SOFTWARE.
  */
 
+/* Firmware version: 2.0 */
+
 #include "globals.h"
 
 /** Function definition */
