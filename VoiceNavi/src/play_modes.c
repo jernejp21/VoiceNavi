@@ -138,6 +138,10 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
       }
     }
   }
+  else
+  {
+    prev_sw = 255;
+  }
 }
 
 void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
