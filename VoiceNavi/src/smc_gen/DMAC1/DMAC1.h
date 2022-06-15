@@ -43,7 +43,7 @@ Macro definitions
 #define _0000A000_DMAC1_SRC_ADDR                                (0x0000A000UL) /* Source address */
 #define _00000000_DMAC1_DST_ADDR                                (0x00000000UL) /* Destination address */
 #define _00000000_DMAC1_DMCRA_COUNT                             (0x00000000UL) /* Transfer count */
-#define _0C00_DMAC1_SRC_EXT_RPT_AREA                            (0x0C00U) /* Source address extended repeat area */
+#define _0D00_DMAC1_SRC_EXT_RPT_AREA                            (0x0D00U) /* Source address extended repeat area */
 #define _0000_DMAC1_DST_EXT_RPT_AREA                            (0x0000U) /* Destination address extended repeat area */
 
 /***********************************************************************************************************************

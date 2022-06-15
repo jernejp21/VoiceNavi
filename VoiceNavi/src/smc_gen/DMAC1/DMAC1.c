@@ -68,7 +68,7 @@ void R_DMAC1_Create(void)
 
     /* Set DMAC1 transfer address update and extended repeat setting */
     DMAC1.DMAMD.WORD = _8000_DMAC_SRC_ADDR_UPDATE_INCREMENT | _0000_DMAC_DST_ADDR_UPDATE_FIXED | 
-                       _0C00_DMAC1_SRC_EXT_RPT_AREA | _0000_DMAC1_DST_EXT_RPT_AREA;
+                       _0D00_DMAC1_SRC_EXT_RPT_AREA | _0000_DMAC1_DST_EXT_RPT_AREA;
 
     /* Set DMAC1 transfer mode, data size and repeat area */
     DMAC1.DMTMD.WORD = _0000_DMAC_TRANS_MODE_FREERUN | _2000_DMAC_REPEAT_AREA_NONE | _0100_DMAC_TRANS_DATA_SIZE_16 | 

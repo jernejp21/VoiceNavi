@@ -39,8 +39,8 @@ void ISR_periodicPolling();
 #define I2C_GPIO_ADDR 0x21
 #define I2C_POTENT_ADDR 0x28
 
-#define RINGBUF_SIZE 2048
-#define p_inc(p, max) (((p + 1) > max) ? 0 : (p + 1))
+#define RINGBUF_SIZE 4096
+#define p_inc(p, max) (((p + 1) >= max) ? 0 : (p + 1))
 
 /** Global variables */
 uint32_t g_binary_vol_reduction_address = NAND_VOL_PAGE;
@@ -56,7 +56,7 @@ flash_custom_FAT_t flash_table[255];
 wav_header_t wav_file;
 uint16_t volume[2] __attribute__((aligned(4)));
 uint8_t songBuffer[20];
-uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(4096)));
+uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(8192)));
 int cur_cnt = 0;
 uint8_t mode_select;
 modeSelect_t boardType;
@@ -110,11 +110,12 @@ static void wav_put(void *read_buffer, uint32_t size)
       audio_data = (int16_t)(*data++);
       audio_data = audio_data << 4;
 
-      while(1 != decode_put((uint16_t)audio_data));
-
-      if(!g_systemStatus.flag_isPlaying)
+      while(1 != decode_put((uint16_t)audio_data))
       {
-        return;
+        if(!g_systemStatus.flag_isPlaying)
+        {
+          return;
+        }
       }
     }
   }
@@ -127,11 +128,12 @@ static void wav_put(void *read_buffer, uint32_t size)
 
       data += 2;
 
-      while(1 != decode_put((uint16_t)audio_data));
-
-      if(!g_systemStatus.flag_isPlaying)
+      while(1 != decode_put((uint16_t)audio_data))
       {
-        return;
+        if(!g_systemStatus.flag_isPlaying)
+        {
+          return;
+        }
       }
     }
   }
