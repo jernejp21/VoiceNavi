@@ -80,8 +80,21 @@ void R_DAC_Create(void)
 
 void R_DAC1_Start(void)
 {
+    uint16_t w_count;
+
+    DA.DADR1 = 0x0000U;
+    DA.DAASWCR.BIT.DAASW1 = 1U;
+    DA.DAAMPCR.BIT.DAAMP1 = 1U;
     DA.DACR.BIT.DAE = 0U;
     DA.DACR.BIT.DAOE1 = 1U;
+
+    /* Wait for DA1 stabilizing time 3us */
+    for (w_count = 0U; w_count <= _0049_AMP_STABLE_WAIT; w_count++)
+    {
+        nop();
+    }
+
+    DA.DAASWCR.BIT.DAASW1 = 0U;
 }
 
 /***********************************************************************************************************************
