@@ -28,10 +28,10 @@
 #define __NAND_FLASH_H
 
 /* This are device dependent values. Change if needed */
-#define NAND_NR_OF_BLOCKS 2048
+#define NAND_NR_OF_BLOCKS 4096
 #define NAND_NR_OF_PAGES 64
 #define NAND_PAGE_SIZE 2048
-#define NAND_MAX_BAD_BLOCKS 40  //Size of all blocks minus min. number of valid blocks
+#define NAND_MAX_BAD_BLOCKS 80  //Size of all blocks minus min. number of valid blocks
 #define NAND_SPARE_AREA_SIZE 0x11  //Size of Spare Area 01
 #define NAND_SPARE_AREA_ADD 0x800  //Size of Spare 01 Column Address
 #define NAND_DELAY_TIME 1

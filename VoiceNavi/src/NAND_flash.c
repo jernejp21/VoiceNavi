@@ -666,9 +666,9 @@ nand_flash_status_t nand_wait_operation_complete()
   do
   {
     R_BSP_SoftwareDelay(NAND_DELAY_TIME, NAND_DELAY_UNIT);
-    NAND_CS_LOW;  //CS LOW
     memdrv_info.cnt = 2;
     memdrv_info.p_data = tx_buff;
+    NAND_CS_LOW;  //CS LOW
     R_MEMDRV_Tx(NAND_DEVNO, &memdrv_info);
 
     memdrv_info.cnt = 1;
