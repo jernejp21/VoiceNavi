@@ -72,9 +72,33 @@ static uint8_t switchToPlay(uint32_t bitField, uint8_t *sw_array_p)
   return cnt;
 }
 
-void emptyPlay(uint8_t *i2c_gpio, uint8_t *empty)
+void emptyPlay(uint8_t *i2c_gpio, uint8_t *songArray)
 {
 
+}
+
+void errorResetPlay(uint8_t *i2c_gpio, uint8_t *songArray)
+{
+  uint8_t _gpioa;
+  uint8_t _gpiob;
+
+  _gpioa = i2c_gpio[0];
+  _gpiob = i2c_gpio[1];
+
+  /* Correct switches order according to HW design */
+  _gpioa = bitOrder(_gpioa);
+  _gpioa ^= 0xFF;  //Convert again, to get positive logic
+  _gpiob ^= 0xFF;  //Convert to positive logic.
+
+  /* This mode has negative logic */
+  if(g_systemStatus.flag_isIRQ)
+  {
+    if(0 != (_gpiob & STOP))
+    {
+      SYSTEM.PRCR.WORD = 0xA502;
+      SYSTEM.SWRR = 0x0000A501;
+    }
+  }
 }
 
 void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)

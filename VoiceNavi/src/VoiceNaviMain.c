@@ -49,7 +49,6 @@ uint8_t g_binary_vol_reduction;
 int g_decode_putp = 0;
 
 /** Song, play mode and output related variables */
-void (*playMode)();
 uint8_t file_data[FILE_SIZE];
 playlist_t output_music[255];
 flash_custom_FAT_t flash_table[255];

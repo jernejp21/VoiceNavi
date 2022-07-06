@@ -27,57 +27,54 @@
 #include "globals.h"
 
 static uint32_t err_cmt_channel = 255;
-static uint8_t isErrorPresent;
+
+static void foreverLoop()
+{
+  playMode = errorResetPlay;
+  while(1)
+  {
+    nop();
+    R_WDT_Restart();
+  }
+}
 
 void ERROR_FileSystem()
 {
-  if(!isErrorPresent)
-  {
-    //500ms period
-    LED_USBOn();
-    LED_AlarmOn();
-    LED_BusyOff();
-    isErrorPresent = 1;
-  }
+  //500ms period
+  LED_USBOn();
+  LED_AlarmOn();
+  LED_BusyOff();
+  foreverLoop();
 }
 
 void ERROR_WAVEFile()
 {
-  if(!isErrorPresent)
-  {
-    //500ms period
-    R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
-    LED_AlarmOff();
-    LED_BusyOff();
-    LED_USBOn();
-    isErrorPresent = 1;
-  }
+  //500ms period
+  R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
+  LED_AlarmOff();
+  LED_BusyOff();
+  LED_USBOn();
+  foreverLoop();
 }
 
 void ERROR_FlashECS()
 {
-  if(!isErrorPresent)
-  {
-    //100ms period
-    R_CMT_CreatePeriodic(10, &led_blink_alarm, &err_cmt_channel);
-    LED_AlarmOff();
-    LED_BusyOff();
-    LED_USBOff();
-    isErrorPresent = 1;
-  }
+  //100ms period
+  R_CMT_CreatePeriodic(10, &led_blink_alarm, &err_cmt_channel);
+  LED_AlarmOff();
+  LED_BusyOff();
+  LED_USBOff();
+  foreverLoop();
 }
 
 void ERROR_FlashEmpty()
 {
-  if(!isErrorPresent)
-  {
-    //500ms period
-    R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
-    LED_AlarmOff();
-    LED_BusyOff();
-    LED_USBOff();
-    isErrorPresent = 1;
-  }
+  //500ms period
+  R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
+  LED_AlarmOff();
+  LED_BusyOff();
+  LED_USBOff();
+  foreverLoop();
 }
 
 void ERROR_ClearErrors()
@@ -89,7 +86,6 @@ void ERROR_ClearErrors()
   LED_AlarmOff();
   LED_BusyOff();
   LED_USBOff();
-  isErrorPresent = 0;
 }
 
 void led_blink_busy()

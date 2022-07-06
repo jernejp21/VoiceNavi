@@ -83,6 +83,7 @@ typedef struct system_status
 
 /** Global functions */
 modeSelect_t PIN_BoardSelection();
+void (*playMode)(uint8_t *i2c_gpio, uint8_t *songArray);
 
 /** Global variables */
 //extern uint16_t ringbuf[RINGBUF_SIZE];

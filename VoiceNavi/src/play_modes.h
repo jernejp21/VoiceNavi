@@ -27,17 +27,18 @@
 #ifndef __PLAY_MODES_H
 #define __PLAY_MODES_H
 
-void emptyPlay(uint8_t*, uint8_t*);
-void normalPlay(uint8_t*, uint8_t*);
-void lastInputInterruptPlay(uint8_t*, uint8_t*);
-void priorityPlay(uint8_t*, uint8_t*);
-void inputPlay(uint8_t*, uint8_t*);
-void binary127ch_negative(uint8_t*, uint8_t*);
-void binary250_positive(uint8_t*, uint8_t*);
-void binary250_negative(uint8_t*, uint8_t*);
-void binary255_positive(uint8_t*, uint8_t*);
-void binary255_negative(uint8_t*, uint8_t*);
-void binary255_5F9IH(uint8_t*, uint8_t*);
+void emptyPlay(uint8_t *i2c_gpio, uint8_t *songArray);
+void errorResetPlay(uint8_t *i2c_gpio, uint8_t *songArray);
+void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray);
+void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray);
+void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray);
+void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray);
+void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray);
+void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray);
+void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray);
+void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray);
+void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray);
+void binary255_5F9IH(uint8_t *i2c_gpio, uint8_t *songArray);
 void IRQ_handler();
 
 #endif //__PLAY_MODES_H
