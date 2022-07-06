@@ -341,6 +341,7 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
     {
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.song_cnt = 0;
+      return;
     }
 
     if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
@@ -393,13 +394,14 @@ void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
   _gpioa ^= 0xFF;  //Convert again, to get positive logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
-  /* This mode has negative logic */
+  /* This mode has positive logic */
   if(g_systemStatus.flag_isIRQ)
   {
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.song_cnt = 0;
+      return;
     }
 
     if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
@@ -496,6 +498,7 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
     {
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.song_cnt = 0;
+      return;
     }
 
     if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
@@ -585,13 +588,14 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
   _gpioa ^= 0xFF;  //Convert again, to get positive logic
   _gpiob ^= 0xFF;  //Convert to positive logic.
 
-  /* This mode has negative logic */
+  /* This mode has positive logic */
   if(g_systemStatus.flag_isIRQ)
   {
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.song_cnt = 0;
+      return;
     }
 
     if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
@@ -645,6 +649,7 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
     {
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.song_cnt = 0;
+      return;
     }
 
     if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
@@ -698,6 +703,7 @@ void binary255_5F9IH(uint8_t *i2c_gpio, uint8_t *songArray)
     {
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.song_cnt = 0;
+      return;
     }
 
     if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
