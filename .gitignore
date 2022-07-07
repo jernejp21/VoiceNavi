@@ -1,5 +1,5 @@
-/Demo/HardwareDebug
-/Demo/trash
 /.metadata
-/Full/HardwareDebug
-/Full/trash
+/VoiceNavi/trash
+/VoiceNavi/HardwareDebug
+!/VoiceNavi/HardwareDebug/VoiceNavi.mot
+!/VoiceNavi/HardwareDebug/VoiceNavi.elf
