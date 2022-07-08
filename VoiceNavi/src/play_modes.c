@@ -112,6 +112,14 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
+
+    if(isDoubleSwitch != 1)
+    {
+      isDoubleSwitch = 1;
+      return;
+    }
+
+    isDoubleSwitch = 0;
     _gpioa = i2c_gpio[0];
     _gpiob = i2c_gpio[1];
 
@@ -165,7 +173,9 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   }
   else
   {
+    LED_USBOff();
     prev_sw = 255;
+    isDoubleSwitch = 0;
   }
 }
 
@@ -180,6 +190,13 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
+    if(isDoubleSwitch != 1)
+    {
+      isDoubleSwitch++;
+      return;
+    }
+
+    isDoubleSwitch = 0;
     _gpioa = i2c_gpio[0];
     _gpiob = i2c_gpio[1];
 
@@ -224,6 +241,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
     }
   }
   gpio_prev = _gpio;
+  isDoubleSwitch = 0;
 }
 
 void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
@@ -236,6 +254,13 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
+    if(isDoubleSwitch != 1)
+    {
+      isDoubleSwitch++;
+      return;
+    }
+
+    isDoubleSwitch = 0;
     _gpioa = i2c_gpio[0];
     _gpiob = i2c_gpio[1];
 
