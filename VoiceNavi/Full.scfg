@@ -2857,7 +2857,7 @@
                 <option enabled="true" id="OffsetAmount" selection="OffsetAmountValue">
                     <item id="OffsetAmountValue" input="0x00000000" vlaue="0"/>
                 </option>
-                <option enabled="true" id="IntTransferEnd" selection="Disable">
+                <option enabled="false" id="IntTransferEnd" selection="Disable">
                     <item id="Enable" input="" vlaue="0"/>
                     <item id="Disable" input="" vlaue="0"/>
                 </option>
@@ -3516,7 +3516,7 @@
                 <option enabled="true" id="DesEndAddress" selection="DesEndAddressValue">
                     <item id="DesEndAddressValue" input="0x00000001" vlaue="0"/>
                 </option>
-                <option enabled="true" id="IntTransferEnd" selection="Disable">
+                <option enabled="false" id="IntTransferEnd" selection="Disable">
                     <item id="Enable" input="" vlaue="0"/>
                     <item id="Disable" input="" vlaue="0"/>
                 </option>

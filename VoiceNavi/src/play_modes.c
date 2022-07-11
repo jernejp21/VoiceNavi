@@ -173,7 +173,6 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   }
   else
   {
-    LED_USBOff();
     prev_sw = 255;
     isDoubleSwitch = 0;
   }

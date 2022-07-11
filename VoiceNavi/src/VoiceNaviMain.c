@@ -248,6 +248,13 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
         songBuffer[g_systemStatus.song_cnt] = 0xFF;
       }
 
+      /* Wait until all data is sent to output (speakers) */
+      uint32_t end_addr = (uint32_t)(ringbuf + g_decode_putp);
+      do
+      {
+        R_WDT_Restart();
+      }while((uint32_t)DMAC1.DMSAR != end_addr);
+
       R_TPU0_Stop();
       R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);  // Reset DMA address
       emptyPlayBuffer();
@@ -605,7 +612,7 @@ void main(void)
           isDataInFlash = getDataFromFlash();
           // Create 500 ms counter for flashing USB LED.
           R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
-          R_CMT_CreatePeriodic(22, &ISR_periodicPolling, &cmt_channel_i2c);  // Start GPIO polling
+          //R_CMT_CreatePeriodic(50, &ISR_periodicPolling, &cmt_channel_i2c);  // Start GPIO polling
         }
         break;
 
