@@ -106,8 +106,10 @@ void normalPlay(uint8_t *i2c_gpio)
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint16_t _gpio;
-  uint8_t _nr_sw_pressed;
+  uint8_t lowestSwitch;
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
+  int isPlayable = 0;
+  int isSongChosen = 0;
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -134,38 +136,41 @@ void normalPlay(uint8_t *i2c_gpio)
     {
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.flag_waitForInterval = 0;
+      prev_sw = 255;
     }
     else if((0 == g_systemStatus.flag_isPlaying) && (0 == g_systemStatus.flag_waitForInterval))
     {
       /* No interrupts. Play only if a song isn't played yet. */
-      /* Get number of pressed switches and pressed positions. */
-      _nr_sw_pressed = switchToPlay(_gpio, _sw_pressed);
+      /* Get pressed positions. */
+      switchToPlay(_gpio, _sw_pressed);
 
-      for(char sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
+      for(int8_t sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
       {
         if(_sw_pressed[sw_pos])
         {
-          /* If only one switch is pressed, play that song */
-          if(_nr_sw_pressed == 1)
+          if(isPlayable == 0)
           {
-            /* Return pressed switch number -1. */
-            FIFO_Put(&sw_pos, 1);
+            lowestSwitch = sw_pos;
+            isPlayable = 1;
+          }
+
+          if(sw_pos > (int8_t)prev_sw)
+          {
             prev_sw = sw_pos;
+            isSongChosen = 1;
             break;
           }
-          else if(_nr_sw_pressed == 2)
-          {
-            /* If current SW position is different from previous,
-             * return pressed switch. This is for alternating play.
-             */
-            if(sw_pos != prev_sw)
-            {
-              FIFO_Put(&sw_pos, 1);
-              prev_sw = sw_pos;
-              break;
-            }
-          }
         }
+      }
+
+      if(isSongChosen)
+      {
+        FIFO_Put(&prev_sw, 1);
+      }
+      else
+      {
+        FIFO_Put(&lowestSwitch, 1);
+        prev_sw = lowestSwitch;
       }
     }
   }
