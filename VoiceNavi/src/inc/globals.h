@@ -48,6 +48,7 @@
 #include "../wav.h"
 #include "../play_modes.h"
 #include "../Errors.h"
+#include "../FIFO.h"
 
 /** Macro definitions */
 #define NAND_VOL_PAGE (2 * NAND_PAGE_SIZE)
@@ -73,7 +74,6 @@ typedef struct system_status
 {
   uint8_t flag_isPlaying;
   uint8_t flag_isIRQ;
-  uint8_t song_cnt;
   uint8_t flag_isSongAvailable;
   uint8_t flag_waitForInterval;
   uint8_t flag_semaphoreLock;
@@ -83,7 +83,7 @@ typedef struct system_status
 
 /** Global functions */
 modeSelect_t PIN_BoardSelection();
-void (*playMode)(uint8_t *i2c_gpio, uint8_t *songArray);
+void (*playMode)(uint8_t *i2c_gpio);
 
 /** Global variables */
 //extern uint16_t ringbuf[RINGBUF_SIZE];

@@ -24,21 +24,57 @@
  * SOFTWARE.
  */
 
-#ifndef __PLAY_MODES_H
-#define __PLAY_MODES_H
+#include "globals.h"
+#include "smc_gen/r_bsp/mcu/all/sbrk.h"
 
-void emptyPlay(uint8_t *i2c_gpio);
-void errorResetPlay(uint8_t *i2c_gpio);
-void normalPlay(uint8_t *i2c_gpio);
-void lastInputInterruptPlay(uint8_t *i2c_gpio);
-void priorityPlay(uint8_t *i2c_gpio);
-void inputPlay(uint8_t *i2c_gpio);
-void binary127ch_negative(uint8_t *i2c_gpio);
-void binary250_positive(uint8_t *i2c_gpio);
-void binary250_negative(uint8_t *i2c_gpio);
-void binary255_positive(uint8_t *i2c_gpio);
-void binary255_negative(uint8_t *i2c_gpio);
-void binary255_5F9IH(uint8_t *i2c_gpio);
-void IRQ_handler();
+uint8_t *FIFO_buffer;
+uint8_t FIFO_head, FIFO_tail, FIFO_size;
+//uint8_t
 
-#endif //__PLAY_MODES_H
+void FIFO_Init(uint8_t size)
+{
+  // Create FIFO 1 element bigger than the size of FIFO queue. Easier to get it going.
+  // malloc not working, so se are using sbrk
+  FIFO_buffer = (uint8_t*)sbrk(size + 1);
+  FIFO_size = size + 1;
+}
+
+void FIFO_Reset(void)
+{
+  FIFO_head = 0;
+  FIFO_tail = 0;
+}
+
+int FIFO_Put(uint8_t *data, uint8_t size)
+{
+  for(int i = 0; i < size; i++)
+  {
+    if(FIFO_head == ((FIFO_tail - 1 + FIFO_size) % FIFO_size))
+    {
+      return FIFO_FULL; /* Queue Full*/
+    }
+
+    FIFO_buffer[FIFO_head] = *(data + i);
+
+    FIFO_head = (FIFO_head + 1) % FIFO_size;
+  }
+
+  return FIFO_OK;  // No errors
+}
+
+int FIFO_Get(uint8_t *data, uint8_t size)
+{
+  for(int i = 0; i < size; i++)
+  {
+    if(FIFO_head == FIFO_tail)
+    {
+      return FIFO_EMPTY; /* Queue Empty - nothing to get*/
+    }
+
+    *(data + i) = FIFO_buffer[FIFO_tail];
+
+    FIFO_tail = (FIFO_tail + 1) % FIFO_size;
+  }
+
+  return FIFO_OK;  // No errors
+}

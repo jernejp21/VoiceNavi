@@ -72,12 +72,12 @@ static uint8_t switchToPlay(uint32_t bitField, uint8_t *sw_array_p)
   return cnt;
 }
 
-void emptyPlay(uint8_t *i2c_gpio, uint8_t *songArray)
+void emptyPlay(uint8_t *i2c_gpio)
 {
 
 }
 
-void errorResetPlay(uint8_t *i2c_gpio, uint8_t *songArray)
+void errorResetPlay(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -101,7 +101,7 @@ void errorResetPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
+void normalPlay(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -149,9 +149,8 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
           if(_nr_sw_pressed == 1)
           {
             /* Return pressed switch number -1. */
-            *songArray = sw_pos;
+            FIFO_Put(&sw_pos, 1);
             prev_sw = sw_pos;
-            g_systemStatus.song_cnt = 1;
             break;
           }
           else if(_nr_sw_pressed == 2)
@@ -161,9 +160,8 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
              */
             if(sw_pos != prev_sw)
             {
-              *songArray = sw_pos;
+              FIFO_Put(&sw_pos, 1);
               prev_sw = sw_pos;
-              g_systemStatus.song_cnt = 1;
               break;
             }
           }
@@ -178,7 +176,7 @@ void normalPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
+void lastInputInterruptPlay(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -230,9 +228,8 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
               irqTriggered = 0;
             }
             g_systemStatus.flag_isPlaying = 0;
-            *songArray = sw_pos;
+            FIFO_Put(&sw_pos, 1);
             prev_sw = sw_pos;
-            g_systemStatus.song_cnt = 1;
             break;
           }
         }
@@ -243,7 +240,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   isDoubleSwitch = 0;
 }
 
-void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
+void priorityPlay(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -291,9 +288,8 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
           if(sw_pos < prev_sw)
           {
             g_systemStatus.flag_isPlaying = 0;
-            *songArray = sw_pos;
+            FIFO_Put(&sw_pos, 1);
             prev_sw = sw_pos;
-            g_systemStatus.song_cnt = 1;
             break;
           }
         }
@@ -302,7 +298,7 @@ void priorityPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
+void inputPlay(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -331,7 +327,6 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
       irqTriggered = 1;
 
       g_systemStatus.flag_isPlaying = 0;
-      *songArray = -1;
 
     }
     else if(_nr_sw_pressed == 1)
@@ -342,9 +337,8 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
         {
           if(_sw_pressed[sw_pos])
           {
-            *songArray = sw_pos;
+            FIFO_Put(&sw_pos, 1);
             prev_sw = sw_pos;
-            g_systemStatus.song_cnt = 1;
             break;
           }
         }
@@ -353,7 +347,6 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
       {
         isDoubleSwitch = 0;
         g_systemStatus.flag_isPlaying = 0;
-        *songArray = -1;
       }
     }
     else
@@ -364,12 +357,11 @@ void inputPlay(uint8_t *i2c_gpio, uint8_t *songArray)
   else
   {
     g_systemStatus.flag_isPlaying = 0;
-    *songArray = -1;
     irqTriggered = 0;
   }
 }
 
-void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
+void binary127ch_negative(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -388,7 +380,6 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.song_cnt = 0;
       return;
     }
 
@@ -404,15 +395,12 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
         case 0x7F:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
-          g_systemStatus.song_cnt = 0;
           break;
 
         default:
-          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
-          {
-            *(songArray + g_systemStatus.song_cnt) = 0x7E - _gpioa;
-            g_systemStatus.song_cnt++;
-          }
+          //Subtract positive logic from 0x7E to get negative logic
+          _gpioa = 0x7E - _gpioa;
+          FIFO_Put(&_gpioa, 1);
           break;
       }
       prev_sw = _gpiob & STB;
@@ -428,7 +416,7 @@ void binary127ch_negative(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
+void binary250_positive(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -448,7 +436,6 @@ void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.song_cnt = 0;
       return;
     }
 
@@ -461,7 +448,6 @@ void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
         case 0xFF:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
-          g_systemStatus.song_cnt = 0;
           break;
 
           //Not in use
@@ -505,11 +491,8 @@ void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
            */
 
         default:
-          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
-          {
-            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
-            g_systemStatus.song_cnt++;
-          }
+          _gpioa = _gpioa - 1;
+          FIFO_Put(&_gpioa, 1);
           break;
       }
       prev_sw = _gpiob & STB;
@@ -525,7 +508,7 @@ void binary250_positive(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
+void binary250_negative(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -545,7 +528,6 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.song_cnt = 0;
       return;
     }
 
@@ -558,7 +540,6 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
         case 0xFF:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
-          g_systemStatus.song_cnt = 0;
           break;
 
           //Not in use
@@ -602,12 +583,9 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
            */
 
         default:
-          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
-          {
-            //Subtract positive logic from 0xFA to get negative logic
-            *(songArray + g_systemStatus.song_cnt) = 0xFA - _gpioa;
-            g_systemStatus.song_cnt++;
-          }
+          //Subtract positive logic from 0xFA to get negative logic
+          _gpioa = 0xFA - _gpioa;
+          FIFO_Put(&_gpioa, 1);
           break;
       }
       prev_sw = _gpiob & STB;
@@ -623,7 +601,7 @@ void binary250_negative(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
+void binary255_positive(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -642,7 +620,6 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.song_cnt = 0;
       return;
     }
 
@@ -653,15 +630,11 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
         case 0x00:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
-          g_systemStatus.song_cnt = 0;
           break;
 
         default:
-          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
-          {
-            *(songArray + g_systemStatus.song_cnt) = _gpioa - 1;
-            g_systemStatus.song_cnt++;
-          }
+          _gpioa = _gpioa - 1;
+          FIFO_Put(&_gpioa, 1);
           break;
       }
       prev_sw = _gpiob & STB;
@@ -677,7 +650,7 @@ void binary255_positive(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
+void binary255_negative(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -696,7 +669,6 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.song_cnt = 0;
       return;
     }
 
@@ -707,15 +679,12 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
         case 0xFF:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
-          g_systemStatus.song_cnt = 0;
           break;
 
         default:
-          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
-          {
-            *(songArray + g_systemStatus.song_cnt) = 0xFE - _gpioa;
-            g_systemStatus.song_cnt++;
-          }
+          //Subtract positive logic from 0xFE to get negative logic
+          _gpioa = 0xFE - _gpioa;
+          FIFO_Put(&_gpioa, 1);
           break;
       }
       prev_sw = _gpiob & STB;
@@ -731,7 +700,7 @@ void binary255_negative(uint8_t *i2c_gpio, uint8_t *songArray)
   }
 }
 
-void binary255_5F9IH(uint8_t *i2c_gpio, uint8_t *songArray)
+void binary255_5F9IH(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
   uint8_t _gpiob;
@@ -750,31 +719,31 @@ void binary255_5F9IH(uint8_t *i2c_gpio, uint8_t *songArray)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.song_cnt = 0;
       return;
     }
 
-    if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
+    if(g_systemStatus.flag_isPlaying == 0)
     {
-      switch(_gpioa)
+      if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
       {
-        //No STOP command
-        case 0xFF:
-          break;
+        switch(_gpioa)
+        {
+          //No STOP command
+          case 0xFF:
+            break;
 
-        default:
-          if(g_systemStatus.song_cnt < MAX_BIN_BUFF_SIZE)
-          {
-            *(songArray + g_systemStatus.song_cnt) = 0xFE - _gpioa;
-            g_systemStatus.song_cnt++;
-          }
-          break;
+          default:
+            //Subtract positive logic from 0xFE to get negative logic
+            _gpioa = 0xFE - _gpioa;
+            FIFO_Put(&_gpioa, 1);
+            break;
+        }
+        prev_sw = _gpiob & STB;
       }
-      prev_sw = _gpiob & STB;
-    }
-    else if(0 == (_gpiob & STB))
-    {
-      prev_sw = 0;
+      else if(0 == (_gpiob & STB))
+      {
+        prev_sw = 0;
+      }
     }
   }
   else

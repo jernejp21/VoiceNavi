@@ -54,9 +54,7 @@ playlist_t output_music[255];
 flash_custom_FAT_t flash_table[255];
 wav_header_t wav_file;
 uint16_t volume[2] __attribute__((aligned(4)));
-uint8_t songBuffer[20];
 uint16_t ringbuf[RINGBUF_SIZE] __attribute__((aligned(8192)));
-int cur_cnt = 0;
 uint8_t mode_select;
 modeSelect_t boardType;
 
@@ -235,7 +233,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
 
         if(!g_systemStatus.flag_isPlaying)
         {
-          cur_cnt = 0;
+          FIFO_Reset();
           R_TPU0_Stop();
           R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);  // Reset DMA address
           emptyPlayBuffer();
@@ -245,7 +243,6 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
           PIN_ShutdownReset();
           return;
         }
-        songBuffer[g_systemStatus.song_cnt] = 0xFF;
       }
 
       /* Wait until all data is sent to output (speakers) */
@@ -253,7 +250,8 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
       do
       {
         R_WDT_Restart();
-      }while((uint32_t)DMAC1.DMSAR != end_addr);
+      }
+      while((uint32_t)DMAC1.DMSAR != end_addr);
 
       R_TPU0_Stop();
       R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);  // Reset DMA address
@@ -449,8 +447,6 @@ static void sys_init()
   R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);
   R_DMAC1_Start();
   emptyPlayBuffer();
-
-  memset(songBuffer, -1, 20);
 }
 
 static uint8_t board_selection()
@@ -523,7 +519,7 @@ void IRQ_handler()
   /* Read gpioa, gpiob from GPIO mux. */
   gpio_rx[0] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
   gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
-  playMode(gpio_rx, songBuffer);
+  playMode(gpio_rx);
 
 }
 
@@ -567,13 +563,7 @@ void ISR_periodicPolling()
 
     g_systemStatus.flag_isIRQ = PIN_GetExtIRQ();
 
-    if((cur_cnt == g_systemStatus.song_cnt) && (0 != g_systemStatus.song_cnt))
-    {
-      cur_cnt = 0;
-      g_systemStatus.song_cnt = 0;
-    }
-
-    playMode(gpio_rx, songBuffer);
+    playMode(gpio_rx);
   }
 
   g_systemStatus.flag_semaphoreLock = 0;
@@ -585,6 +575,7 @@ void main(void)
   usb_status_t event;
   int isDataInFlash;
   nand_flash_status_t flash_status;
+  uint8_t fifo_value;
 
   sys_init();
 
@@ -672,6 +663,7 @@ void main(void)
       {
         playMode = normalPlay;
       }
+      FIFO_Init(1);
       break;
 
     case 1:
@@ -695,12 +687,14 @@ void main(void)
       {
         playMode = lastInputInterruptPlay;
       }
+      FIFO_Init(1);
       break;
 
     case 2:
       if(boardType != WAV_5F9IH)
       {
         playMode = priorityPlay;
+        FIFO_Init(1);
       }
       break;
 
@@ -708,6 +702,7 @@ void main(void)
       if(boardType != WAV_5F9IH)
       {
         playMode = inputPlay;
+        FIFO_Init(1);
       }
       break;
 
@@ -715,6 +710,7 @@ void main(void)
       if(boardType == WAV_5A2)
       {
         playMode = binary127ch_negative;
+        FIFO_Init(20);
       }
       break;
 
@@ -722,6 +718,7 @@ void main(void)
       if(boardType == WAV_5F2)
       {
         playMode = binary127ch_negative;
+        FIFO_Init(20);
       }
       break;
 
@@ -734,6 +731,7 @@ void main(void)
       {
         playMode = binary255_positive;
       }
+      FIFO_Init(20);
       break;
 
     case 7:
@@ -746,6 +744,7 @@ void main(void)
       {
         playMode = binary255_negative;
       }
+      FIFO_Init(20);
       break;
   }
 
@@ -808,24 +807,11 @@ void main(void)
         /* Play song if anything is in queue */
         if(!g_systemStatus.flag_semaphoreLock)
         {
-          while(cur_cnt < g_systemStatus.song_cnt)
+          while(FIFO_Get(&fifo_value, 1) != FIFO_EMPTY)
           {
-            if(0xFF != songBuffer[cur_cnt])
+            if(0xFF != fifo_value)
             {
-              playFromPlaylist(songBuffer[cur_cnt++], 0);
-            }
-            else
-            {
-              cur_cnt = 0;
-              g_systemStatus.song_cnt = 0;
-              break;
-            }
-
-            if((boardType == WAV_5F9IH) && (mode_select == 1))
-            {
-              /* No buffer for binary mode */
-              cur_cnt = 0;
-              g_systemStatus.song_cnt = 0;
+              playFromPlaylist(fifo_value, 0);
             }
 
             /* Wait for interval time */

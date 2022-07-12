@@ -62,6 +62,21 @@
 *                                - BSP_CFG_SCI_UART_TERMINAL_BITRATE
 *                                - BSP_CFG_SCI_UART_TERMINAL_INTERRUPT_PRIORITY
 *         : 26.02.2021 2.05      Added a comment for Azure RTOS to BSP_CFG_RTOS_USED.
+*         : 30.11.2021 3.00      Added the following macro definitions.
+*                                - BSP_CFG_MAIN_CLOCK_OSCILLATE_ENABLE
+*                                - BSP_CFG_SUB_CLOCK_OSCILLATE_ENABLE
+*                                - BSP_CFG_HOCO_OSCILLATE_ENABLE
+*                                - BSP_CFG_LOCO_OSCILLATE_ENABLE
+*                                - BSP_CFG_IWDT_CLOCK_OSCILLATE_ENABLE
+*                                - BSP_CFG_CONFIGURATOR_VERSION
+*                                - BSP_CFG_CPLUSPLUS
+*                                - BSP_CFG_SERIAL_PROGRAMMER_CONECT_ENABLE
+*                                Changed initial value of the following macro definitions.
+*                                - BSP_CFG_MCU_PART_GROUP
+*                                - BSP_CFG_MCU_PART_SERIES
+*         : 11.02.2022 3.01      Changed initial value of the following macro definitions.
+*                                - BSP_CFG_SWINT_UNIT1_ENABLE
+*                                - BSP_CFG_SWINT_UNIT2_ENABLE
 ***********************************************************************************************************************/
 #ifndef R_BSP_CONFIG_REF_HEADER_FILE
 #define R_BSP_CONFIG_REF_HEADER_FILE
@@ -134,16 +149,16 @@ Configuration Options
 #define BSP_CFG_MCU_PART_MEMORY_SIZE    (0x9) /* Generated value. Do not edit this manually */
 
 /* Group name.
-   Character(s) = Value for macro = Description
-   5N/51        = 0x0             = RX65N Group/RX651 Group
+   Character(s) = Description
+   5N/51        = RX65N Group/RX651 Group
 */
-#define BSP_CFG_MCU_PART_GROUP          (0x0) /* Generated value. Do not edit this manually */
+#define BSP_CFG_MCU_PART_GROUP          "RX65N" /* Generated value. Do not edit this manually */
 
 /* Series name.
-   Character(s) = Value for macro = Description
-   56           = 0x0             = RX600 Series
+   Character(s) = Description
+   56           = RX600 Series
 */
-#define BSP_CFG_MCU_PART_SERIES         (0x0) /* Generated value. Do not edit this manually */
+#define BSP_CFG_MCU_PART_SERIES         "RX600" /* Generated value. Do not edit this manually */
 
 /* Memory type.
    Character(s) = Value for macro = Description
@@ -187,13 +202,13 @@ Configuration Options
       settings and choosing the Standard Library section. After that choose 'Contents' in e2 studio.
       This will present a list of modules that can be included. Uncheck the box for stdio.h.
    NOTE: This setting is available only when using CCRX and GNUC. */
-#define BSP_CFG_HEAP_BYTES              (0x400)
+#define BSP_CFG_HEAP_BYTES              (0x200)
 
 /* Initializes C input & output library functions.
    0 = Disable I/O library initialization in resetprg.c. If you are not using stdio then use this value.
    1 = Enable I/O library initialization in resetprg.c. This is default and needed if you are using stdio.
    NOTE: This setting is available only when using CCRX. */
-#define BSP_CFG_IO_LIB_ENABLE           (0)
+#define BSP_CFG_IO_LIB_ENABLE           (1)
 
 /* If desired the user may redirect the stdio charget() and/or charput() functions to their own respective functions
    by enabling below and providing and replacing the my_sw_... function names with the names of their own functions. */
@@ -225,6 +240,42 @@ Configuration Options
 #define BSP_CFG_ID_CODE_LONG_3          (0xFFFFFFFF)
 /* 4th ID Code section, address 0xFE7F5D5C. From MSB to LSB: ID code 16, ID code 15, ID code 14, ID code 13. */
 #define BSP_CFG_ID_CODE_LONG_4          (0xFFFFFFFF)
+
+/* Select whether to enables or disables the connection of serial programmer.
+   0 = Connection of a serial programmer is prohibited after a reset.
+   1 = Connection of a serial programmer is permitted after a reset. (default)
+*/
+#define BSP_CFG_SERIAL_PROGRAMMER_CONECT_ENABLE   (1)
+
+/* Select whether to oscillate the Main Clock Oscillator.
+   0 = Stop Oscillating the Main Clock.
+   1 = Enable oscillating the Main Clock. (default)
+*/
+#define BSP_CFG_MAIN_CLOCK_OSCILLATE_ENABLE    (1) /* Generated value. Do not edit this manually */
+
+/* Select whether to oscillate the Sub Clock Oscillator.
+   0 = Stop Oscillating the Sub Clock. (default)
+   1 = Enable Oscillating the Sub Clock.
+*/
+#define BSP_CFG_SUB_CLOCK_OSCILLATE_ENABLE     (0) /* Generated value. Do not edit this manually */
+
+/* Select whether to oscillate the High Speed On-Chip Oscillator (HOCO).
+   0 = Stop Oscillating the HOCO. (default)
+   1 = Enable Oscillating the HOCO.
+*/
+#define BSP_CFG_HOCO_OSCILLATE_ENABLE          (0) /* Generated value. Do not edit this manually */
+
+/* Select whether to oscillate the Low Speed On-Chip Oscillator (LOCO).
+   0 = Stop Oscillating the LOCO. (default)
+   1 = Enable Oscillating the LOCO.
+*/
+#define BSP_CFG_LOCO_OSCILLATE_ENABLE          (0) /* Generated value. Do not edit this manually */
+
+/* Select whether to oscillate the IWDT-Dedicated On-Chip Oscillator (IWDT).
+   0 = Stop Oscillating the IWDT Clock. (default)
+   1 = Enable Oscillating the IWDT Clock.
+*/
+#define BSP_CFG_IWDT_CLOCK_OSCILLATE_ENABLE    (0) /* Generated value. Do not edit this manually */
 
 /* Clock source select (CKSEL).
    0 = Low Speed On-Chip Oscillator  (LOCO)
@@ -623,6 +674,11 @@ Configuration Options
 */
 #define BSP_CFG_CONFIGURATOR_SELECT                 (1) /* Generated value. Do not edit this manually */
 
+/* Version number of Smart Configurator.
+   This macro definition is updated by Smart Configurator.
+*/
+#define BSP_CFG_CONFIGURATOR_VERSION                (2130) /* Generated value. Do not edit this manually */
+
 /* For some BSP functions, it is necessary to ensure that, while these functions are executing, interrupts from other 
    FIT modules do not occur. By controlling the IPL, these functions disable interrupts that are at or below the 
    specified interrupt priority level.
@@ -676,6 +732,12 @@ Configuration Options
    0(low) - 15(high)
 */
 #define BSP_CFG_SCI_UART_TERMINAL_INTERRUPT_PRIORITY   (15)
+
+/* This macro is used for C++ project and updated by Smart Configurator.
+   0 = This project is a C project.(Not a C++ project).
+   1 = This project is a C++ project.
+*/
+#define BSP_CFG_CPLUSPLUS             (0) /* Generated value. Do not edit this manually */
 
 #endif /* R_BSP_CONFIG_REF_HEADER_FILE */
 

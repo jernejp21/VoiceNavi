@@ -37,6 +37,8 @@
 *         : 08.10.2019 3.10      Changed for added support of Renesas RTOS (RI600V4 or RI600PX).
 *         : 20.11.2020 3.11      Changed vbatt_voltage_stability_wait function.
 *         : 26.02.2021 3.12      Changed BSP_CFG_RTOS_USED for Azure RTOS.
+*         : 18.05.2021 3.13      Changed vbatt_voltage_stability_wait function.
+*         : 30.11.2021 3.14      Changed the compile switch of _CALL_INIT.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -126,7 +128,7 @@ External function Prototypes
 /* Initialize C runtime environment */
 extern void _INITSCT(void);
 
-#if defined(CPPAPP)
+#if BSP_CFG_CPLUSPLUS == 1
 /* Initialize C++ global class object */
 extern void _CALL_INIT(void);
 #endif
@@ -237,7 +239,7 @@ R_BSP_POR_FUNCTION(R_BSP_STARTUP_FUNCTION)
 #endif /* defined(__CCRX__), defined(__GNUC__) */
 
     /* Wait for power voltage stabilization of VBATT function. */
-#if defined(BSP_CFG_VBATT_ENABLE)
+#ifdef BSP_MCU_VBATT_INITIALIZE
     vbatt_voltage_stability_wait();
 #endif
 
@@ -252,7 +254,7 @@ R_BSP_POR_FUNCTION(R_BSP_STARTUP_FUNCTION)
     /* Initialize C runtime environment */
     _INITSCT();
 
-#if defined(CPPAPP)
+#if BSP_CFG_CPLUSPLUS == 1
     /* Initialize C++ global class object */
     _CALL_INIT();
 #endif

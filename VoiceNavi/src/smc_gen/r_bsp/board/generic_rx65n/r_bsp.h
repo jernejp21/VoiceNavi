@@ -41,6 +41,8 @@
 *                                - r_bsp_software_interrupt.h
 *                               Changed include of iodefine.h for CS+ and RX651.
 *                               Changed include of r_bsp_config.h for added support of Renesas RTOS(RI600V4 or RI600PX).
+*         : 23.04.2021 2.02     Added the include of fsp_common_api.h and r_fsp_error.h.
+*         : 30.11.2021 2.03     Modified the include file.
 ***********************************************************************************************************************/
 
 /* Make sure that no other platforms have already been defined. Do not touch this! */
@@ -57,8 +59,8 @@ extern "C" {
 /***********************************************************************************************************************
 INCLUDE APPROPRIATE MCU AND BOARD FILES
 ***********************************************************************************************************************/
-#include    "mcu/all/r_bsp_common.h"
 #include    "r_bsp_config.h"
+#include    "mcu/all/r_bsp_common.h"
 #include    "mcu/all/r_rx_compiler.h"
 
 #include    "r_bsp_interrupt_config.h"
@@ -94,6 +96,9 @@ INCLUDE APPROPRIATE MCU AND BOARD FILES
 #include    "mcu/all/r_bsp_software_interrupt.h"
 #include    "mcu/all/r_rx_intrinsic_functions.h"
 #include    "mcu/all/r_rtos.h"
+
+#include    "mcu/all/fsp_common_api.h"
+#include    "mcu/all/r_fsp_error.h"
 
 #ifdef __cplusplus
 }

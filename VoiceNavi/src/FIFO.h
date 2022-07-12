@@ -24,21 +24,19 @@
  * SOFTWARE.
  */
 
-#ifndef __PLAY_MODES_H
-#define __PLAY_MODES_H
+#ifndef __FIFO_H
+#define __FIFO_H
 
-void emptyPlay(uint8_t *i2c_gpio);
-void errorResetPlay(uint8_t *i2c_gpio);
-void normalPlay(uint8_t *i2c_gpio);
-void lastInputInterruptPlay(uint8_t *i2c_gpio);
-void priorityPlay(uint8_t *i2c_gpio);
-void inputPlay(uint8_t *i2c_gpio);
-void binary127ch_negative(uint8_t *i2c_gpio);
-void binary250_positive(uint8_t *i2c_gpio);
-void binary250_negative(uint8_t *i2c_gpio);
-void binary255_positive(uint8_t *i2c_gpio);
-void binary255_negative(uint8_t *i2c_gpio);
-void binary255_5F9IH(uint8_t *i2c_gpio);
-void IRQ_handler();
+enum fifo
+{
+  FIFO_OK = 0,
+  FIFO_EMPTY = 1,
+  FIFO_FULL = 2,
+};
 
-#endif //__PLAY_MODES_H
+void FIFO_Init(uint8_t size);
+void FIFO_Reset(void);
+int FIFO_Put(uint8_t *data, uint8_t size);
+int FIFO_Get(uint8_t *data, uint8_t size);
+
+#endif //__FIFO_H
