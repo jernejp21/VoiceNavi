@@ -34,25 +34,33 @@
 #define FILE_NAME_LEN 13 //Max length of file name - including ".wav" + 1 (for end of line symbol).
 
 /* Do not change parameters below */
-#define WAV_HEADER_SIZE 44  //WAVE file header size is 44 bytes.
+#define WAV_HEADER_SIZE 100  //WAVE file header size is 44 bytes.
 
 /** WAVE file header structure */
 typedef struct wav_header
 {
-  char riff[4];  //Marks the file as a riff file.
-  uint32_t file_size;  //Size of the overall file 8 bytes, in bytes.
-  char wave[4];  //File Type Header. It always equals "WAVE".
-  char fmt[4];  //Format chunk marker. Includes trailing null
-  uint32_t d_len;  //Length of format data as listed above
+  uint32_t wave_cksize;  //Size of wave chunk - the overall file -8 bytes, in bytes.
+  uint32_t fmt_cksize;  //Size of format chunk. It can be 16, 18 or 40 bytes.
   uint16_t wave_type;  //Type of format (1 is PCM).
   uint16_t channel;  //Number of Channels
   uint32_t sample_rate;  //Number of Samples per second.
-  uint32_t avg_sample_rate;  //(Sample Rate * BitsPerSample * Channels) / 8
-  uint16_t block_align;  //(BitsPerSample * Channels) / 8
   uint16_t bps;  //Bits per sample
-  char data[4];  //"data" chunk header. Marks the beginning of the data section.
-  uint32_t data_size;  //Size of the data section.
+  uint32_t data_cksize;  //Size of the data chunk section.
+  uint32_t data_address;  //Start of data chunk section.
 } wav_header_t;
+
+/** WAV error enum */
+typedef enum wav_err
+{
+  WAV_NO_ERR = 0,
+  WAV_RIFF_ERR = 1,
+  WAV_FILESIZE_ERR = 2,
+  WAV_WAVE_ERR = 3,
+  WAV_FMT_ERR = 4,
+  WAV_DATA_ERR = 5,
+  WAV_DATASIZE_ERR = 6,
+
+} wav_err_t;
 
 /** File name structure */
 typedef struct file_name
@@ -77,7 +85,7 @@ typedef struct playlist
 } playlist_t;
 
 /** Global functions */
-void WAV_Open(wav_header_t*, uint8_t*);
+wav_err_t WAV_Open(wav_header_t*, uint8_t*, uint32_t*);
 void WAV_PlaceSongsToTable(playlist_t*, char*);
 void WAV_PlaceNameToTable(char*, char*);
 

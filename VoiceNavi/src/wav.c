@@ -26,80 +26,120 @@
 
 #include "globals.h"
 
-/* WAV_Open parses header (first 44 bytes of wav file)
- * and inputs infto into wav_header_t struct.
+/* WAV_Open parses wave header and inputs into into wav_header_t struct.
  *
  * Parameters: header - pointer to wav_header_t struct
- *             address - pointer to start address of wav file.
+ *             wav_address - pointer to start address of wav file.
+ *             flash_address - pointer to flash address.
  */
-void WAV_Open(wav_header_t *header, uint8_t *address)
+wav_err_t WAV_Open(wav_header_t *header, uint8_t *wav_address, uint32_t *flash_address)
 {
-  int i;
+  wav_err_t ret_val;
+  uint8_t isFmtAndData = 0;
+  uint32_t cksize;
+  uint32_t address = 0;
+  uint32_t start_ck_address;
 
-  // Marks file as "RIFF" - if not, error
-  for(i = 0; i < 4; i++)
+  uint8_t *temp_array = wav_address;  // size of this array is WAV_HEADER_SIZE
+
+  ret_val = WAV_NO_ERR;
+
+  if(0 != strncmp((const char*)&temp_array[address], "RIFF", 4))
   {
-    header->riff[i] = (char)(*address);
-    address++;
+    return WAV_RIFF_ERR;
+  }
+  address += 4;
+  memcpy((void*)&header->wave_cksize, &temp_array[address], 4);
+  address += 4;
+
+  if(0 != strncmp((const char*)&temp_array[address], "WAVE", 4))
+  {
+    return WAV_WAVE_ERR;
   }
 
-  // File size
-  header->file_size = *((uint32_t*)address) + 8;  //File size in WAV file is actual size -8 bytes.
   address += 4;
-
-  // File type header - must be "WAVE", if not error
-  for(i = 0; i < 4; i++)
+  do
   {
-    header->wave[i] = (char)(*address);
-    address++;
+    if(0 == strncmp((const char*)&temp_array[address], "fmt ", 4))
+    {
+      //if fmt chunk
+
+      /* Read new data from flash so we don't run out of data before parsing chunk.
+       * Substitute WAV_HEADER_SIZE, because we added this in NAND_ReadFromFlash.
+       * Next we add current address + 4 to get to the flash address of chunk size.
+       */
+      *flash_address = (*flash_address - WAV_HEADER_SIZE) + address + 4;
+      NAND_ReadFromFlash(flash_address, WAV_HEADER_SIZE, temp_array);
+      address = 0;
+
+      memcpy((void*)&header->fmt_cksize, &temp_array[address], 4);
+      start_ck_address = address + 4;
+      cksize = header->fmt_cksize;
+      address += 4;
+      memcpy((void*)&header->wave_type, &temp_array[address], 2);
+      address += 2;
+      memcpy((void*)&header->channel, &temp_array[address], 2);
+      address += 2;
+      memcpy((void*)&header->sample_rate, &temp_array[address], 4);
+      address += 4;
+      //Average bytes per second. We don't need this.
+      address += 4;
+      //Byte align. We don't need this.
+      address += 2;
+      memcpy((void*)&header->bps, &temp_array[address], 2);
+      address = start_ck_address + cksize;
+      isFmtAndData++;
+    }
+    else
+    {
+      if(0 == strncmp((const char*)&temp_array[address], "data", 4))
+      {
+        //if data chunk
+
+        /* Read new data from flash so we don't run out of data before parsing chunk.
+         * Substitute WAV_HEADER_SIZE, because we added this in NAND_ReadFromFlash.
+         * Next we add current address + 4 to get to the flash address of chunk size.
+         */
+        *flash_address = (*flash_address - WAV_HEADER_SIZE) + address + 4;
+        NAND_ReadFromFlash(flash_address, WAV_HEADER_SIZE, temp_array);
+        address = 0;
+
+        memcpy((void*)&header->data_cksize, &temp_array[address], 4);
+        start_ck_address = address + 4;
+        header->data_address = *flash_address + start_ck_address - WAV_HEADER_SIZE;
+        cksize = header->data_cksize;
+        address = start_ck_address + cksize;
+        isFmtAndData++;
+      }
+      else
+      {
+        address += 4;
+        memcpy((void*)&cksize, &temp_array[address], 4);
+        address += 4;
+
+        // Check if next chunk is in array. If not, read new data from flash.
+        if((address + cksize) > WAV_HEADER_SIZE)
+        {
+          // Calculate size from top of array to end of current chunk.
+          cksize = address + cksize;
+          address = 0;
+
+          // Substitute WAV_HEADER_SIZE, because we added this in NAND_ReadFromFlash
+          *flash_address = *flash_address + cksize - WAV_HEADER_SIZE;
+          NAND_ReadFromFlash(flash_address, WAV_HEADER_SIZE, temp_array);
+        }
+        else
+        {
+          address += cksize;
+        }
+
+      }
+    }
+
   }
+  while(2 != isFmtAndData);
 
-  // "fmt " Format chunk marker - includes trailing null.
-  for(i = 0; i < 4; i++)
-  {
-    header->fmt[i] = (char)(*address);
-    address++;
-  }
-
-  // Length of format data
-  header->d_len = *((uint32_t*)address);
-  address += 4;
-
-  // Type of format (must be 1 - PCM format)
-  header->wave_type = *((uint16_t*)address);
-  address += 2;
-
-  // Number of channels
-  header->channel = *((uint16_t*)address);
-  address += 2;
-
-  // Sample rate in Hz
-  header->sample_rate = *((uint32_t*)address);
-  address += 4;
-
-  // 	(Sample Rate * BitsPerSample * Channels) / 8
-  header->avg_sample_rate = *((uint32_t*)address);
-  address += 4;
-
-  // (BitsPerSample * Channels) / 8
-  header->block_align = *((uint16_t*)address);
-  address += 2;
-
-  // Bits per sample
-  header->bps = *((uint16_t*)address);
-  address += 2;
-
-  // "data" chunk header. Marks beginning of data section
-  for(i = 0; i < 4; i++)
-  {
-    header->data[i] = (char)(*address);
-    address++;
-  }
-
-  // Size of data section
-  header->data_size = *((uint32_t*)address);
-  address += 4;
-
+  return ret_val;
 }
 
 /* placeNameToTable maps wav file name to corresponding position.

@@ -192,7 +192,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
 
       NAND_ReadFromFlash(&_fileAddress, WAV_HEADER_SIZE, file_data);
 
-      WAV_Open(&wav_file, file_data);
+      WAV_Open(&wav_file, file_data, &_fileAddress);
       if(wav_file.channel != 1)
       {
         // Mono has 1 channel, stereo has 2 channels.
@@ -202,7 +202,8 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
         R_CMT_Stop(cmt_channel_i2c);  // Stop GPIO polling
         return;
       }
-      _dataSize = wav_file.data_size;
+      _dataSize = wav_file.data_cksize;
+      _fileAddress = wav_file.data_address;
 
       g_systemStatus.flag_isPlaying = 1;
       R_TPU0_SetFrequency(wav_file.sample_rate);

@@ -206,9 +206,7 @@ nand_flash_status_t NAND_CopyToFlash()
         return NAND_WRITE_NOK;
       }
       fr = f_read(&file1, &wav_buffer[0], sizeof(wav_buffer), &size);
-      WAV_Open(&wav_file, &wav_buffer[0]);
       flash_table[cnt].address = flash_address;
-      flash_table[cnt].file_size = wav_file.file_size;
       isWpjCorrupted = 0;
 
       do

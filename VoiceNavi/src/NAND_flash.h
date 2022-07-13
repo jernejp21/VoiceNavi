@@ -69,7 +69,6 @@
 typedef struct flash_custom_FAT
 {
   uint32_t address;
-  uint32_t file_size;
 } flash_custom_FAT_t;
 
 typedef enum nand_flash_status
