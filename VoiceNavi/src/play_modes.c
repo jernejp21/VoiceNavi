@@ -106,7 +106,7 @@ void normalPlay(uint8_t *i2c_gpio)
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint16_t _gpio;
-  uint8_t lowestSwitch;
+  uint8_t lowestSwitch = 255;
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
   int isPlayable = 0;
   int isSongChosen = 0;
@@ -385,6 +385,7 @@ void binary127ch_negative(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      FIFO_Reset();
       return;
     }
 
@@ -400,6 +401,7 @@ void binary127ch_negative(uint8_t *i2c_gpio)
         case 0x7F:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
+          FIFO_Reset();
           break;
 
         default:
@@ -441,6 +443,7 @@ void binary250_positive(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      FIFO_Reset();
       return;
     }
 
@@ -453,6 +456,7 @@ void binary250_positive(uint8_t *i2c_gpio)
         case 0xFF:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
+          FIFO_Reset();
           break;
 
           //Not in use
@@ -533,6 +537,7 @@ void binary250_negative(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      FIFO_Reset();
       return;
     }
 
@@ -545,6 +550,7 @@ void binary250_negative(uint8_t *i2c_gpio)
         case 0xFF:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
+          FIFO_Reset();
           break;
 
           //Not in use
@@ -625,6 +631,7 @@ void binary255_positive(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      FIFO_Reset();
       return;
     }
 
@@ -635,6 +642,7 @@ void binary255_positive(uint8_t *i2c_gpio)
         case 0x00:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
+          FIFO_Reset();
           break;
 
         default:
@@ -674,6 +682,7 @@ void binary255_negative(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      FIFO_Reset();
       return;
     }
 
@@ -684,6 +693,7 @@ void binary255_negative(uint8_t *i2c_gpio)
         case 0xFF:
           //STOP
           g_systemStatus.flag_isPlaying = 0;
+          FIFO_Reset();
           break;
 
         default:
@@ -724,6 +734,7 @@ void binary255_5F9IH(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      FIFO_Reset();
       return;
     }
 

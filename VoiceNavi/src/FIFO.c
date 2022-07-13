@@ -37,6 +37,8 @@ void FIFO_Init(uint8_t size)
   // malloc not working, so se are using sbrk
   FIFO_buffer = (uint8_t*)sbrk(size + 1);
   FIFO_size = size + 1;
+  FIFO_head = 0;
+  FIFO_tail = 0;
 }
 
 void FIFO_Reset(void)

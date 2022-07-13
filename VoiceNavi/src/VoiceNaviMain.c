@@ -234,7 +234,6 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
 
         if(!g_systemStatus.flag_isPlaying)
         {
-          FIFO_Reset();
           R_TPU0_Stop();
           R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);  // Reset DMA address
           emptyPlayBuffer();
