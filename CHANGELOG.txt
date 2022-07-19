@@ -1,0 +1,368 @@
+v3.1 / 2022-07-19 15:19:32 +0900:
+- doc: Changelog #60
+  Added txt changelog and script for generating it.
+
+- bug: Binary 7 bit mode #59
+  In binary 7-bit mode, ignore MSB. Look just at 7 LSBs - example 0x95 == 0x15.
+
+
+v3.0 / 2022-07-13 16:31:09 +0900:
+- bug: Issue with binary FIFO queue #57
+  Few bugs were left after changing to FIFO queue.
+
+- enh: Custom fmt chunk #49
+  Improved parsing of WAVE file header. It should only get the information we need, regardless of number of chunks, and ignore other chunks.
+Previously parsing was limited to fixed, 44 byte header. Improved parsing so it checks for the correct chunk and fetches only data that is needed.
+No more fixed "fmt " chunk size.
+
+- bug: Does not play with 3ch simultaneously #55
+  Fixed Normal Play mode. It now supports all switches being pressed simultaneously.
+
+- bug: Issue with binary FIFO queue #57
+  Changed binary play mode to have FIFO queue. Previous specs were to have normal queue while playing.
+
+- bug: Only 460ms of audio data of 500ms is played #56
+  DMA was stopped before all the data could be output. Introduced wait loop to wait for DMA to finish everything.
+Removed forgotten test code (LED_USBOff).
+Disabled I2C polling after data is copied from USB.
+
+- bug: Switch debounce - chattering #54
+  If to consecutive scans (20 ms) show pressed button, we assume that a button is pressed.
+
+- Gitgnore update.
+  
+- enh: Processing when an error occurs #52
+  If any error is detected, MCU goes to infinite while loop. MCU can be reset (software reset) if STOP is pressed.
+
+- bug: Pressing STB while STOP is pressed results in BUSY LED blink #58
+  Inside binary play modes, when checking if stop is pressed, return from function if pressed. Previously it didn't return.
+
+- bug: Audio file size #53
+  NAND flash size was set to 2 Gbit, but actual flash size is 4 Gbit. Changed flash size.
+
+- enh: Enabled DAC amplifier.
+  
+- bug: One count is missing when playing a WAVE file #50
+  When fixing issue #40, round buffer check was shortened by 1 count.
+To fix the current bug, round buffer check was restored and buffer size increased.
+When 8-bit song is played, only half of the buffer is used.
+When 16-bit song is played 1/4 of the buffer is used.
+
+
+v2.0 / 2022-06-13 15:23:00 +0900:
+- changelog: Included FW version in VoiceNaviMain.c
+  
+- bug: Ignore 8-bit data on 7-bit play mode
+  Instead of ignoring just 7th bit, ignore all channels that are bigger than 127 (7-bit).
+
+- bug: Input play mode doesn't cut the song #47
+  Inserted detection if 2 signals are set at the same time. After double input, break the song playing and play the input that is still set.
+
+- bug: Normal play mode channels should not alternate #46
+  Reset previously pressed switch only if input is released. If input is pressed, remember previously pressed switch.
+
+- bug: On interval delay watchdog timer triggers #45
+  Because program was holding in while loop, watchdog timer reset the program. Added WDT reset into holding loop.
+
+- bug:  Weird sound output on channels 9 to 12 #44
+  Bug fixed. uint16_t value was going into uint8_t variable.
+
+- enh: Watchdog implementation #43
+  Implemented WDT. It starts automatically on power on. Period is about 522 ms.
+
+- bug: Interrupt play was stuck in infinite loop.
+  If forcefully stopped (interrupted), DMA buffer address wasn't reset. Added reset address.
+
+- bug:  WPJ file corruption not detected #41
+  Implemented full file corruption detection. If random file has extension wpj, error will be shown.
+
+- bug: Non exclusive errors to exclusive errors
+  Created exclusive errors. If one error happened before other, some weird blinking would occur. This is now fixed. First error has priority, further errors are not displayed.
+
+- bug: Flash management for playlist table.
+  Configured flash management for playlist table. If corrupted blocks are in beginning of flash, those blocks are skipped and data is written to next available block.
+
+- bug: Output sound is cut at the beginning #40
+  8-bit audio was stuck in first loop when filling play buffer. Fixed.
+
+- bug: Output sound is cut at the beginning #40
+  Fixed cut sound at start. Reduced delay from start signal to actual playback.
+
+- bug: Popping sound #39
+  Fixed bug introduced with commit: ac1170cda641362c732f92e4deb73e2e657df66c
+
+- hw: New hardware revision.
+  
+
+
+v1.5 / 2022-04-08 17:40:53 +0900:
+- enh: Change errors table #36
+  Changed LED error states. Updated readme file with new table.
+
+- bug: Skipping bad blocks not working #37
+  Fixed address counting if bad sectors are skipped. Added flash overflow check.
+
+- bug: Negative Busy signal on 5A2 #33
+  Added condition statement to change pin polarity if 5A2 board and positive 8-bit binary mode is selected.
+
+- bug: Binary modes play range #34
+  Extended number of playable channels.
+
+- bug: 5F9 normal play mode not working #35
+  Bug is now fixed, introduced in 45fcea581293f8e339a4f3677873bf2401642c7a.
+
+
+v1.4.2 / 2022-04-01 14:35:43 +0900:
+- bug: Data from USB are copied on startup
+  If empty flash and USB inserted, error showing empty flash would appear before copying data from USB to flash. Fixed bug.
+
+- Binary mode channel select, address, and stop command #32
+  Updated error table
+
+- Binary mode channel select, address, and stop command #32
+  Error if stereo file is being played. Playmode code refactoring.
+
+- Fix #31 - changed binary STOP signal. Added check for mono and stereo sound.
+  
+- Data from USB are copied on startup. No more live copy with DIP switch 7.
+  
+
+
+v1.4.1 / 2022-02-16 14:58:28 +0900:
+- VR3 and VR4 volume controls are only available on 5F9IH board. Fixed wrong board detection.
+  
+
+
+v1.4 / 2022-02-15 15:21:45 +0900:
+- Final code updates before delivery.
+  
+- e2 studio update. Needed to change some source files because of API update.
+  
+- Updated workspace settings.
+  
+- Set I2C speed to 384 kHz (max for CPU).
+  
+- Switched MS1 and MS2 pins.
+  
+
+
+v1.3 / 2022-02-08 10:41:18 +0900:
+- Issue #29 - forgot to rebuild and push the newest binaries.
+  
+- Fix #29 - implemented IRQ instead of polling for 5F9 binary play mode.
+  
+- Updated check list.
+  
+- Revert "Updated checklist. Removed wrong error commit."
+  This reverts commit 81bca6530918ca1b92192c37c72127dd9cf83017.
+
+- Updated checklist. Removed wrong error commit. Don't add new files! Save changes to current file and commit it!
+  
+- Ref #28 add file IHE8001 MODEチェック4機種チェック1115.xlsx　
+  
+
+
+v1.2 / 2021-11-12 11:29:10 +0900:
+- Fix #27 - to enter into debug mode, solder JP1. If left opened, normal operation mode is selected.
+  
+- Merge branch 'main' of https://github.com/AZURTEST-CORP/VoiceNavi
+  
+- Fix #22 - Changed play mode. On channel 0, play mode for 5F9 is last input interrupt play.
+  
+- Updated checklist. Removed wrong error commit.
+  
+- Add files via upload
+  
+- Issue #13 - binary mode stops immediately if 0x00 or 0xFF is received.
+  
+- Issue #13 - reverted positive and negative binary modes.
+  
+- Updated check list.
+  
+- Issue #17 - stop GPIO polling while copying to NAND flash.
+  
+- Issue #20 - 0xFA is 1 in negative binary 250 mode
+  
+- Test commit.
+  
+- Updated check sheet.
+  
+- Updated chapters 8 and 9 in system specs.
+  
+- Updated check list.
+  
+- Shut down sound and turn it on before play.
+  
+- Hardware revision 1.
+  
+
+
+v1.1 / 2021-10-04 14:48:49 +0900:
+- Updated Readme.
+  
+- Added support for 5F9IH. Modified some existing play modes.
+  
+- Updated Readme. Added test files and specification files.
+  
+- Minor bug fixes.
+  
+- Fix #7 - USB LED blinks after copy from USB to flash is done. Added support for VR3 and VR4 volume control.
+  
+
+
+v1.0 / 2021-09-28 16:56:13 +0900:
+- Added support for 5F1 and 5F2 board. Issue #13 - switched positive and negative logic for binary mode.
+  
+- Issue #16 - priority mode has also level play, not only one shot.
+  
+- Code refactoring 4.
+  
+- Code refactoring 3.
+  
+- Code refactoring 2. Fixed deadlock in inputPlay mode.
+  
+- Issue #14 - if undefined song is played, interval timer doesn't start.
+  
+- Issue #16 - priority play interrupts same level of priority of higher.
+  
+- Issue #13 - fixed positive and negative logic for binary modes.
+  
+- Issue #16 - same switch can interrupt same song.
+  
+- Code refactoring 1.
+  
+- Issue #13 - reversed positive and negative binary play mode.
+  
+- Issue #11 - STOP signal stops play also during repeated or combined songs.
+  
+- Issue #14 - during interval wait time, LED and BUSY signals are set.
+  
+- Issue #15 - during interval wain, don't put songs into play queue; fixed.
+  
+- Issue #16 - fixed to one shot input.
+  
+
+
+v0.3 / 2021-09-22 16:06:00 +0900:
+- Forgot to add elf file to commit 4e2261532a9b5b076a7a5450acdf9d47f16603ce
+  
+- Restart from STOP with binary play mode - fix.
+  
+- Fix #8 - moved mode reading to interrupt routine from main. Improved handling for binary play modes.
+  
+- Fix #9 - Inverted read inputs for DIP switch.
+  
+
+
+v0.2 / 2021-09-13 13:15:31 +0900:
+- Enabled USB lED, to see when copying started and ended.
+  
+- Readme edit, commented out LED_USBToggle.
+  
+- Added new specs for 5A2.
+  
+
+
+v0.1 / 2021-09-09 15:01:59 +0900:
+- Added comment.
+  
+- Fixed bug in bit order.
+  
+- Erase flash after checking for FAT and .wpj file.
+  
+- Flash - always wire on new page. Don't write on same page twice.
+  
+- Issue #6 - reverted. Popping sound is HW problem.
+  
+- Issue #4 - volume reduction is saved to NAND flash for binary play mode.
+  
+- Fix #5 - busy signal shows on output. Reduced sampling time for GPIO pins to 20 ms (50 Hz).
+  
+- Added licence and readme.
+  
+- Added licence
+  
+- Issue #4 - implemented saving volume reduction to NAND Flash.
+  
+- Removed Demo project.
+  
+- Moved to VoiceNavi folder.
+  
+- Fix #3 - interval play implementation.
+  
+- NAND flash small changes - should fix incorrect writings to flash.
+  
+- Issue #2 - All binary play modes implementation.
+  
+- Issue #2 - Input play mode implementation.
+  
+- Issue #2 - Priority play mode implementation.
+  
+- Issue #2 - Last input play mode implementation.
+  
+- Issue #2 - Normal play mode; code refactoring.
+  
+- Issue #2 - Normal play mode implementation.
+  
+- Minor bug fixes.
+  
+- Added checklist.
+  
+- Refactoring and visual code editing.
+  
+- Fix #1 - applied DMA for playing sound. Can play 8-bit and 16-bit, only mono sound.
+  
+- Fix #2430 - button debounce fix. Implemented 45 ms sampling.
+  
+- Fix #2432 - real time volume control.
+  
+- Issue #2432 - implemented DMA for reading analog potentiometer value. Writing to digital potentiometer.
+  
+- Issue #2432, #2430 - I2C sending and receiving is now periodical with 22 Hz (45 ms).
+  
+- Issue #2434 - flash write change. Just for demo - development of other modules.
+  
+- Added GPIO init. Added ADC converter. Some changes to flash. Migration to RX651.
+  
+- Added documentation for 5A2 board.
+  
+- Added play modes for 5F1 board - bit mode 128.
+  
+- Added play modes for 5F1 board. Reverted NAND FIFO buffer.
+  
+- GPIO mux over I2C.
+  
+- FIFO buffer for reading from flash.
+  
+- Writing to NAND flash from USB device. Reading data from flash and playing it.
+  
+- NAND Flash reading and writing. Copy from USB.
+  
+- NAND Flash, read, write, erase operations completed.
+  
+- Updated FatFS library to the newest version.
+  
+- Prepared "Demo" for SPI NAND Flash testing.
+  
+- Bug fixes for audio play. Now it plays when switch is pressed.
+  
+- Added audio play to Full project.
+  
+- Added lookup tables to Full project.
+  
+- Changed to GCC compiler, added parsing for .wpj file.
+  
+- Added FatFS to the project.
+  
+- Added full project.
+  
+- WAV parser
+  
+- Reading and writing to flash.
+  
+- Uploaded e2 studio project to repository.
+  
+- Initial commit.
+  
+
+
