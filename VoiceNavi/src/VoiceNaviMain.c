@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2021 Azurtest
+ * Copyright (c) 2022 Azurtest
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
  * SOFTWARE.
  */
 
-/* Firmware version: 2.0 */
+/* Firmware version: 3.1 */
 
 #include "globals.h"
 
