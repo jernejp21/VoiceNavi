@@ -391,11 +391,7 @@ void binary127ch_negative(uint8_t *i2c_gpio)
 
     if((0 != (_gpiob & STB)) && (prev_sw != (_gpiob & STB)))
     {
-      if(_gpioa > 0x7F)
-      {
-        //Ignore if 7th bit is on.
-        return;
-      }
+      _gpioa &= 0x7F;  //Pass through mask in case of 8-bit value (mistake)
       switch(_gpioa)
       {
         case 0x7F:
