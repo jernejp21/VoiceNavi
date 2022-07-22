@@ -85,7 +85,7 @@ typedef struct playlist
 } playlist_t;
 
 /** Global functions */
-wav_err_t WAV_Open(wav_header_t*, uint8_t*, uint32_t*);
+wav_err_t WAV_Open(wav_header_t *header, uint8_t *wav_address, uint32_t *flash_address, uint32_t file_size);
 void WAV_PlaceSongsToTable(playlist_t*, char*);
 void WAV_PlaceNameToTable(char*, char*);
 

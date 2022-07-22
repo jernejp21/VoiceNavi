@@ -77,29 +77,6 @@ void emptyPlay(uint8_t *i2c_gpio)
 
 }
 
-void errorResetPlay(uint8_t *i2c_gpio)
-{
-  uint8_t _gpioa;
-  uint8_t _gpiob;
-
-  _gpioa = i2c_gpio[0];
-  _gpiob = i2c_gpio[1];
-
-  /* Correct switches order according to HW design */
-  _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get positive logic
-  _gpiob ^= 0xFF;  //Convert to positive logic.
-
-  /* This mode has negative logic */
-  if(g_systemStatus.flag_isIRQ)
-  {
-    if(0 != (_gpiob & STOP))
-    {
-      SYSTEM.PRCR.WORD = 0xA502;
-      SYSTEM.SWRR = 0x0000A501;
-    }
-  }
-}
 
 void normalPlay(uint8_t *i2c_gpio)
 {
@@ -137,6 +114,7 @@ void normalPlay(uint8_t *i2c_gpio)
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.flag_waitForInterval = 0;
       prev_sw = 255;
+      ERROR_ClearErrors();
     }
     else if((0 == g_systemStatus.flag_isPlaying) && (0 == g_systemStatus.flag_waitForInterval))
     {
@@ -215,6 +193,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      ERROR_ClearErrors();
     }
     else if(gpio_prev != _gpio)
     {
@@ -278,6 +257,7 @@ void priorityPlay(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      ERROR_ClearErrors();
     }
     else
     {
@@ -332,6 +312,7 @@ void inputPlay(uint8_t *i2c_gpio)
       irqTriggered = 1;
 
       g_systemStatus.flag_isPlaying = 0;
+      ERROR_ClearErrors();
 
     }
     else if(_nr_sw_pressed == 1)
@@ -385,6 +366,7 @@ void binary127ch_negative(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      ERROR_ClearErrors();
       FIFO_Reset();
       return;
     }
@@ -439,6 +421,7 @@ void binary250_positive(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      ERROR_ClearErrors();
       FIFO_Reset();
       return;
     }
@@ -533,6 +516,7 @@ void binary250_negative(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      ERROR_ClearErrors();
       FIFO_Reset();
       return;
     }
@@ -627,6 +611,7 @@ void binary255_positive(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      ERROR_ClearErrors();
       FIFO_Reset();
       return;
     }
@@ -678,6 +663,7 @@ void binary255_negative(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      ERROR_ClearErrors();
       FIFO_Reset();
       return;
     }
@@ -730,6 +716,7 @@ void binary255_5F9IH(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      ERROR_ClearErrors();
       FIFO_Reset();
       return;
     }

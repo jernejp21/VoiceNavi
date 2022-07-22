@@ -27,65 +27,72 @@
 #include "globals.h"
 
 static uint32_t err_cmt_channel = 255;
-
-static void foreverLoop()
-{
-  playMode = errorResetPlay;
-  while(1)
-  {
-    nop();
-    R_WDT_Restart();
-  }
-}
+static uint8_t isErrorPresent;
 
 void ERROR_FileSystem()
 {
-  //500ms period
-  LED_USBOn();
-  LED_AlarmOn();
-  LED_BusyOff();
-  foreverLoop();
+  if(!isErrorPresent)
+  {
+    //500ms period
+    LED_USBOn();
+    LED_AlarmOn();
+    LED_BusyOff();
+    isErrorPresent = 1;
+  }
 }
 
 void ERROR_WAVEFile()
 {
-  //500ms period
-  R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
-  LED_AlarmOff();
-  LED_BusyOff();
-  LED_USBOn();
-  foreverLoop();
+  if(!isErrorPresent)
+  {
+    //500ms period
+    R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
+    LED_AlarmOff();
+    LED_BusyOff();
+    LED_USBOn();
+    isErrorPresent = 1;
+  }
 }
 
 void ERROR_FlashECS()
 {
-  //100ms period
-  R_CMT_CreatePeriodic(10, &led_blink_alarm, &err_cmt_channel);
-  LED_AlarmOff();
-  LED_BusyOff();
-  LED_USBOff();
-  foreverLoop();
+  if(!isErrorPresent)
+  {
+    //100ms period
+    R_CMT_CreatePeriodic(10, &led_blink_alarm, &err_cmt_channel);
+    LED_AlarmOff();
+    LED_BusyOff();
+    LED_USBOff();
+    isErrorPresent = 1;
+  }
 }
 
 void ERROR_FlashEmpty()
 {
-  //500ms period
-  R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
-  LED_AlarmOff();
-  LED_BusyOff();
-  LED_USBOff();
-  foreverLoop();
+  if(!isErrorPresent)
+  {
+    //500ms period
+    R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
+    LED_AlarmOff();
+    LED_BusyOff();
+    LED_USBOff();
+    isErrorPresent = 1;
+  }
 }
 
 void ERROR_ClearErrors()
 {
-  if(err_cmt_channel != 255)
+  if(isErrorPresent)
   {
-    R_CMT_Stop(err_cmt_channel);
+    if(err_cmt_channel != 255)
+    {
+      R_CMT_Stop(err_cmt_channel);
+      err_cmt_channel = 255;
+    }
+    LED_AlarmOff();
+    LED_USBOff();
+    isErrorPresent = 0;
   }
-  LED_AlarmOff();
-  LED_BusyOff();
-  LED_USBOff();
 }
 
 void led_blink_busy()

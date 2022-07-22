@@ -32,17 +32,16 @@
  *             wav_address - pointer to start address of wav file.
  *             flash_address - pointer to flash address.
  */
-wav_err_t WAV_Open(wav_header_t *header, uint8_t *wav_address, uint32_t *flash_address)
+wav_err_t WAV_Open(wav_header_t *header, uint8_t *wav_address, uint32_t *flash_address, uint32_t file_size)
 {
-  wav_err_t ret_val;
   uint8_t isFmtAndData = 0;
   uint32_t cksize;
   uint32_t address = 0;
   uint32_t start_ck_address;
+  uint32_t file_address = 0;
 
   uint8_t *temp_array = wav_address;  // size of this array is WAV_HEADER_SIZE
 
-  ret_val = WAV_NO_ERR;
 
   if(0 != strncmp((const char*)&temp_array[address], "RIFF", 4))
   {
@@ -70,6 +69,7 @@ wav_err_t WAV_Open(wav_header_t *header, uint8_t *wav_address, uint32_t *flash_a
        */
       *flash_address = (*flash_address - WAV_HEADER_SIZE) + address + 4;
       NAND_ReadFromFlash(flash_address, WAV_HEADER_SIZE, temp_array);
+      file_address += address;
       address = 0;
 
       memcpy((void*)&header->fmt_cksize, &temp_array[address], 4);
@@ -102,6 +102,7 @@ wav_err_t WAV_Open(wav_header_t *header, uint8_t *wav_address, uint32_t *flash_a
          */
         *flash_address = (*flash_address - WAV_HEADER_SIZE) + address + 4;
         NAND_ReadFromFlash(flash_address, WAV_HEADER_SIZE, temp_array);
+        file_address += address;
         address = 0;
 
         memcpy((void*)&header->data_cksize, &temp_array[address], 4);
@@ -122,6 +123,7 @@ wav_err_t WAV_Open(wav_header_t *header, uint8_t *wav_address, uint32_t *flash_a
         {
           // Calculate size from top of array to end of current chunk.
           cksize = address + cksize;
+          file_address += address;
           address = 0;
 
           // Substitute WAV_HEADER_SIZE, because we added this in NAND_ReadFromFlash
@@ -137,9 +139,16 @@ wav_err_t WAV_Open(wav_header_t *header, uint8_t *wav_address, uint32_t *flash_a
     }
 
   }
-  while(2 != isFmtAndData);
+  while((2 != isFmtAndData) && (file_address < file_size));
 
-  return ret_val;
+  if(isFmtAndData == 2)
+  {
+    return WAV_NO_ERR;
+  }
+  else
+  {
+    return WAV_FILESIZE_ERR;
+  }
 }
 
 /* placeNameToTable maps wav file name to corresponding position.

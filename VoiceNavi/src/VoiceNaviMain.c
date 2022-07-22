@@ -156,6 +156,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
   uint32_t _fileAddress;
   int _trackNr = 0;
   int _repetitions = 0;
+  wav_err_t wav_err;
 
   if(output_music[playNr].playlist_len)
   {
@@ -189,19 +190,22 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
     {
       _fileToPlay = output_music[playNr].file_nr[_index];
       _fileAddress = flash_table[_fileToPlay].address;
+      _dataSize = flash_table[_fileToPlay].file_size;
 
       NAND_ReadFromFlash(&_fileAddress, WAV_HEADER_SIZE, file_data);
 
-      WAV_Open(&wav_file, file_data, &_fileAddress);
-      if(wav_file.channel != 1)
+      wav_err = WAV_Open(&wav_file, file_data, &_fileAddress, _dataSize);
+
+      if((wav_file.channel != 1) || (wav_err != WAV_NO_ERR))
       {
+        //Bad wave file or,
         // Mono has 1 channel, stereo has 2 channels.
         // Theoretically there can be more than 2 channels, but we only play mono.
         ERROR_WAVEFile();
         LED_BusyOff();
-        R_CMT_Stop(cmt_channel_i2c);  // Stop GPIO polling
         return;
       }
+
       _dataSize = wav_file.data_cksize;
       _fileAddress = wav_file.data_address;
 
@@ -215,6 +219,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
       wav_put(file_data, _sizeToRead);
       _dataSize -= _sizeToRead;
 
+      ERROR_ClearErrors();
       R_TPU0_Start();
       while(_dataSize > 0)
       {
@@ -603,7 +608,6 @@ void main(void)
           isDataInFlash = getDataFromFlash();
           // Create 500 ms counter for flashing USB LED.
           R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
-          //R_CMT_CreatePeriodic(50, &ISR_periodicPolling, &cmt_channel_i2c);  // Start GPIO polling
         }
         break;
 
@@ -631,6 +635,7 @@ void main(void)
   if(!isDataInFlash)
   {
     ERROR_FlashEmpty();
+    R_CMT_Stop(cmt_channel_i2c);  // Stop GPIO polling
   }
 
   /* Determine board type */
