@@ -26,7 +26,7 @@
 
 #include "globals.h"
 
-static uint32_t err_cmt_channel = 255;
+static uint32_t err_cmt_channel = 3;
 static uint8_t isErrorPresent;
 
 void ERROR_FileSystem()
@@ -46,7 +46,7 @@ void ERROR_WAVEFile()
   if(!isErrorPresent)
   {
     //500ms period
-    R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
+    R_CMT_CreatePeriodicAssignChannelPriority(2, &led_blink_alarm, err_cmt_channel, CMT_PRIORITY_14);
     LED_AlarmOff();
     LED_BusyOff();
     LED_USBOn();
@@ -59,7 +59,7 @@ void ERROR_FlashECS()
   if(!isErrorPresent)
   {
     //100ms period
-    R_CMT_CreatePeriodic(10, &led_blink_alarm, &err_cmt_channel);
+    R_CMT_CreatePeriodicAssignChannelPriority(10, &led_blink_alarm, err_cmt_channel, CMT_PRIORITY_14);
     LED_AlarmOff();
     LED_BusyOff();
     LED_USBOff();
@@ -72,7 +72,7 @@ void ERROR_FlashEmpty()
   if(!isErrorPresent)
   {
     //500ms period
-    R_CMT_CreatePeriodic(2, &led_blink_alarm, &err_cmt_channel);
+    R_CMT_CreatePeriodicAssignChannelPriority(2, &led_blink_alarm, err_cmt_channel, CMT_PRIORITY_14);
     LED_AlarmOff();
     LED_BusyOff();
     LED_USBOff();
@@ -84,11 +84,7 @@ void ERROR_ClearErrors()
 {
   if(isErrorPresent)
   {
-    if(err_cmt_channel != 255)
-    {
-      R_CMT_Stop(err_cmt_channel);
-      err_cmt_channel = 255;
-    }
+    R_CMT_Stop(err_cmt_channel);
     LED_AlarmOff();
     LED_USBOff();
     isErrorPresent = 0;
