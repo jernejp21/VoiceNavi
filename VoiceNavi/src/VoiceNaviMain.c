@@ -24,7 +24,7 @@
  * SOFTWARE.
  */
 
-/* Firmware version: 3.1 */
+/* Firmware version: 3.2 */
 
 #include "globals.h"
 

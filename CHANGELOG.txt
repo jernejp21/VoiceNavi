@@ -1,4 +1,20 @@
-v3.1 / 2022-07-19 15:19:32 +0900:
+v3.2 / 2022-07-26 13:03:53 +0900:
+- bug: ERR check #63
+  Improved checking if USB flash drive has correct file system or not. Also, some error messages were wrong.
+
+- bug: Error status not showing on bad wave file #62
+  When creating CMT timer, the same channel was auto chosen for I2C polling and for errors. Errors now have fixed CMT channel - 3.
+
+- Revert "enh: Processing when an error occurs #52"
+  This reverts commit e224e53f1f13ccd0e31e0ad02e26d572b203eecf.
+Resetting error only resets LEDs. It happens after new input signal is detected (any channel or stop signal).
+
+Implemented better wave file error detection. If file is partially corrupted, if by the time we reach end of file we don't get fmt and data chunk info, error flag is set.
+
+
+v3.1 / 2022-07-19 15:31:39 +0900:
+- Licence and version update.
+  
 - doc: Changelog #60
   Added txt changelog and script for generating it.
 
