@@ -133,7 +133,7 @@ nand_flash_status_t NAND_CopyToFlash()
 
   memset(output_music, 0, sizeof(output_music));
 
-  fr = f_mount(&fs, "", 0);
+  fr = f_mount(&fs, "", 1);
   if(FR_OK != fr)
   {
     //Error if FAT is not present on USB.
@@ -142,18 +142,18 @@ nand_flash_status_t NAND_CopyToFlash()
   }
 
   fr = f_findfirst(&dir, &filno, "", "*.wpj");
-  if(FR_OK != fr)
+  if((FR_OK!= fr) && (filno.fname[0] == 0))
   {
     //Error if .wpj file is not present.
-    ERROR_FileSystem();
+    ERROR_WAVEFile();
     return NAND_WRITE_NOK;
   }
 
   fr = f_open(&file, (const TCHAR*)&filno.fname, (FA_OPEN_ALWAYS | FA_READ));
   if(FR_OK != fr)
   {
-    //Error if .wpj file cannot be opened (bad file system or bad file).
-    ERROR_FileSystem();
+    //Error if .wpj file cannot be opened (bad file).
+    ERROR_WAVEFile();
     return NAND_WRITE_NOK;
   }
 

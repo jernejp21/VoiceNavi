@@ -603,12 +603,14 @@ void main(void)
         LED_USBOn();
         NAND_Reset();
         flash_status = NAND_CopyToFlash();
-        if(flash_status == NAND_WRITE_OK)
+        if(flash_status != NAND_WRITE_OK)
         {
-          isDataInFlash = getDataFromFlash();
-          // Create 500 ms counter for flashing USB LED.
-          R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
+          isDataInFlash = 0;
+          goto WHILE1;
         }
+
+        // Create 500 ms counter for flashing USB LED.
+        R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
         break;
 
       case USB_STS_DETACH:
@@ -789,7 +791,7 @@ void main(void)
   }
 
   /* Wait for interrupt from GPIO pins to start playing */
-  while(1)
+WHILE1: while(1)
   {
     R_WDT_Restart();
     /* Go to main part of program, only if data is available in flash. Otherwise loop and check if USB is attached. */
