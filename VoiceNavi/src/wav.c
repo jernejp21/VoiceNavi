@@ -42,7 +42,6 @@ wav_err_t WAV_Open(wav_header_t *header, uint8_t *wav_address, uint32_t *flash_a
 
   uint8_t *temp_array = wav_address;  // size of this array is WAV_HEADER_SIZE
 
-
   if(0 != strncmp((const char*)&temp_array[address], "RIFF", 4))
   {
     return WAV_RIFF_ERR;
@@ -143,6 +142,15 @@ wav_err_t WAV_Open(wav_header_t *header, uint8_t *wav_address, uint32_t *flash_a
 
   if(isFmtAndData == 2)
   {
+    if(header->fmt_cksize == 0)
+    {
+      return WAV_FMT_ERR;
+    }
+    if(header->data_cksize == 0)
+    {
+      return WAV_DATASIZE_ERR;
+    }
+
     return WAV_NO_ERR;
   }
   else

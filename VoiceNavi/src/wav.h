@@ -57,8 +57,7 @@ typedef enum wav_err
   WAV_FILESIZE_ERR = 2,
   WAV_WAVE_ERR = 3,
   WAV_FMT_ERR = 4,
-  WAV_DATA_ERR = 5,
-  WAV_DATASIZE_ERR = 6,
+  WAV_DATASIZE_ERR = 5,
 
 } wav_err_t;
 
