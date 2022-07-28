@@ -1,4 +1,16 @@
-v3.2 / 2022-07-26 13:03:53 +0900:
+v3.3 / 2022-07-28 14:03:27 +0900:
+- log: Version update - v3.3
+
+- enh: better error detecting of faulty wave files.
+  If "fmt " or "data" chunk sizes are zero, throw error.
+
+- enh: Not FAT format error message #69
+  Changed error status to wave file error.
+
+
+v3.2 / 2022-07-26 16:37:32 +0900:
+- log: Version update - v3.2
+  
 - bug: ERR check #63
   Improved checking if USB flash drive has correct file system or not. Also, some error messages were wrong.
 
