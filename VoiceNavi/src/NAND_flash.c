@@ -137,7 +137,7 @@ nand_flash_status_t NAND_CopyToFlash()
   if(FR_OK != fr)
   {
     //Error if FAT is not present on USB.
-    ERROR_FileSystem();
+    ERROR_WAVEFile();
     return NAND_WRITE_NOK;
   }
 

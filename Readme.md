@@ -85,13 +85,13 @@ If error occurs during any time when using VoiceNavi, check error table for deta
     <td>ON</td>
     <td>ON</td>
     <td>File system error</td>
-    <td>USB is formatted in wrong file system. Use FAT file system.<br>Flash overflow.</td>
+    <td>Flash overflow.</td>
   </tr>
   <tr>
     <td>ON</td>
     <td>blinking (500 ms)</td>
     <td>Wave file error</td>
-    <td>WAV file is missing.<br>WPJ file is missing.<br>WAV file is in stereo.</td>
+    <td>WAV file is missing.<br>WPJ file is missing.<br>WAV file is in stereo.<br>USB is formatted in wrong file system. Use FAT file system.</td>
   </tr>
   <tr>
     <td>OFF</td>
