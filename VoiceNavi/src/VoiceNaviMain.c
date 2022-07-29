@@ -212,10 +212,18 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
       g_systemStatus.flag_isPlaying = 1;
       R_TPU0_SetFrequency(wav_file.sample_rate);
 
+      if(_dataSize < sizeof(file_data))
+      {
+        _sizeToRead = _dataSize;
+      }
+      else
+      {
+        _sizeToRead = sizeof(file_data);
+      }
+
       // Fill the buffer before enabling DMA to avoid blank interval.
-      NAND_ReadFromFlash(&_fileAddress, sizeof(file_data), file_data);
+      NAND_ReadFromFlash(&_fileAddress, _sizeToRead, file_data);
       g_decode_putp = 0;
-      _sizeToRead = sizeof(file_data);
       wav_put(file_data, _sizeToRead);
       _dataSize -= _sizeToRead;
 
