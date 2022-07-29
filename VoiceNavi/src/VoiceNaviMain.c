@@ -147,6 +147,30 @@ static void emptyPlayBuffer()
   R_DAC1_Set_ConversionValue(2048);
 }
 
+static void PIN_BusyOn()
+{
+  if((boardType == WAV_5A2) && (mode_select == 7))
+  {
+    PIN_BusySet();
+  }
+  else
+  {
+    PIN_BusyReset();
+  }
+}
+
+static void PIN_BusyOff()
+{
+  if((boardType == WAV_5A2) && (mode_select == 7))
+  {
+    PIN_BusyReset();
+  }
+  else
+  {
+    PIN_BusySet();
+  }
+}
+
 static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
 {
   int _index = 0;
@@ -174,14 +198,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
   }
 
   LED_BusyOn();
-  if((boardType == WAV_5A2) && (mode_select == 7))
-  {
-    PIN_BusySet();
-  }
-  else
-  {
-    PIN_BusyReset();
-  }
+  PIN_BusyOn();
   /* Enable audio amp */
   PIN_ShutdownSet();
   while(output_music[playNr].repeat > _repetitions)
@@ -203,6 +220,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
         // Theoretically there can be more than 2 channels, but we only play mono.
         ERROR_WAVEFile();
         LED_BusyOff();
+        PIN_BusyOff();
         return;
       }
 
@@ -281,14 +299,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
   }
 
   LED_BusyOff();
-  if((boardType == WAV_5A2) && (mode_select == 7))
-  {
-    PIN_BusyReset();
-  }
-  else
-  {
-    PIN_BusySet();
-  }
+  PIN_BusyOff();
   /* Disable audio amp */
   PIN_ShutdownReset();
 }
