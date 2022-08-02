@@ -736,7 +736,7 @@ void main(void)
       if(boardType == WAV_5A2)
       {
         playMode = binary127ch_negative;
-        FIFO_Init(20);
+        FIFO_Init(MAX_BIN_BUFF_SIZE);
       }
       break;
 
@@ -744,7 +744,7 @@ void main(void)
       if(boardType == WAV_5F2)
       {
         playMode = binary127ch_negative;
-        FIFO_Init(20);
+        FIFO_Init(MAX_BIN_BUFF_SIZE);
       }
       break;
 
@@ -757,7 +757,7 @@ void main(void)
       {
         playMode = binary255_positive;
       }
-      FIFO_Init(20);
+      FIFO_Init(MAX_BIN_BUFF_SIZE);
       break;
 
     case 7:
@@ -770,7 +770,7 @@ void main(void)
       {
         playMode = binary255_negative;
       }
-      FIFO_Init(20);
+      FIFO_Init(MAX_BIN_BUFF_SIZE);
       break;
   }
 

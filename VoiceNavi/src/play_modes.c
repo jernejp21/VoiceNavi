@@ -26,9 +26,6 @@
 
 #include "globals.h"
 
-#define MAX_BIN_BUFF_SIZE 20
-#define MAX_NR_OF_SWITCHES 12
-
 #define STOP 0x01
 #define STB 0x02
 

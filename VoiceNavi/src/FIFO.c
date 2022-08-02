@@ -29,7 +29,7 @@
 
 uint8_t *FIFO_buffer;
 uint8_t FIFO_head, FIFO_tail, FIFO_size;
-//uint8_t
+uint8_t fifo_full = 0;
 
 void FIFO_Init(uint8_t size)
 {
@@ -49,8 +49,22 @@ void FIFO_Reset(void)
 
 int FIFO_Put(uint8_t *data, uint8_t size)
 {
+  uint8_t empty_slots;
+
   for(int i = 0; i < size; i++)
   {
+    empty_slots = FIFO_size - 1 - (FIFO_head - FIFO_tail + FIFO_size) % FIFO_size;
+
+    if(empty_slots >= 5)
+    {
+      fifo_full = 0;
+    }
+
+    if(fifo_full)
+    {
+      return FIFO_FULL;
+    }
+
     if(FIFO_head == ((FIFO_tail - 1 + FIFO_size) % FIFO_size))
     {
       return FIFO_FULL; /* Queue Full*/
@@ -59,6 +73,12 @@ int FIFO_Put(uint8_t *data, uint8_t size)
     FIFO_buffer[FIFO_head] = *(data + i);
 
     FIFO_head = (FIFO_head + 1) % FIFO_size;
+
+    empty_slots = FIFO_size - 1 - (FIFO_head - FIFO_tail + FIFO_size) % FIFO_size;
+    if((empty_slots == 0) && (FIFO_size == (MAX_BIN_BUFF_SIZE + 1)))
+    {
+      fifo_full = 1;
+    }
   }
 
   return FIFO_OK;  // No errors

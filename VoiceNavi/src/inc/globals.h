@@ -61,6 +61,9 @@
 #define NAND_CS_HIGH (NAND_CS = 1)
 #define NAND_CS_LOW (NAND_CS = 0)
 
+#define MAX_BIN_BUFF_SIZE 20
+#define MAX_NR_OF_SWITCHES 12
+
 /** Enum definitions */
 typedef enum modeSelect
 {
