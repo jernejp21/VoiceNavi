@@ -74,7 +74,6 @@ void emptyPlay(uint8_t *i2c_gpio)
 
 }
 
-
 void normalPlay(uint8_t *i2c_gpio)
 {
   uint8_t _gpioa;
@@ -110,7 +109,6 @@ void normalPlay(uint8_t *i2c_gpio)
     {
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.flag_waitForInterval = 0;
-      prev_sw = 255;
       ERROR_ClearErrors();
     }
     else if((0 == g_systemStatus.flag_isPlaying) && (0 == g_systemStatus.flag_waitForInterval))
@@ -151,7 +149,6 @@ void normalPlay(uint8_t *i2c_gpio)
   }
   else
   {
-    prev_sw = 255;
     isDoubleSwitch = 0;
   }
 }
