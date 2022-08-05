@@ -29,7 +29,9 @@
 #define STOP 0x01
 #define STB 0x02
 
-static uint16_t gpio_prev;
+static uint16_t gpio_prev = 255;
+static uint16_t gpioa_prev = 255;
+static uint16_t gpiob_prev = 255;
 
 static uint8_t prev_sw = 255;
 static uint8_t irqTriggered;
@@ -87,20 +89,42 @@ void normalPlay(uint8_t *i2c_gpio)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-
-    if(isDoubleSwitch != 1)
-    {
-      isDoubleSwitch = 1;
-      return;
-    }
-
-    isDoubleSwitch = 0;
     _gpioa = i2c_gpio[0];
     _gpiob = i2c_gpio[1];
 
     /* Correct switches order according to HW design */
     _gpioa = bitOrder(_gpioa);
     _gpiob ^= 0xFF;  //Convert to positive logic.
+
+    switch(isDoubleSwitch)
+    {
+      case 0:
+        isDoubleSwitch++;
+        gpioa_prev &= _gpioa;
+        gpiob_prev &= _gpiob;
+        return;
+      case 1:
+        isDoubleSwitch++;
+        return;
+      case 2:
+        gpioa_prev &= _gpioa;
+        gpiob_prev &= _gpiob;
+        isDoubleSwitch = 0;
+        break;
+      default:
+        return;
+    }
+
+    if(!(gpioa_prev || gpiob_prev))
+    {
+      gpioa_prev = 0xFF;
+      gpiob_prev = 0xFF;
+      return;
+    }
+    _gpioa = gpioa_prev;
+    _gpiob = gpiob_prev;
+    gpioa_prev = 0xFF;
+    gpiob_prev = 0xFF;
 
     //Combine gpioa and gpiob. HW dependent.
     _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
@@ -150,6 +174,8 @@ void normalPlay(uint8_t *i2c_gpio)
   else
   {
     isDoubleSwitch = 0;
+    gpioa_prev = 0xFF;
+    gpiob_prev = 0xFF;
   }
 }
 
@@ -164,19 +190,42 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    if(isDoubleSwitch != 1)
-    {
-      isDoubleSwitch++;
-      return;
-    }
-
-    isDoubleSwitch = 0;
     _gpioa = i2c_gpio[0];
     _gpiob = i2c_gpio[1];
 
     /* Correct switches order according to HW design */
     _gpioa = bitOrder(_gpioa);
     _gpiob ^= 0xFF;  //Convert to positive logic.
+
+    switch(isDoubleSwitch)
+    {
+      case 0:
+        isDoubleSwitch++;
+        gpioa_prev &= _gpioa;
+        gpiob_prev &= _gpiob;
+        return;
+      case 1:
+        isDoubleSwitch++;
+        return;
+      case 2:
+        gpioa_prev &= _gpioa;
+        gpiob_prev &= _gpiob;
+        isDoubleSwitch = 0;
+        break;
+      default:
+        return;
+    }
+
+    if(!(gpioa_prev || gpiob_prev))
+    {
+      gpioa_prev = 0xFF;
+      gpiob_prev = 0xFF;
+      return;
+    }
+    _gpioa = gpioa_prev;
+    _gpiob = gpiob_prev;
+    gpioa_prev = 0xFF;
+    gpiob_prev = 0xFF;
 
     //Combine gpioa and gpiob. HW dependent.
     _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
@@ -228,19 +277,42 @@ void priorityPlay(uint8_t *i2c_gpio)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    if(isDoubleSwitch != 1)
-    {
-      isDoubleSwitch++;
-      return;
-    }
-
-    isDoubleSwitch = 0;
     _gpioa = i2c_gpio[0];
     _gpiob = i2c_gpio[1];
 
     /* Correct switches order according to HW design */
     _gpioa = bitOrder(_gpioa);
     _gpiob ^= 0xFF;  //Convert to positive logic.
+
+    switch(isDoubleSwitch)
+    {
+      case 0:
+        isDoubleSwitch++;
+        gpioa_prev &= _gpioa;
+        gpiob_prev &= _gpiob;
+        return;
+      case 1:
+        isDoubleSwitch++;
+        return;
+      case 2:
+        gpioa_prev &= _gpioa;
+        gpiob_prev &= _gpiob;
+        isDoubleSwitch = 0;
+        break;
+      default:
+        return;
+    }
+
+    if(!(gpioa_prev || gpiob_prev))
+    {
+      gpioa_prev = 0xFF;
+      gpiob_prev = 0xFF;
+      return;
+    }
+    _gpioa = gpioa_prev;
+    _gpiob = gpiob_prev;
+    gpioa_prev = 0xFF;
+    gpiob_prev = 0xFF;
 
     //Combine gpioa and gpiob. HW dependent.
     _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
