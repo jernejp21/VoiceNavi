@@ -362,66 +362,116 @@ void inputPlay(uint8_t *i2c_gpio)
   uint8_t _gpioa;
   uint8_t _gpiob;
   uint16_t _gpio;
-  uint8_t _nr_sw_pressed;
+  uint8_t lowestSwitch = 255;
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
+  int isPlayable = 0;
+  int isSongChosen = 0;
 
-  _gpioa = i2c_gpio[0];
-  _gpiob = i2c_gpio[1];
-
-  /* Correct switches order according to HW design */
-  _gpioa = bitOrder(_gpioa);
-  _gpiob ^= 0xFF;  //Convert to positive logic.
-
-  //Combine gpioa and gpiob. HW dependent.
-  _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
-
-  /* Get number of pressed switches and pressed positions. */
-  _nr_sw_pressed = switchToPlay(_gpio, _sw_pressed);
-
-  /* Stop if switch isn't triggered */
+  /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    if((_nr_sw_pressed == 1) && (0 != (_gpiob & STOP)))
-    {
-      irqTriggered = 1;
+    _gpioa = i2c_gpio[0];
+    _gpiob = i2c_gpio[1];
 
+    /* Correct switches order according to HW design */
+    _gpioa = bitOrder(_gpioa);
+    _gpiob ^= 0xFF;  //Convert to positive logic.
+
+    switch(isDoubleSwitch)
+    {
+      case 0:
+        isDoubleSwitch++;
+        gpioa_prev &= _gpioa;
+        gpiob_prev &= _gpiob;
+        return;
+      case 1:
+        isDoubleSwitch++;
+        return;
+      case 2:
+        gpioa_prev &= _gpioa;
+        gpiob_prev &= _gpiob;
+        isDoubleSwitch = 0;
+        break;
+      default:
+        return;
+    }
+
+    if(!(gpioa_prev || gpiob_prev))
+    {
+      gpioa_prev = 0xFF;
+      gpiob_prev = 0xFF;
       g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.flag_waitForInterval = 0;
+      g_systemStatus.flag_isIRQ = 0;
+      return;
+    }
+
+    _gpioa = gpioa_prev;
+    _gpiob = gpiob_prev;
+    gpioa_prev = 0xFF;
+    gpiob_prev = 0xFF;
+
+    //Combine gpioa and gpiob. HW dependent.
+    _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
+
+    if(gpio_prev != _gpio)
+    {
+      g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.flag_waitForInterval = 0;
+      g_systemStatus.flag_isIRQ = 0;
+    }
+    gpio_prev = _gpio;
+
+    if(0 != (_gpiob & STOP))
+    {
+      g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.flag_waitForInterval = 0;
       g_systemStatus.flag_isIRQ = 0;
       ERROR_ClearErrors();
-
     }
-    else if(_nr_sw_pressed == 1)
+    else if(0 == g_systemStatus.flag_isPlaying)
     {
-      if(!irqTriggered && !isDoubleSwitch)
+      /* No interrupts. Play only if a song isn't played yet. */
+      /* Get pressed positions. */
+      switchToPlay(_gpio, _sw_pressed);
+
+      for(int8_t sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
       {
-        for(char sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
+        if(_sw_pressed[sw_pos])
         {
-          if(_sw_pressed[sw_pos])
+          if(isPlayable == 0)
           {
-            FIFO_Put(&sw_pos, 1);
+            lowestSwitch = sw_pos;
+            isPlayable = 1;
+          }
+
+          if(sw_pos > (int8_t)prev_sw)
+          {
             prev_sw = sw_pos;
-            g_systemStatus.flag_isIRQ = 0;
+            isSongChosen = 1;
             break;
           }
         }
       }
-      else
+
+      if(isSongChosen)
       {
-        isDoubleSwitch = 0;
-        g_systemStatus.flag_isPlaying = 0;
+        FIFO_Put(&prev_sw, 1);
         g_systemStatus.flag_isIRQ = 0;
       }
-    }
-    else
-    {
-      isDoubleSwitch = 1;
+      else
+      {
+        FIFO_Put(&lowestSwitch, 1);
+        prev_sw = lowestSwitch;
+        g_systemStatus.flag_isIRQ = 0;
+      }
     }
   }
   else
   {
-    g_systemStatus.flag_isPlaying = 0;
-    g_systemStatus.flag_isIRQ = 0;
-    irqTriggered = 0;
+    isDoubleSwitch = 0;
+    gpioa_prev = 0xFF;
+    gpiob_prev = 0xFF;
   }
 }
 

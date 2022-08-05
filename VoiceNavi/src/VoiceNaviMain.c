@@ -269,7 +269,7 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
           R_DMAC1_SetAddresses((void*)&ringbuf, (void*)&DA.DADR1);  // Reset DMA address
           emptyPlayBuffer();
           LED_BusyOff();
-          PIN_BusySet();
+          PIN_BusyOff();
           /* Disable audio amp */
           PIN_ShutdownReset();
           return;
