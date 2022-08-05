@@ -585,7 +585,10 @@ void ISR_periodicPolling()
     gpio_rx[0] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
     gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
 
-    g_systemStatus.flag_isIRQ = PIN_GetExtIRQ();
+    if(PIN_GetExtIRQ() == 1)
+    {
+      g_systemStatus.flag_isIRQ = 1;
+    }
 
     playMode(gpio_rx);
   }

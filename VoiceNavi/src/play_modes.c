@@ -133,6 +133,7 @@ void normalPlay(uint8_t *i2c_gpio)
     {
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.flag_waitForInterval = 0;
+      g_systemStatus.flag_isIRQ = 0;
       ERROR_ClearErrors();
     }
     else if((0 == g_systemStatus.flag_isPlaying) && (0 == g_systemStatus.flag_waitForInterval))
@@ -163,11 +164,13 @@ void normalPlay(uint8_t *i2c_gpio)
       if(isSongChosen)
       {
         FIFO_Put(&prev_sw, 1);
+        g_systemStatus.flag_isIRQ = 0;
       }
       else
       {
         FIFO_Put(&lowestSwitch, 1);
         prev_sw = lowestSwitch;
+        g_systemStatus.flag_isIRQ = 0;
       }
     }
   }
@@ -220,6 +223,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
     {
       gpioa_prev = 0xFF;
       gpiob_prev = 0xFF;
+      gpio_prev = 0;
       return;
     }
     _gpioa = gpioa_prev;
@@ -237,6 +241,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
     {
       g_systemStatus.flag_isPlaying = 0;
       ERROR_ClearErrors();
+      g_systemStatus.flag_isIRQ = 0;
     }
     else if(gpio_prev != _gpio)
     {
@@ -255,6 +260,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
               irqTriggered = 0;
             }
             g_systemStatus.flag_isPlaying = 0;
+            g_systemStatus.flag_isIRQ = 0;
             FIFO_Put(&sw_pos, 1);
             prev_sw = sw_pos;
             break;
@@ -323,6 +329,7 @@ void priorityPlay(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.flag_isIRQ = 0;
       ERROR_ClearErrors();
     }
     else
@@ -339,6 +346,7 @@ void priorityPlay(uint8_t *i2c_gpio)
           if(sw_pos < prev_sw)
           {
             g_systemStatus.flag_isPlaying = 0;
+            g_systemStatus.flag_isIRQ = 0;
             FIFO_Put(&sw_pos, 1);
             prev_sw = sw_pos;
             break;
@@ -378,6 +386,7 @@ void inputPlay(uint8_t *i2c_gpio)
       irqTriggered = 1;
 
       g_systemStatus.flag_isPlaying = 0;
+      g_systemStatus.flag_isIRQ = 0;
       ERROR_ClearErrors();
 
     }
@@ -391,6 +400,7 @@ void inputPlay(uint8_t *i2c_gpio)
           {
             FIFO_Put(&sw_pos, 1);
             prev_sw = sw_pos;
+            g_systemStatus.flag_isIRQ = 0;
             break;
           }
         }
@@ -399,6 +409,7 @@ void inputPlay(uint8_t *i2c_gpio)
       {
         isDoubleSwitch = 0;
         g_systemStatus.flag_isPlaying = 0;
+        g_systemStatus.flag_isIRQ = 0;
       }
     }
     else
@@ -409,6 +420,7 @@ void inputPlay(uint8_t *i2c_gpio)
   else
   {
     g_systemStatus.flag_isPlaying = 0;
+    g_systemStatus.flag_isIRQ = 0;
     irqTriggered = 0;
   }
 }
