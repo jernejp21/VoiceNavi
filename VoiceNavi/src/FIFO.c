@@ -45,6 +45,7 @@ void FIFO_Reset(void)
 {
   FIFO_head = 0;
   FIFO_tail = 0;
+  fifo_full = 0;
 }
 
 int FIFO_Put(uint8_t *data, uint8_t size)
