@@ -221,6 +221,8 @@ static void playFromPlaylist(uint8_t playNr, uint8_t isInfineteLoop)
         ERROR_WAVEFile();
         LED_BusyOff();
         PIN_BusyOff();
+        /* Disable audio amp */
+        PIN_ShutdownReset();
         return;
       }
 
