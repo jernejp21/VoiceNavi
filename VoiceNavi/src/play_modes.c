@@ -35,7 +35,8 @@ static uint16_t gpiob_prev = 255;
 
 static uint8_t prev_sw = 255;
 static uint8_t irqTriggered;
-static uint8_t isDoubleSwitch;
+static uint8_t trippleScan;
+static uint8_t isPrevStop;
 
 static uint8_t bitOrder(uint8_t order)
 {
@@ -85,6 +86,7 @@ void normalPlay(uint8_t *i2c_gpio)
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
   int isPlayable = 0;
   int isSongChosen = 0;
+  //LED_USBToggle();
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -96,20 +98,20 @@ void normalPlay(uint8_t *i2c_gpio)
     _gpioa = bitOrder(_gpioa);
     _gpiob ^= 0xFF;  //Convert to positive logic.
 
-    switch(isDoubleSwitch)
+    switch(trippleScan)
     {
       case 0:
-        isDoubleSwitch++;
+        trippleScan++;
         gpioa_prev &= _gpioa;
         gpiob_prev &= _gpiob;
         return;
       case 1:
-        isDoubleSwitch++;
+        trippleScan++;
         return;
       case 2:
         gpioa_prev &= _gpioa;
         gpiob_prev &= _gpiob;
-        isDoubleSwitch = 0;
+        trippleScan = 0;
         break;
       default:
         return;
@@ -119,6 +121,7 @@ void normalPlay(uint8_t *i2c_gpio)
     {
       gpioa_prev = 0xFF;
       gpiob_prev = 0xFF;
+      g_systemStatus.flag_isIRQ = 0;
       return;
     }
     _gpioa = gpioa_prev;
@@ -134,6 +137,11 @@ void normalPlay(uint8_t *i2c_gpio)
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.flag_waitForInterval = 0;
       g_systemStatus.flag_isIRQ = 0;
+      if(isPrevStop == 0)
+      {
+        prev_sw--;
+      }
+      isPrevStop = 1;
       ERROR_ClearErrors();
     }
     else if((0 == g_systemStatus.flag_isPlaying) && (0 == g_systemStatus.flag_waitForInterval))
@@ -141,6 +149,7 @@ void normalPlay(uint8_t *i2c_gpio)
       /* No interrupts. Play only if a song isn't played yet. */
       /* Get pressed positions. */
       switchToPlay(_gpio, _sw_pressed);
+      isPrevStop = 0;
 
       for(int8_t sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
       {
@@ -176,7 +185,7 @@ void normalPlay(uint8_t *i2c_gpio)
   }
   else
   {
-    isDoubleSwitch = 0;
+    trippleScan = 0;
     gpioa_prev = 0xFF;
     gpiob_prev = 0xFF;
   }
@@ -200,20 +209,20 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
     _gpioa = bitOrder(_gpioa);
     _gpiob ^= 0xFF;  //Convert to positive logic.
 
-    switch(isDoubleSwitch)
+    switch(trippleScan)
     {
       case 0:
-        isDoubleSwitch++;
+        trippleScan++;
         gpioa_prev &= _gpioa;
         gpiob_prev &= _gpiob;
         return;
       case 1:
-        isDoubleSwitch++;
+        trippleScan++;
         return;
       case 2:
         gpioa_prev &= _gpioa;
         gpiob_prev &= _gpiob;
-        isDoubleSwitch = 0;
+        trippleScan = 0;
         break;
       default:
         return;
@@ -270,7 +279,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
     }
   }
   gpio_prev = _gpio;
-  isDoubleSwitch = 0;
+  trippleScan = 0;
 }
 
 void priorityPlay(uint8_t *i2c_gpio)
@@ -290,20 +299,20 @@ void priorityPlay(uint8_t *i2c_gpio)
     _gpioa = bitOrder(_gpioa);
     _gpiob ^= 0xFF;  //Convert to positive logic.
 
-    switch(isDoubleSwitch)
+    switch(trippleScan)
     {
       case 0:
-        isDoubleSwitch++;
+        trippleScan++;
         gpioa_prev &= _gpioa;
         gpiob_prev &= _gpiob;
         return;
       case 1:
-        isDoubleSwitch++;
+        trippleScan++;
         return;
       case 2:
         gpioa_prev &= _gpioa;
         gpiob_prev &= _gpiob;
-        isDoubleSwitch = 0;
+        trippleScan = 0;
         break;
       default:
         return;
@@ -377,20 +386,20 @@ void inputPlay(uint8_t *i2c_gpio)
     _gpioa = bitOrder(_gpioa);
     _gpiob ^= 0xFF;  //Convert to positive logic.
 
-    switch(isDoubleSwitch)
+    switch(trippleScan)
     {
       case 0:
-        isDoubleSwitch++;
+        trippleScan++;
         gpioa_prev &= _gpioa;
         gpiob_prev &= _gpiob;
         return;
       case 1:
-        isDoubleSwitch++;
+        trippleScan++;
         return;
       case 2:
         gpioa_prev &= _gpioa;
         gpiob_prev &= _gpiob;
-        isDoubleSwitch = 0;
+        trippleScan = 0;
         break;
       default:
         return;
@@ -469,7 +478,7 @@ void inputPlay(uint8_t *i2c_gpio)
   }
   else
   {
-    isDoubleSwitch = 0;
+    trippleScan = 0;
     gpioa_prev = 0xFF;
     gpiob_prev = 0xFF;
   }
