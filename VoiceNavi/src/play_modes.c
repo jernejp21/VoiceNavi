@@ -34,7 +34,7 @@ static uint16_t gpioa_prev = 255;
 static uint16_t gpiob_prev = 255;
 
 static uint8_t prev_sw = 255;
-static uint8_t irqTriggered;
+static uint8_t prev_nr_sw_pressed;
 static uint8_t trippleScan;
 static uint8_t isPrevStop;
 
@@ -198,6 +198,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
   uint16_t _gpio;
   uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
+  static uint8_t already_pressed_mask = 0xFF;
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -233,6 +234,9 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
       gpioa_prev = 0xFF;
       gpiob_prev = 0xFF;
       gpio_prev = 0;
+      prev_nr_sw_pressed = 0;
+      prev_sw = 255;
+      already_pressed_mask = 255;
       return;
     }
     _gpioa = gpioa_prev;
@@ -254,32 +258,35 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
     }
     else if(gpio_prev != _gpio)
     {
-      if((1 == _nr_sw_pressed) || ((2 == _nr_sw_pressed) && (0 == irqTriggered)))
+      if(_nr_sw_pressed > prev_nr_sw_pressed)
       {
+        _gpio &= already_pressed_mask;
+        switchToPlay(_gpio, _sw_pressed);
         for(char sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
         {
           if(_sw_pressed[sw_pos])
           {
-            if(prev_sw != sw_pos)
+            if(already_pressed_mask & (1 << sw_pos))
             {
-              irqTriggered = 1;
+              g_systemStatus.flag_isPlaying = 0;
+              g_systemStatus.flag_isIRQ = 0;
+              FIFO_Put(&sw_pos, 1);
+              prev_sw = sw_pos;
+              already_pressed_mask &= ~(1 << sw_pos);
+              break;
             }
-            else
-            {
-              irqTriggered = 0;
-            }
-            g_systemStatus.flag_isPlaying = 0;
-            g_systemStatus.flag_isIRQ = 0;
-            FIFO_Put(&sw_pos, 1);
-            prev_sw = sw_pos;
-            break;
           }
         }
+      }
+      else
+      {
+        already_pressed_mask = ~_gpio;
       }
     }
   }
   gpio_prev = _gpio;
   trippleScan = 0;
+  prev_nr_sw_pressed = _nr_sw_pressed;
 }
 
 void priorityPlay(uint8_t *i2c_gpio)
