@@ -1,4 +1,41 @@
-v3.3 / 2022-07-28 14:03:27 +0900:
+v3.4 / 2022-08-17 15:30:49 +0900:
+- log: Version update - v3.4
+
+- bug: last input interrupt play multi input fix
+  Multi input wasn't working. Only 1 or 2 switches were working. Now, you can press all the switches and only the last pressed channel will play.
+
+- bug: Normal play mode - scanning next switch #75
+  During level play, if switch(es) are pressed, and STOP in introduced, start playing last played channel after stop is released.
+
+- bug: FIFO queue 5 slots #74
+  FIFO queue status did not reset if STOP signal was pressed. Fixed.
+
+- bug: Stereo file error - busy signal stays on #73
+  PIN_ShutdownReset() wasn't called if stereo or wave file error occurred. Fixed.
+
+- bug: Input play not working as expected #77
+  Play mode adjusted according to specifications. Also found a bug when song play is interrupted - busy signal didn't go to off state.
+
+- bug: Debounce on individual channel #76
+  Always check switch status 3 times, when first input signal comes.
+
+- bug: Debounce on individual channel #76
+  Any switch must be pressed for 3 consecutive scans. If on first and last scan a the same switch is pressed, we assume that pulse is long enough (50 ms or more) and go into play mode.
+
+- bug: Normal play mode - scanning next switch #75
+  Example: if CH1 was played and stopped, next time SW1 and SW2 are pressed simultaneously, CH2 should start playing. Before the fix, CH1 started playing.
+
+- bug: FIFO queue 5 slots #74
+  When FIFO is full, it has to wait 5 slots until we can put data in again.
+
+- bug: Stereo file error - busy signal stays on #73
+  Only LED turned off when stereo file error was called. Forgot to also turn off busy pin. Fixed.
+
+- bug: Short files - busy signal always on #71
+  If file size is shorter than buffer size, read only file size.
+
+
+v3.3 / 2022-07-28 15:16:06 +0900:
 - log: Version update - v3.3
 
 - enh: better error detecting of faulty wave files.
