@@ -75,7 +75,7 @@ void R_IRQs_Create(void)
     IR(ICU,IRQ13) = 0U;
 
     /* Set IRQ13 priority level */
-    IPR(ICU,IRQ13) = _04_ICU_PRIORITY_LEVEL4;
+    IPR(ICU,IRQ13) = _0E_ICU_PRIORITY_LEVEL14;
 
     R_IRQs_Create_UserInit();
 }

@@ -62,7 +62,7 @@ void R_TPU0_Create(void)
 
     /* Set TGI0A interrupt priority level */
     ICU.SLIBXR130.BYTE = 0x0FU;
-    IPR(PERIB, INTB130) = _0F_TPU_PRIORITY_LEVEL15;
+    IPR(PERIB, INTB130) = _0D_TPU_PRIORITY_LEVEL13;
 
     /* TPU channel 0 is used as normal mode */
     TPUA.TSYR.BIT.SYNC0 = 0U;

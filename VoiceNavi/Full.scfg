@@ -307,7 +307,7 @@
         <Item currentVect="74" id="ICU_IRQ10" priority="15" usedState="Not Use"/>
         <Item currentVect="75" id="ICU_IRQ11" priority="15" usedState="Not Use"/>
         <Item currentVect="76" id="ICU_IRQ12" priority="15" usedState="Not Use"/>
-        <Item currentVect="77" id="ICU_IRQ13" priority="4" usedState="Used"/>
+        <Item currentVect="77" id="ICU_IRQ13" priority="14" usedState="Used"/>
         <Item currentVect="78" id="ICU_IRQ14" priority="15" usedState="Not Use"/>
         <Item currentVect="79" id="ICU_IRQ15" priority="15" usedState="Not Use"/>
         <Item currentVect="80" id="SCI3_RXI3" priority="15" usedState="Not Use"/>
@@ -356,7 +356,7 @@
         <Item currentVect="127" id="EXDMAC_EXDMAC1I" priority="15" usedState="Not Use"/>
         <Item currentVect="128" defaultVect="128" id="CMT2_CMI2" priority="15" usedState="Not Use"/>
         <Item currentVect="129" defaultVect="129" id="CMT3_CMI3" priority="15" usedState="Not Use"/>
-        <Item currentVect="130" defaultVect="130" id="TPU0_TGI0A" priority="15" usedState="Used"/>
+        <Item currentVect="130" defaultVect="130" id="TPU0_TGI0A" priority="13" usedState="Used"/>
         <Item currentVect="131" defaultVect="131" id="TPU0_TGI0B" priority="15" usedState="Not Use"/>
         <Item currentVect="132" defaultVect="132" id="TPU0_TGI0C" priority="15" usedState="Not Use"/>
         <Item currentVect="133" defaultVect="133" id="TPU0_TGI0D" priority="15" usedState="Not Use"/>
@@ -2805,7 +2805,7 @@
                 <option enabled="true" id="OffsetAmount" selection="OffsetAmountValue">
                     <item id="OffsetAmountValue" input="0x00000000" vlaue="0"/>
                 </option>
-                <option enabled="true" id="IntTransferEnd" selection="Disable">
+                <option enabled="false" id="IntTransferEnd" selection="Disable">
                     <item id="Enable" input="" vlaue="0"/>
                     <item id="Disable" input="" vlaue="0"/>
                 </option>
@@ -3678,7 +3678,7 @@
                     <item id="Enable" input="" vlaue="0"/>
                     <item id="Disable" input="" vlaue="0"/>
                 </option>
-                <option enabled="true" id="PrioA" selection="Level15">
+                <option enabled="true" id="PrioA" selection="Level13">
                     <item id="Level0" input="" vlaue="0"/>
                     <item id="Level1" input="" vlaue="0"/>
                     <item id="Level2" input="" vlaue="0"/>
@@ -4311,7 +4311,7 @@
                         <item id="Div32" input="" vlaue="0"/>
                         <item id="Div64" input="" vlaue="0"/>
                     </option>
-                    <option enabled="false" id="IrqPriority" selection="Level4">
+                    <option enabled="false" id="IrqPriority" selection="Level14">
                         <item id="Level0" input="" vlaue="0"/>
                         <item id="Level1" input="" vlaue="0"/>
                         <item id="Level2" input="" vlaue="0"/>

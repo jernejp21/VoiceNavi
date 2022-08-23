@@ -237,6 +237,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
       prev_nr_sw_pressed = 0;
       prev_sw = 255;
       already_pressed_mask = 255;
+      g_systemStatus.flag_isIRQ = 0;
       return;
     }
     _gpioa = gpioa_prev;
@@ -284,8 +285,14 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
       }
     }
   }
+  else
+  {
+    gpioa_prev = 0xFF;
+    gpiob_prev = 0xFF;
+    trippleScan = 0;
+    already_pressed_mask = 0xFF;
+  }
   gpio_prev = _gpio;
-  trippleScan = 0;
   prev_nr_sw_pressed = _nr_sw_pressed;
 }
 
@@ -329,6 +336,7 @@ void priorityPlay(uint8_t *i2c_gpio)
     {
       gpioa_prev = 0xFF;
       gpiob_prev = 0xFF;
+      g_systemStatus.flag_isIRQ = 0;
       return;
     }
     _gpioa = gpioa_prev;
@@ -417,7 +425,6 @@ void inputPlay(uint8_t *i2c_gpio)
       gpioa_prev = 0xFF;
       gpiob_prev = 0xFF;
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.flag_waitForInterval = 0;
       g_systemStatus.flag_isIRQ = 0;
       return;
     }
@@ -433,7 +440,6 @@ void inputPlay(uint8_t *i2c_gpio)
     if(gpio_prev != _gpio)
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.flag_waitForInterval = 0;
       g_systemStatus.flag_isIRQ = 0;
     }
     gpio_prev = _gpio;
@@ -441,7 +447,6 @@ void inputPlay(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.flag_waitForInterval = 0;
       g_systemStatus.flag_isIRQ = 0;
       ERROR_ClearErrors();
     }

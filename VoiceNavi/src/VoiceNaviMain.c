@@ -609,7 +609,7 @@ void main(void)
   sys_init();
 
   /* Periodic timer for GPIO polling, period is  20 ms. */
-  R_CMT_CreatePeriodic(60, &ISR_periodicPolling, &cmt_channel_i2c);
+  R_CMT_CreatePeriodic(65, &ISR_periodicPolling, &cmt_channel_i2c);
 
   /* Check if USB is inserted */
   // Create 100 ms counter for polling to check if USB is connected.
