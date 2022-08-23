@@ -30,12 +30,11 @@
 #define STB 0x02
 
 static uint16_t gpio_prev = 255;
-static uint16_t gpioa_prev = 255;
-static uint16_t gpiob_prev = 255;
+static uint16_t gpioa_prev;
+static uint16_t gpiob_prev;
 
 static uint8_t prev_sw = 255;
 static uint8_t prev_nr_sw_pressed;
-static uint8_t trippleScan;
 static uint8_t isPrevStop;
 
 static uint8_t bitOrder(uint8_t order)
@@ -86,7 +85,7 @@ void normalPlay(uint8_t *i2c_gpio)
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
   int isPlayable = 0;
   int isSongChosen = 0;
-  //LED_USBToggle();
+  uint8_t _nr_sw_pressed;
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -95,39 +94,13 @@ void normalPlay(uint8_t *i2c_gpio)
     _gpiob = i2c_gpio[1];
 
     /* Correct switches order according to HW design */
-    _gpioa = bitOrder(_gpioa);
-    _gpiob ^= 0xFF;  //Convert to positive logic.
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
 
-    switch(trippleScan)
-    {
-      case 0:
-        trippleScan++;
-        gpioa_prev &= _gpioa;
-        gpiob_prev &= _gpiob;
-        return;
-      case 1:
-        trippleScan++;
-        return;
-      case 2:
-        gpioa_prev &= _gpioa;
-        gpiob_prev &= _gpiob;
-        trippleScan = 0;
-        break;
-      default:
-        return;
-    }
-
-    if(!(gpioa_prev || gpiob_prev))
-    {
-      gpioa_prev = 0xFF;
-      gpiob_prev = 0xFF;
-      g_systemStatus.flag_isIRQ = 0;
-      return;
-    }
-    _gpioa = gpioa_prev;
-    _gpiob = gpiob_prev;
-    gpioa_prev = 0xFF;
-    gpiob_prev = 0xFF;
+    _gpioa = gpioa_prev & i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
+    gpiob_prev = i2c_gpio[1];
 
     //Combine gpioa and gpiob. HW dependent.
     _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
@@ -136,7 +109,6 @@ void normalPlay(uint8_t *i2c_gpio)
     {
       g_systemStatus.flag_isPlaying = 0;
       g_systemStatus.flag_waitForInterval = 0;
-      g_systemStatus.flag_isIRQ = 0;
       if(isPrevStop == 0)
       {
         prev_sw--;
@@ -148,7 +120,7 @@ void normalPlay(uint8_t *i2c_gpio)
     {
       /* No interrupts. Play only if a song isn't played yet. */
       /* Get pressed positions. */
-      switchToPlay(_gpio, _sw_pressed);
+      _nr_sw_pressed = switchToPlay(_gpio, _sw_pressed);
       isPrevStop = 0;
 
       for(int8_t sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
@@ -173,21 +145,18 @@ void normalPlay(uint8_t *i2c_gpio)
       if(isSongChosen)
       {
         FIFO_Put(&prev_sw, 1);
-        g_systemStatus.flag_isIRQ = 0;
       }
-      else
+      else if(_nr_sw_pressed != 0)
       {
         FIFO_Put(&lowestSwitch, 1);
         prev_sw = lowestSwitch;
-        g_systemStatus.flag_isIRQ = 0;
       }
     }
   }
   else
   {
-    trippleScan = 0;
-    gpioa_prev = 0xFF;
-    gpiob_prev = 0xFF;
+    gpioa_prev = 0;
+    gpiob_prev = 0;
   }
 }
 
@@ -207,43 +176,13 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
     _gpiob = i2c_gpio[1];
 
     /* Correct switches order according to HW design */
-    _gpioa = bitOrder(_gpioa);
-    _gpiob ^= 0xFF;  //Convert to positive logic.
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
 
-    switch(trippleScan)
-    {
-      case 0:
-        trippleScan++;
-        gpioa_prev &= _gpioa;
-        gpiob_prev &= _gpiob;
-        return;
-      case 1:
-        trippleScan++;
-        return;
-      case 2:
-        gpioa_prev &= _gpioa;
-        gpiob_prev &= _gpiob;
-        trippleScan = 0;
-        break;
-      default:
-        return;
-    }
-
-    if(!(gpioa_prev || gpiob_prev))
-    {
-      gpioa_prev = 0xFF;
-      gpiob_prev = 0xFF;
-      gpio_prev = 0;
-      prev_nr_sw_pressed = 0;
-      prev_sw = 255;
-      already_pressed_mask = 255;
-      g_systemStatus.flag_isIRQ = 0;
-      return;
-    }
-    _gpioa = gpioa_prev;
-    _gpiob = gpiob_prev;
-    gpioa_prev = 0xFF;
-    gpiob_prev = 0xFF;
+    _gpioa = gpioa_prev & i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
+    gpiob_prev = i2c_gpio[1];
 
     //Combine gpioa and gpiob. HW dependent.
     _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
@@ -255,7 +194,6 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
     {
       g_systemStatus.flag_isPlaying = 0;
       ERROR_ClearErrors();
-      g_systemStatus.flag_isIRQ = 0;
     }
     else if(gpio_prev != _gpio)
     {
@@ -270,7 +208,6 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
             if(already_pressed_mask & (1 << sw_pos))
             {
               g_systemStatus.flag_isPlaying = 0;
-              g_systemStatus.flag_isIRQ = 0;
               FIFO_Put(&sw_pos, 1);
               prev_sw = sw_pos;
               already_pressed_mask &= ~(1 << sw_pos);
@@ -287,9 +224,8 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
   }
   else
   {
-    gpioa_prev = 0xFF;
-    gpiob_prev = 0xFF;
-    trippleScan = 0;
+    gpioa_prev = 0;
+    gpiob_prev = 0;
     already_pressed_mask = 0xFF;
   }
   gpio_prev = _gpio;
@@ -310,39 +246,13 @@ void priorityPlay(uint8_t *i2c_gpio)
     _gpiob = i2c_gpio[1];
 
     /* Correct switches order according to HW design */
-    _gpioa = bitOrder(_gpioa);
-    _gpiob ^= 0xFF;  //Convert to positive logic.
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
 
-    switch(trippleScan)
-    {
-      case 0:
-        trippleScan++;
-        gpioa_prev &= _gpioa;
-        gpiob_prev &= _gpiob;
-        return;
-      case 1:
-        trippleScan++;
-        return;
-      case 2:
-        gpioa_prev &= _gpioa;
-        gpiob_prev &= _gpiob;
-        trippleScan = 0;
-        break;
-      default:
-        return;
-    }
-
-    if(!(gpioa_prev || gpiob_prev))
-    {
-      gpioa_prev = 0xFF;
-      gpiob_prev = 0xFF;
-      g_systemStatus.flag_isIRQ = 0;
-      return;
-    }
-    _gpioa = gpioa_prev;
-    _gpiob = gpiob_prev;
-    gpioa_prev = 0xFF;
-    gpiob_prev = 0xFF;
+    _gpioa = gpioa_prev & i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
+    gpiob_prev = i2c_gpio[1];
 
     //Combine gpioa and gpiob. HW dependent.
     _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
@@ -353,7 +263,6 @@ void priorityPlay(uint8_t *i2c_gpio)
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.flag_isIRQ = 0;
       ERROR_ClearErrors();
     }
     else
@@ -370,7 +279,6 @@ void priorityPlay(uint8_t *i2c_gpio)
           if(sw_pos < prev_sw)
           {
             g_systemStatus.flag_isPlaying = 0;
-            g_systemStatus.flag_isIRQ = 0;
             FIFO_Put(&sw_pos, 1);
             prev_sw = sw_pos;
             break;
@@ -378,6 +286,11 @@ void priorityPlay(uint8_t *i2c_gpio)
         }
       }
     }
+  }
+  else
+  {
+    gpioa_prev = 0;
+    gpiob_prev = 0;
   }
 }
 
@@ -390,6 +303,7 @@ void inputPlay(uint8_t *i2c_gpio)
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
   int isPlayable = 0;
   int isSongChosen = 0;
+  uint8_t _nr_sw_pressed;
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -398,41 +312,13 @@ void inputPlay(uint8_t *i2c_gpio)
     _gpiob = i2c_gpio[1];
 
     /* Correct switches order according to HW design */
-    _gpioa = bitOrder(_gpioa);
-    _gpiob ^= 0xFF;  //Convert to positive logic.
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
 
-    switch(trippleScan)
-    {
-      case 0:
-        trippleScan++;
-        gpioa_prev &= _gpioa;
-        gpiob_prev &= _gpiob;
-        return;
-      case 1:
-        trippleScan++;
-        return;
-      case 2:
-        gpioa_prev &= _gpioa;
-        gpiob_prev &= _gpiob;
-        trippleScan = 0;
-        break;
-      default:
-        return;
-    }
-
-    if(!(gpioa_prev || gpiob_prev))
-    {
-      gpioa_prev = 0xFF;
-      gpiob_prev = 0xFF;
-      g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.flag_isIRQ = 0;
-      return;
-    }
-
-    _gpioa = gpioa_prev;
-    _gpiob = gpiob_prev;
-    gpioa_prev = 0xFF;
-    gpiob_prev = 0xFF;
+    _gpioa = gpioa_prev & i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
+    gpiob_prev = i2c_gpio[1];
 
     //Combine gpioa and gpiob. HW dependent.
     _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
@@ -440,21 +326,20 @@ void inputPlay(uint8_t *i2c_gpio)
     if(gpio_prev != _gpio)
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.flag_isIRQ = 0;
     }
     gpio_prev = _gpio;
 
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
-      g_systemStatus.flag_isIRQ = 0;
       ERROR_ClearErrors();
+      isPrevStop = 1;
     }
-    else if(0 == g_systemStatus.flag_isPlaying)
+    else if((0 == g_systemStatus.flag_isPlaying) && (isPrevStop == 0))
     {
       /* No interrupts. Play only if a song isn't played yet. */
       /* Get pressed positions. */
-      switchToPlay(_gpio, _sw_pressed);
+      _nr_sw_pressed = switchToPlay(_gpio, _sw_pressed);
 
       for(int8_t sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
       {
@@ -478,21 +363,20 @@ void inputPlay(uint8_t *i2c_gpio)
       if(isSongChosen)
       {
         FIFO_Put(&prev_sw, 1);
-        g_systemStatus.flag_isIRQ = 0;
       }
-      else
+      else if(_nr_sw_pressed != 0)
       {
         FIFO_Put(&lowestSwitch, 1);
         prev_sw = lowestSwitch;
-        g_systemStatus.flag_isIRQ = 0;
       }
     }
   }
   else
   {
-    trippleScan = 0;
-    gpioa_prev = 0xFF;
-    gpiob_prev = 0xFF;
+    gpioa_prev = 0;
+    gpiob_prev = 0;
+    g_systemStatus.flag_isPlaying = 0;
+    isPrevStop = 0;
   }
 }
 

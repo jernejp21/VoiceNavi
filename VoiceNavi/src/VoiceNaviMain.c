@@ -587,10 +587,7 @@ void ISR_periodicPolling()
     gpio_rx[0] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
     gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
 
-    if(PIN_GetExtIRQ() == 1)
-    {
-      g_systemStatus.flag_isIRQ = 1;
-    }
+    g_systemStatus.flag_isIRQ = PIN_GetExtIRQ();
 
     playMode(gpio_rx);
   }
@@ -609,7 +606,7 @@ void main(void)
   sys_init();
 
   /* Periodic timer for GPIO polling, period is  20 ms. */
-  R_CMT_CreatePeriodic(65, &ISR_periodicPolling, &cmt_channel_i2c);
+  R_CMT_CreatePeriodic(50, &ISR_periodicPolling, &cmt_channel_i2c);
 
   /* Check if USB is inserted */
   // Create 100 ms counter for polling to check if USB is connected.
