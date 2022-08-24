@@ -1,6 +1,16 @@
-v3.4 / 2022-08-17 15:30:49 +0900:
-- log: Version update - v3.4
+v3.5 / 2022-08-24 12:40:30 +0900:
+- log: Version update - v3.5
 
+- bug: Problems with debounce #79
+  Reverted changes from commits: fb99b7e43ed17c6dd3ab5cf8e45db1de0d2adf7f and 75be721b1dd858583bdb0bc5dac36ead643cbca6. New mechanism for detecting 2 consecutive pulses on all channels.
+
+- bug: Problems with debounce #79
+  Changed polling frequency 60 -> 65 Hz. Changed TUP0 interrupt priority from 15 to 13. Minor bug fixes in lastInputInterruptPlay().
+
+
+v3.4 / 2022-08-17 15:41:49 +0900:
+- log: Version update - v3.4
+  
 - bug: last input interrupt play multi input fix
   Multi input wasn't working. Only 1 or 2 switches were working. Now, you can press all the switches and only the last pressed channel will play.
 
@@ -37,7 +47,7 @@ v3.4 / 2022-08-17 15:30:49 +0900:
 
 v3.3 / 2022-07-28 15:16:06 +0900:
 - log: Version update - v3.3
-
+  
 - enh: better error detecting of faulty wave files.
   If "fmt " or "data" chunk sizes are zero, throw error.
 
