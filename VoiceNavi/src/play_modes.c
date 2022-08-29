@@ -90,9 +90,6 @@ void normalPlay(uint8_t *i2c_gpio)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    _gpioa = i2c_gpio[0];
-    _gpiob = i2c_gpio[1];
-
     /* Correct switches order according to HW design */
     i2c_gpio[0] = bitOrder(i2c_gpio[0]);
     i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
@@ -172,9 +169,6 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    _gpioa = i2c_gpio[0];
-    _gpiob = i2c_gpio[1];
-
     /* Correct switches order according to HW design */
     i2c_gpio[0] = bitOrder(i2c_gpio[0]);
     i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
@@ -242,9 +236,6 @@ void priorityPlay(uint8_t *i2c_gpio)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    _gpioa = i2c_gpio[0];
-    _gpiob = i2c_gpio[1];
-
     /* Correct switches order according to HW design */
     i2c_gpio[0] = bitOrder(i2c_gpio[0]);
     i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
@@ -308,9 +299,6 @@ void inputPlay(uint8_t *i2c_gpio)
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
   {
-    _gpioa = i2c_gpio[0];
-    _gpiob = i2c_gpio[1];
-
     /* Correct switches order according to HW design */
     i2c_gpio[0] = bitOrder(i2c_gpio[0]);
     i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
@@ -385,17 +373,18 @@ void binary127ch_negative(uint8_t *i2c_gpio)
   uint8_t _gpioa;
   uint8_t _gpiob;
 
-  _gpioa = i2c_gpio[0];
-  _gpiob = i2c_gpio[1];
-
-  /* Correct switches order according to HW design */
-  _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get positive logic
-  _gpiob ^= 0xFF;  //Convert to positive logic.
-
   /* This mode has negative logic */
   if(g_systemStatus.flag_isIRQ)
   {
+    /* Correct switches order according to HW design */
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
+
+    _gpioa = i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpiob_prev = i2c_gpio[1];
+
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
@@ -431,6 +420,7 @@ void binary127ch_negative(uint8_t *i2c_gpio)
   else
   {
     prev_sw = 0;
+    gpiob_prev = 0;
   }
 }
 
@@ -440,17 +430,18 @@ void binary250_positive(uint8_t *i2c_gpio)
   uint8_t _gpiob;
   //uint8_t vol_reduction[2] = {0, 1};
 
-  _gpioa = i2c_gpio[0];
-  _gpiob = i2c_gpio[1];
-
-  /* Correct switches order according to HW design */
-  _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get positive logic
-  _gpiob ^= 0xFF;  //Convert to positive logic.
-
   /* This mode has positive logic */
   if(g_systemStatus.flag_isIRQ)
   {
+    /* Correct switches order according to HW design */
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
+
+    _gpioa = i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpiob_prev = i2c_gpio[1];
+
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
@@ -526,6 +517,7 @@ void binary250_positive(uint8_t *i2c_gpio)
   else
   {
     prev_sw = 0;
+    gpiob_prev = 0;
   }
 }
 
@@ -535,17 +527,18 @@ void binary250_negative(uint8_t *i2c_gpio)
   uint8_t _gpiob;
   //uint8_t vol_reduction[2] = {0, 1};
 
-  _gpioa = i2c_gpio[0];
-  _gpiob = i2c_gpio[1];
-
-  /* Correct switches order according to HW design */
-  _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get positive logic
-  _gpiob ^= 0xFF;  //Convert to positive logic.
-
   /* This mode has negative logic */
   if(g_systemStatus.flag_isIRQ)
   {
+    /* Correct switches order according to HW design */
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
+
+    _gpioa = i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpiob_prev = i2c_gpio[1];
+
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
@@ -622,6 +615,7 @@ void binary250_negative(uint8_t *i2c_gpio)
   else
   {
     prev_sw = 0;
+    gpiob_prev = 0;
   }
 }
 
@@ -630,17 +624,18 @@ void binary255_positive(uint8_t *i2c_gpio)
   uint8_t _gpioa;
   uint8_t _gpiob;
 
-  _gpioa = i2c_gpio[0];
-  _gpiob = i2c_gpio[1];
-
-  /* Correct switches order according to HW design */
-  _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get positive logic
-  _gpiob ^= 0xFF;  //Convert to positive logic.
-
   /* This mode has positive logic */
   if(g_systemStatus.flag_isIRQ)
   {
+    /* Correct switches order according to HW design */
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
+
+    _gpioa = i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpiob_prev = i2c_gpio[1];
+
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
@@ -674,6 +669,7 @@ void binary255_positive(uint8_t *i2c_gpio)
   else
   {
     prev_sw = 0;
+    gpiob_prev = 0;
   }
 }
 
@@ -682,17 +678,18 @@ void binary255_negative(uint8_t *i2c_gpio)
   uint8_t _gpioa;
   uint8_t _gpiob;
 
-  _gpioa = i2c_gpio[0];
-  _gpiob = i2c_gpio[1];
-
-  /* Correct switches order according to HW design */
-  _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get positive logic
-  _gpiob ^= 0xFF;  //Convert to positive logic.
-
   /* This mode has negative logic */
   if(g_systemStatus.flag_isIRQ)
   {
+    /* Correct switches order according to HW design */
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
+
+    _gpioa = i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpiob_prev = i2c_gpio[1];
+
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
@@ -727,6 +724,7 @@ void binary255_negative(uint8_t *i2c_gpio)
   else
   {
     prev_sw = 0;
+    gpiob_prev = 0;
   }
 }
 
@@ -735,17 +733,18 @@ void binary255_5F9IH(uint8_t *i2c_gpio)
   uint8_t _gpioa;
   uint8_t _gpiob;
 
-  _gpioa = i2c_gpio[0];
-  _gpiob = i2c_gpio[1];
-
-  /* Correct switches order according to HW design */
-  _gpioa = bitOrder(_gpioa);
-  _gpioa ^= 0xFF;  //Convert again, to get positive logic
-  _gpiob ^= 0xFF;  //Convert to positive logic.
-
   /* This mode has negative logic */
   if(g_systemStatus.flag_isIRQ)
   {
+    /* Correct switches order according to HW design */
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
+
+    _gpioa = i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpiob_prev = i2c_gpio[1];
+
     if(0 != (_gpiob & STOP))
     {
       g_systemStatus.flag_isPlaying = 0;
@@ -781,5 +780,6 @@ void binary255_5F9IH(uint8_t *i2c_gpio)
   else
   {
     prev_sw = 0;
+    gpiob_prev = 0;
   }
 }
