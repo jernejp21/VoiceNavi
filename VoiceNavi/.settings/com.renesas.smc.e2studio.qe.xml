@@ -23,7 +23,6 @@
         <Setting id="PC4" value="PC4"/>
         <Setting id="PE6" value="PE6"/>
         <Setting id="PA1" value="PA1"/>
-        <Setting id="PC6" value="IRQ13"/>
         <Setting id="PA4" value="PA4"/>
         <Setting id="PA3" value="PA3"/>
         <Setting id="PC5" value="PC5"/>
@@ -77,7 +76,6 @@
         <Setting id="DAC" value="CG"/>
         <Setting id="DMAC0" value="CG"/>
         <Setting id="r_sci_iic_rx" value="FIT"/>
-        <Setting id="IRQs" value="CG"/>
         <Setting id="r_usb_hmsc" value="FIT"/>
         <Setting id="r_sys_time_rx" value="FIT"/>
         <Setting id="ADC0" value="CG"/>
