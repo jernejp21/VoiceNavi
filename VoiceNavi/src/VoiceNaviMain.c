@@ -528,27 +528,6 @@ void CNT_IntervalDelay()
   del_cnt++;
 }
 
-void IRQ_handler()
-{
-  uint8_t gpio_rx[2];
-
-  /* STB pin signal ----|_____|-------
-   * IRQ pin signal ____|-|___|-|_____
-   *
-   * IRQ pin is active HIGH. GPIO MUX sends IRQ signal on status change.
-   * HIGH -> LOW or LOW -> HIGH. It is triggered only on STOP and STB pins.
-   * IRQ in MCU is triggered on rising edge.
-   */
-
-  g_systemStatus.flag_isIRQ ^= 1;
-
-  /* Read gpioa, gpiob from GPIO mux. */
-  gpio_rx[0] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
-  gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
-  playMode(gpio_rx);
-
-}
-
 /* Periodic ISR for polling status on GPIO MUX */
 void ISR_periodicPolling()
 {
@@ -581,16 +560,13 @@ void ISR_periodicPolling()
   /* Send volume data to potentiometer */
   I2C_Send(&iic_info, I2C_POTENT_ADDR, 0, _volume);
 
-  if((boardType != WAV_5F9IH) || (mode_select != 1))
-  {
-    /* Read gpioa, gpiob from GPIO mux */
-    gpio_rx[0] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
-    gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
+  /* Read gpioa, gpiob from GPIO mux */
+  gpio_rx[0] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x09);
+  gpio_rx[1] = I2C_Receive(&iic_info, I2C_GPIO_ADDR, 0x19);
 
-    g_systemStatus.flag_isIRQ = PIN_GetExtIRQ();
+  g_systemStatus.flag_isIRQ = PIN_GetExtIRQ();
 
-    playMode(gpio_rx);
-  }
+  playMode(gpio_rx);
 
   g_systemStatus.flag_semaphoreLock = 0;
 }
@@ -686,6 +662,8 @@ void main(void)
       if(boardType == WAV_5F9IH)
       {
         playMode = lastInputInterruptPlay;
+        R_CMT_Stop(cmt_channel_i2c);
+        R_CMT_CreatePeriodic(286, &ISR_periodicPolling, &cmt_channel_i2c);  // 3,5 ms
       }
       else
       {
@@ -698,18 +676,6 @@ void main(void)
       if(boardType == WAV_5F9IH)
       {
         playMode = binary255_5F9IH;
-        // Clear interrupt flag before enabling interrupt
-        IR(ICU, IRQ13)= 0;
-        // Enable interrupt on pin change. Interrupt is triggered from GPIO mux.
-        R_IRQs_IRQ13_Start();
-        // GPINTENA
-        I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x02, 0);
-        // INTCONA
-        I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x04, 0);
-        // GPINTENB
-        I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x12, 0x03);
-        // INTCONB
-        I2C_Send(&iic_info, I2C_GPIO_ADDR, 0x14, 0);
       }
       else
       {

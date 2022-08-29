@@ -40,7 +40,6 @@ Includes
 #include "ADC0.h"
 #include "DMAC1.h"
 #include "TPU0.h"
-#include "IRQs.h"
 #include "WDT.h"
 #include "r_smc_cgc.h"
 #include "r_smc_interrupt.h"
@@ -96,7 +95,6 @@ void R_Systeminit(void)
     R_ADC0_Create();
     R_DMAC1_Create();
     R_TPU0_Create();
-    R_IRQs_Create();
 
     /* Register undefined interrupt */
     R_BSP_InterruptWrite(BSP_INT_SRC_UNDEFINED_INTERRUPT,(bsp_int_cb_t)r_undefined_exception);

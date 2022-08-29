@@ -46,9 +46,6 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
-/* ICU IRQ13 */
-void r_IRQs_irq13_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(ICU,IRQ13))));
-
 /* TPU0 TGI0A */
 void r_TPU0_tgi0a_interrupt(void) __attribute__ ((interrupt(".rvectors",VECT(PERIB,INTB130))));
 

@@ -46,7 +46,7 @@ void ERROR_WAVEFile()
   if(!isErrorPresent)
   {
     //500ms period
-    R_CMT_CreatePeriodicAssignChannelPriority(2, &led_blink_alarm, err_cmt_channel, CMT_PRIORITY_14);
+    R_CMT_CreatePeriodicAssignChannelPriority(2, &led_blink_alarm, err_cmt_channel, CMT_PRIORITY_10);
     LED_AlarmOff();
     LED_BusyOff();
     LED_USBOn();
@@ -59,7 +59,7 @@ void ERROR_FlashECS()
   if(!isErrorPresent)
   {
     //100ms period
-    R_CMT_CreatePeriodicAssignChannelPriority(10, &led_blink_alarm, err_cmt_channel, CMT_PRIORITY_14);
+    R_CMT_CreatePeriodicAssignChannelPriority(10, &led_blink_alarm, err_cmt_channel, CMT_PRIORITY_10);
     LED_AlarmOff();
     LED_BusyOff();
     LED_USBOff();
@@ -72,7 +72,7 @@ void ERROR_FlashEmpty()
   if(!isErrorPresent)
   {
     //500ms period
-    R_CMT_CreatePeriodicAssignChannelPriority(2, &led_blink_alarm, err_cmt_channel, CMT_PRIORITY_14);
+    R_CMT_CreatePeriodicAssignChannelPriority(2, &led_blink_alarm, err_cmt_channel, CMT_PRIORITY_10);
     LED_AlarmOff();
     LED_BusyOff();
     LED_USBOff();

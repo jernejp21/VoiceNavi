@@ -102,7 +102,7 @@ Macro definitions
 #define ICU_ICU_IRQ10_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_IRQ11_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_IRQ12_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_ICU_IRQ13_PRIORITY                     (_0E_ICU_PRIORITY_LEVEL14)
+#define ICU_ICU_IRQ13_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_IRQ14_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_ICU_IRQ15_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_SCI3_RXI3_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
