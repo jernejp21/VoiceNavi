@@ -1,6 +1,21 @@
+v3.6 / 2022-08-30 12:30:20 +0900:
+- log: Version update - v3.6
+  
+- bug: No debounce in binary play mode #80
+  Forgot to commit come files.
+
+- test: updated 50ms pulse test case.
+  
+- bug: No debounce in binary play mode #80
+  Different debounce time for 5F9 board. No more interrupt, just polling.
+
+- bug: No debounce in binary play mode #80
+  Implemented debounce on GPIOB (GPIO mux). In binary mode, only STOP and STB pins are effected by debounce. SW1 to SW8 are not.
+
+
 v3.5 / 2022-08-24 12:40:30 +0900:
 - log: Version update - v3.5
-
+  
 - bug: Problems with debounce #79
   Reverted changes from commits: fb99b7e43ed17c6dd3ab5cf8e45db1de0d2adf7f and 75be721b1dd858583bdb0bc5dac36ead643cbca6. New mechanism for detecting 2 consecutive pulses on all channels.
 
