@@ -381,8 +381,9 @@ void binary127ch_negative(uint8_t *i2c_gpio)
     i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
     i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
 
-    _gpioa = i2c_gpio[0];
+    _gpioa = gpioa_prev & i2c_gpio[0];
     _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
     gpiob_prev = i2c_gpio[1];
 
     if(0 != (_gpiob & STOP))
@@ -438,8 +439,9 @@ void binary250_positive(uint8_t *i2c_gpio)
     i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
     i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
 
-    _gpioa = i2c_gpio[0];
+    _gpioa = gpioa_prev & i2c_gpio[0];
     _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
     gpiob_prev = i2c_gpio[1];
 
     if(0 != (_gpiob & STOP))
@@ -535,8 +537,9 @@ void binary250_negative(uint8_t *i2c_gpio)
     i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
     i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
 
-    _gpioa = i2c_gpio[0];
+    _gpioa = gpioa_prev & i2c_gpio[0];
     _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
     gpiob_prev = i2c_gpio[1];
 
     if(0 != (_gpiob & STOP))
@@ -632,8 +635,9 @@ void binary255_positive(uint8_t *i2c_gpio)
     i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
     i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
 
-    _gpioa = i2c_gpio[0];
+    _gpioa = gpioa_prev & i2c_gpio[0];
     _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
     gpiob_prev = i2c_gpio[1];
 
     if(0 != (_gpiob & STOP))
@@ -686,8 +690,9 @@ void binary255_negative(uint8_t *i2c_gpio)
     i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
     i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
 
-    _gpioa = i2c_gpio[0];
+    _gpioa = gpioa_prev & i2c_gpio[0];
     _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
     gpiob_prev = i2c_gpio[1];
 
     if(0 != (_gpiob & STOP))
@@ -741,8 +746,9 @@ void binary255_5F9IH(uint8_t *i2c_gpio)
     i2c_gpio[0] ^= 0xFF;  //Convert again, to get positive logic
     i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
 
-    _gpioa = i2c_gpio[0];
+    _gpioa = gpioa_prev & i2c_gpio[0];
     _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
     gpiob_prev = i2c_gpio[1];
 
     if(0 != (_gpiob & STOP))
