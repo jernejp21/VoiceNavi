@@ -1,3 +1,10 @@
+v3.7 / 2022-08-31 09:10:15 +0900:
+- log: Version update - v3.7
+  
+- bug: double scan on all pins in binary mode
+  Previously only GPIOB had debounce feature. Now both GPIOB and GPIOA have debounce feature.
+
+
 v3.6 / 2022-08-30 12:30:20 +0900:
 - log: Version update - v3.6
   
