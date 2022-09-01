@@ -663,7 +663,7 @@ void main(void)
       {
         playMode = lastInputInterruptPlay_5F9IH;
         R_CMT_Stop(cmt_channel_i2c);
-        R_CMT_CreatePeriodic(286, &ISR_periodicPolling, &cmt_channel_i2c);  // 3,5 ms
+        R_CMT_CreatePeriodic(400, &ISR_periodicPolling, &cmt_channel_i2c);  // 3,5 ms
       }
       else
       {
