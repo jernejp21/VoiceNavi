@@ -661,7 +661,7 @@ void main(void)
     case 0:
       if(boardType == WAV_5F9IH)
       {
-        playMode = lastInputInterruptPlay;
+        playMode = lastInputInterruptPlay_5F9IH;
         R_CMT_Stop(cmt_channel_i2c);
         R_CMT_CreatePeriodic(286, &ISR_periodicPolling, &cmt_channel_i2c);  // 3,5 ms
       }

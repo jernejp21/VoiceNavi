@@ -203,7 +203,6 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
             {
               g_systemStatus.flag_isPlaying = 0;
               FIFO_Put(&sw_pos, 1);
-              prev_sw = sw_pos;
               already_pressed_mask &= ~(1 << sw_pos);
               break;
             }
@@ -788,4 +787,76 @@ void binary255_5F9IH(uint8_t *i2c_gpio)
     prev_sw = 0;
     gpiob_prev = 0;
   }
+}
+
+void lastInputInterruptPlay_5F9IH(uint8_t *i2c_gpio)
+{
+  uint8_t _gpioa;
+  uint8_t _gpiob;
+  uint16_t _gpio;
+  uint8_t _nr_sw_pressed;
+  uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
+  static uint8_t already_pressed_mask = 0xFF;
+
+  /* Check for switch status only when triggered */
+  if(g_systemStatus.flag_isIRQ)
+  {
+    /* Correct switches order according to HW design */
+    i2c_gpio[0] = bitOrder(i2c_gpio[0]);
+    i2c_gpio[1] ^= 0xFF;  //Convert to positive logic.
+
+    _gpioa = gpioa_prev & i2c_gpio[0];
+    _gpiob = gpiob_prev & i2c_gpio[1];
+    gpioa_prev = i2c_gpio[0];
+    gpiob_prev = i2c_gpio[1];
+
+    //Combine gpioa and gpiob. HW dependent.
+    _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
+
+    /* Get number of pressed switches and pressed positions. */
+    _nr_sw_pressed = switchToPlay(_gpio, _sw_pressed);
+
+    if(0 != (_gpiob & STOP))
+    {
+      g_systemStatus.flag_isPlaying = 0;
+      ERROR_ClearErrors();
+    }
+    else if(gpio_prev != _gpio)
+    {
+      if(_nr_sw_pressed > prev_nr_sw_pressed)
+      {
+        _gpio &= already_pressed_mask;
+        switchToPlay(_gpio, _sw_pressed);
+        for(char sw_pos = 0; sw_pos < g_systemStatus.nr_of_switches; sw_pos++)
+        {
+          if(_sw_pressed[sw_pos])
+          {
+            if(already_pressed_mask & (1 << sw_pos))
+            {
+              if((g_systemStatus.flag_isPlaying == 0) || (prev_sw != sw_pos))
+              {
+                g_systemStatus.flag_isPlaying = 0;
+                FIFO_Put(&sw_pos, 1);
+                prev_sw = sw_pos;
+                already_pressed_mask &= ~(1 << sw_pos);
+                break;
+              }
+            }
+          }
+        }
+      }
+      else
+      {
+        already_pressed_mask = ~_gpio;
+      }
+    }
+  }
+  else
+  {
+    gpioa_prev = 0;
+    gpiob_prev = 0;
+    already_pressed_mask = 0xFF;
+  }
+  gpio_prev = _gpio;
+  prev_nr_sw_pressed = _nr_sw_pressed;
 }
