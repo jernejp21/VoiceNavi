@@ -797,7 +797,6 @@ void lastInputInterruptPlay_5F9IH(uint8_t *i2c_gpio)
   uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
   static uint8_t already_pressed_mask = 0xFF;
-  LED_USBToggle();
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
