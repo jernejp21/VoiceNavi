@@ -603,11 +603,13 @@ void main(void)
         if(flash_status != NAND_WRITE_OK)
         {
           isDataInFlash = 0;
-          goto WHILE1;
         }
-
-        // Create 500 ms counter for flashing USB LED.
-        R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
+        else
+        {
+          // Create 500 ms counter for flashing USB LED.
+          R_CMT_CreatePeriodic(2, &CNT_USB_LedCallback, &cmt_channel);
+        }
+        goto WHILE1;
         break;
 
       case USB_STS_DETACH:
