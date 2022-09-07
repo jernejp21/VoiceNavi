@@ -1,4 +1,20 @@
-v3.7 / 2022-08-31 09:10:15 +0900:
+v3.8 / 2022-09-07 17:13:50 +0900:
+- log: Version update - v3.8
+  
+- bug: USB_LED #81
+  After data copy from USB to flash is finished, goto while(1) loop regardless of NAND_WRITE status. If write was success, start led success pattern, otherwise error pattern.
+
+- enh: faster polling time for 5F9 board.
+  Forgot to remove LED_USBToggle().
+
+- enh: faster polling time for 5F9 board.
+  Polling time changed from 3,5 ms to 2,5 ms.
+
+- bug: 5F9 normal play mode not working #35
+  Do not interrupt the same channel. Interrupt only different channels.
+
+
+v3.7 / 2022-08-31 09:26:14 +0900:
 - log: Version update - v3.7
   
 - bug: double scan on all pins in binary mode
