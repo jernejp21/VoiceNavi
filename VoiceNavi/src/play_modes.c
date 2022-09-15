@@ -164,7 +164,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
   uint16_t _gpio;
   uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
-  static uint8_t already_pressed_mask = 0xFF;
+  static uint16_t already_pressed_mask = 0xFFFF;
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -219,7 +219,7 @@ void lastInputInterruptPlay(uint8_t *i2c_gpio)
   {
     gpioa_prev = 0;
     gpiob_prev = 0;
-    already_pressed_mask = 0xFF;
+    already_pressed_mask = 0xFFFF;
   }
   gpio_prev = _gpio;
   prev_nr_sw_pressed = _nr_sw_pressed;
@@ -796,7 +796,7 @@ void lastInputInterruptPlay_5F9IH(uint8_t *i2c_gpio)
   uint16_t _gpio;
   uint8_t _nr_sw_pressed;
   uint8_t _sw_pressed[MAX_NR_OF_SWITCHES] = {0};
-  static uint8_t already_pressed_mask = 0xFF;
+  static uint16_t already_pressed_mask = 0xFFFF;
 
   /* Check for switch status only when triggered */
   if(g_systemStatus.flag_isIRQ)
@@ -855,7 +855,7 @@ void lastInputInterruptPlay_5F9IH(uint8_t *i2c_gpio)
   {
     gpioa_prev = 0;
     gpiob_prev = 0;
-    already_pressed_mask = 0xFF;
+    already_pressed_mask = 0xFFFF;
   }
   gpio_prev = _gpio;
   prev_nr_sw_pressed = _nr_sw_pressed;
