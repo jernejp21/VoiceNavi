@@ -310,7 +310,7 @@ void inputPlay(uint8_t *i2c_gpio)
     //Combine gpioa and gpiob. HW dependent.
     _gpio = ((_gpiob & 0x78) << 5) | _gpioa;
 
-    if(gpio_prev != _gpio)
+    if((_gpio & (1 << prev_sw)) == 0)
     {
       g_systemStatus.flag_isPlaying = 0;
     }
