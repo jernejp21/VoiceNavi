@@ -1,3 +1,13 @@
+v3.9 / 2022-09-16 16:45:28 +0900:
+- log: Version update - v3.9
+  
+- bug: 5A2,5F1,5F2 inputPlay mode #83
+  Reverted changes and implemented the correct stop condition.
+
+- bug: 5F9 lastInputInterruptPlay_5F9IH mode #84
+  Changed already_pressed_mask variable from uint8_t to uint16_t.
+
+
 v3.8 / 2022-09-07 17:13:50 +0900:
 - log: Version update - v3.8
   
