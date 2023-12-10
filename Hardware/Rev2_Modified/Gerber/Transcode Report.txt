@@ -1,0 +1,6 @@
+
+
+   ---- Transcoding 'C:\Users\ALJAZT~1\AppData\Local\Temp\PCB2_importZIP\PCB2-NonPlated.TXT' ----   Mon May 02 20:12:58 2022
+
+T9   --> T10
+-----------------------------------------------------------------

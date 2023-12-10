@@ -1,0 +1,277 @@
+
+File Design Information:
+
+Date:       02/05/22
+Time:       20:06
+Revision:   Not in VersionControl
+Variant:    No variations
+Units used: mm
+
+Designator Comment                    Layer    Footprint         Center-X(mm) Center-Y(mm) Rotation Ref-X(mm)  Ref-Y(mm) Description                         
+R140       ERJ-PA3F1003V              TopLayer R1608             110.9917mm   63.4000mm    270      110.9917mm 63.4000mm ???????1608???                      
+R139       RR0816P-271-D              TopLayer R1608             53.8000mm    41.2000mm    180      53.8000mm  41.2000mm ???????1608???                      
+U6         MCP23017-E/ML              TopLayer QFN28             55.4000mm    10.8000mm    0        55.4000mm  10.8000mm "I/O Expander 16 SPI 10MHz 28-SOIC" 
+R138       ERJ-PA3F1002V              TopLayer R1608             77.2000mm    40.7000mm    180      77.2000mm  40.7000mm ???????1608???                      
+OPT2       AQY212G2SX                 TopLayer SOP4-2.54         47.4000mm    44.8000mm    180      47.4000mm  44.8000mm "60V 550mA ?????"                   
+OPT1       AQY212G2SX                 TopLayer SOP4-2.54         47.4000mm    38.7000mm    180      47.4000mm  38.7000mm "60V 550mA ?????"                   
+TR3        DTC114YUBHZGTL             TopLayer SOT-323F          53.7000mm    39.1002mm    90       53.7000mm  39.1000mm "NPN  TR 0.1A SC85 2x2.1 SOC323"    
+R137       RR0816P-271-D              TopLayer R1608             53.8000mm    42.9625mm    180      53.8000mm  42.9625mm ???????1608???                      
+R117       ERJ-PA3F2001V              TopLayer R1608             82.3000mm    35.1000mm    180      82.3000mm  35.1000mm ???????1608???                      
+LED5       APT1608LSECK/J4-PRV        TopLayer LED1608           86.6500mm    35.1000mm    180      86.6500mm  35.1000mm "LED 1608 orange"                   
+R108       ERJ-PA3F1003V              TopLayer R1608             92.3000mm    48.3000mm    180      92.3000mm  48.3000mm ???????1608???                      
+L4         DLW5BTM142TQ2L             TopLayer DLW5BTM           63.5000mm    61.6000mm    90       63.5000mm  61.6000mm ??????,1A,4??                       
+L3         DLW5BTM142TQ2              TopLayer DLW5BTM           39.3000mm    61.0000mm    0        39.3000mm  61.0000mm ??????,1A,4??                       
+L2         DLW5BTM142TQ2L             TopLayer DLW5BTM           54.4000mm    61.4000mm    270      54.4000mm  61.4000mm ??????,1A,4??                       
+C75        UCQ1C101MCL1GS             TopLayer 6.6mmX6.6mm       61.8000mm    52.3000mm    270      61.8000mm  52.3000mm "6.3f ???????"                      
+C63        UCQ1C101MCL1GS             TopLayer 6.6mmX6.6mm       61.9500mm    42.0000mm    90       61.9500mm  42.0000mm "6.3f ???????"                      
+D2         CUS08F30                   TopLayer SOD-323           92.7000mm    59.2000mm    180      92.7000mm  59.2000mm "DIODE SCHOTTKY 30V 800MA USC"      
+R136       ERJ-PA3F4701V              TopLayer R1608             108.6000mm   76.5000mm    90       108.6000mm 76.5000mm ???????1608???                      
+R135       ERJ-PA3F4701V              TopLayer R1608             102.6000mm   76.5000mm    90       102.6000mm 76.5000mm ???????1608???                      
+CN1        B2P-SHF-1AA                TopLayer B2P-SHF-1AA       79.3500mm    4.6000mm     180      78.1000mm  4.6000mm  ?,?????,1?2??                       
+J3         B12P-SHF-1AA               TopLayer B12P-SHF-1AA      4.5000mm     44.6500mm    90       4.5000mm   58.4000mm "?,?????,1?12?? PCB"                
+J2         B5P-SHF-1AA                TopLayer B5P-SHF-1AA       4.5000mm     18.4000mm    90       4.5000mm   23.4000mm ?,?????,1?3??                       
+J1         B18P-SHF-1AA               TopLayer B18P-SHF-1AA      13.5000mm    45.4500mm    90       13.5000mm  66.7000mm "?,?????,1?12?? PCB"                
+CN5        B3P-SHF-1AA                TopLayer B3P-SHF-1AA       90.1000mm    4.6000mm     180      87.6000mm  4.6000mm  ?,?????,1?3??                       
+CN4        B3P-SHF-1AA                TopLayer B3P-SHF-1AA       68.6000mm    4.6000mm     180      66.1000mm  4.6000mm  ?,?????,1?3??                       
+U5         TPSM84203EAB               TopLayer TO220-3           64.7000mm    75.0000mm    0        64.7000mm  75.0000mm "DC DC CONVERTER 3.3V"              
+U2         R5F5651EHDFP#30            TopLayer LQFP100           105.6000mm   40.3000mm    270      105.6000mm 40.3000mm MCU                                 
+R15        ERJ-PA3F22R0V              TopLayer R1608             123.6667mm   32.9000mm    270      123.6667mm 32.9000mm ???????1608???                      
+R13        ERJ-PA3F22R0V              TopLayer R1608             119.1167mm   32.9000mm    90       119.1167mm 32.9000mm ???????1608???                      
+C19        CGA3E2X7R1H104K080AA       TopLayer C1608             85.1000mm    59.8000mm    180      85.1000mm  59.8000mm ????1608???                         
+R106       RK73Z1JTTD                 TopLayer R1608             18.1000mm    75.1000mm    180      18.1000mm  75.1000mm ???????1608???                      
+C23        UMK325C7106MM-T            TopLayer C3225             31.3000mm    60.9000mm    90       31.3000mm  60.9000mm ????3225???                         
+D1         SIPS3150U                  TopLayer DO-214AA          25.3000mm    76.2500mm    180      25.3000mm  76.2500mm "Schottky Rectifier"                
+R55        RK73Z1JTTD                 TopLayer R1608             67.9000mm    64.8000mm    0        67.9000mm  64.8000mm ???????1608???                      
+C66        TMK212BJ105KG-T            TopLayer C2012             55.6000mm    47.1000mm    180      55.6000mm  47.1000mm ????2012???                         
+R101       ERJ-PA3F1002V              TopLayer R1608             55.1000mm    3.5000mm     180      55.1000mm  3.5000mm  ???????1608???                      
+R104       ERJ-PA3F1002V              TopLayer R1608             50.7000mm    3.5000mm     0        50.7000mm  3.5000mm  ???????1608???                      
+CN3        B2P-SHF-1AA                TopLayer B2P-SHF-1AA       5.1000mm     66.2500mm    270      5.1000mm   65.0000mm ?,?????,1?2??                       
+C4         CGA3E2X7R1H104K080AA       TopLayer C1608             86.3950mm    46.3000mm    180      86.3950mm  46.3000mm ????1608???                         
+R107       ERJ-PA3F1002V              TopLayer R1608             60.6000mm    30.0000mm    180      60.6000mm  30.0000mm ???????1608???                      
+C50        CGA3E2X7R1H104K080AA       TopLayer C1608             59.0000mm    3.4750mm     180      59.0000mm  3.4750mm  ????1608???                         
+R48        RK73B2ATTD392J             TopLayer R2012             93.1000mm    17.7000mm    90       93.1000mm  17.7000mm ???????2012???                      
+R46        RK73B2ATTD392J             TopLayer R2012             91.2000mm    17.7000mm    90       91.2000mm  17.7000mm ???????2012???                      
+R34        ERJ-PA3F1003V              TopLayer R1608             91.8501mm    31.5000mm    180      91.8501mm  31.5000mm ???????1608???                      
+R33        ERJ-PA3F1003V              TopLayer R1608             87.1300mm    31.5000mm    0        87.1300mm  31.5000mm ???????1608???                      
+PC4        TLP291(SE                  TopLayer SOP4              89.4001mm    27.9650mm    0        89.4000mm  27.9651mm "PHOTOCOUPLER 1ch"                  
+PC2        TLP291(SE                  TopLayer SOP4              89.4001mm    24.3999mm    0        89.4000mm  24.4000mm "PHOTOCOUPLER 1ch"                  
+VOL4       ST4ETB503                  TopLayer ST4ETB202         123.2000mm   42.4000mm    180      123.2000mm 42.4000mm "CERMET TRIMMER  Top adjustmet"     
+VOL3       ST4ETB503                  TopLayer ST4ETB202         123.2000mm   49.8000mm    180      123.2000mm 49.8000mm "CERMET TRIMMER  Top adjustmet"     
+POWS1      SS12D01G4                  TopLayer SS12D01G4         64.8400mm    34.5000mm    180      64.8400mm  34.5000mm SPDT????????                        
+R132       ERJ-PA3F3601V              TopLayer R1608             78.2000mm    56.4200mm    90       78.2000mm  56.4200mm ???????1608???                      
+R131       ERJ-PA3F3601V              TopLayer R1608             80.3150mm    56.4200mm    270      80.3150mm  56.4200mm ???????1608???                      
+SW2        CJS-1201TB                 TopLayer SLIDE_SWITCH_SPDT 100.1000mm   21.5000mm    270      100.1000mm 21.5000mm "SWITCH SLIDE SPDT 100MA 6V"        
+U8         DS3502U+T&R                TopLayer MSOP10            81.3000mm    26.3000mm    180      81.3000mm  26.3000mm "IC DGTL POT 10KOHM 128TAP 10UMAX"  
+R112       RK73B2ATTD911J             TopLayer R2012             77.6000mm    22.8000mm    180      77.6000mm  22.8000mm ???????2012???                      
+C61        CGA3E2X7R1H104K080AA       TopLayer C1608             81.9000mm    30.3000mm    180      81.9000mm  30.3000mm ????1608???                         
+C36        CGA3E2X7R1H104K080AA       TopLayer C1608             37.9000mm    44.6000mm    0        37.9000mm  44.6000mm ????1608???                         
+C35        CGA3E2X7R1H104K080AA       TopLayer C1608             46.4000mm    5.3000mm     0        46.4000mm  5.3000mm  ????1608???                         
+C33        CGA3E2X7R1H104K080AA       TopLayer C1608             11.8000mm    73.8000mm    0        11.8000mm  73.8000mm ????1608???                         
+U7         TL074CPWR                  TopLayer TSSOP14           61.5000mm    26.2000mm    0        61.5000mm  26.2000mm "IC OPAMP JFET 4 CIRCUIT 14TSSOP"   
+R37        ERJ-PA3F1003V              TopLayer R1608             106.4000mm   16.7000mm    270      106.4000mm 16.7000mm ???????1608???                      
+R47        ERJ-PA3F1001V              TopLayer R1608             26.9000mm    2.8651mm     0        26.9000mm  2.8651mm  ???????1608???                      
+R44        RK73B2ATTD472J             TopLayer R2012             11.0000mm    3.7651mm     270      11.0000mm  3.7651mm  ???????2012???                      
+C38        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    21.5000mm    0        22.0000mm  21.5000mm ????1608???                         
+VOLS1      SS12D01G4                  TopLayer SS12D01G4         70.3000mm    12.0000mm    0        70.3000mm  12.0000mm SPDT????????                        
+C8         TMK107BJ105MA-T            TopLayer C1608             124.5000mm   60.0000mm    270      124.5000mm 60.0000mm ????1608???                         
+R21        ERJ-PA3F1003V              TopLayer R1608             120.7000mm   59.4050mm    270      120.7000mm 59.4050mm ???????1608???                      
+C14        GCM1885C2A102JA16D         TopLayer C1608             108.1000mm   63.4000mm    270      108.1000mm 63.4000mm ????1608???                         
+R129       ERJ-PA3F2002V              TopLayer R1608             74.8900mm    35.2000mm    0        74.8900mm  35.2000mm ???????1608???                      
+RESET1     "HEDDER2 2mm"              TopLayer HDR1X2_2MM        108.1000mm   67.8000mm    180      109.1000mm 67.8000mm ?,?????,1?2??                       
+R45        ERJ-PA3F1001V              TopLayer R1608             26.9000mm    4.9000mm     0        26.9000mm  4.9000mm  ???????1608???                      
+USBPOW1    SS12D01G4                  TopLayer SS12D01G4         96.3000mm    64.4000mm    180      96.3000mm  64.4000mm SPDT????????                        
+R25        ERJ-PA3F1002V              TopLayer R1608             92.3050mm    51.7000mm    0        92.3050mm  51.7000mm ???????1608???                      
+R23        ERJ-PA3F1002V              TopLayer R1608             98.8400mm    55.6000mm    270      98.8400mm  55.6000mm ???????1608???                      
+R22        ERJ-PA3F1002V              TopLayer R1608             105.6000mm   55.7000mm    180      105.6000mm 55.7000mm ???????1608???                      
+R20        ERJ-PA3F1002V              TopLayer R1608             110.9000mm   53.6000mm    180      110.9000mm 53.6000mm ???????1608???                      
+R19        ERJ-PA3F4701V              TopLayer R1608             112.6000mm   76.4995mm    90       112.6000mm 76.4995mm ???????1608???                      
+BOOT       "HEDDER2 2mm"              TopLayer HDR1X2_2MM        110.6000mm   56.7000mm    0        109.6000mm 56.7000mm ?,?????,1?2??                       
+C16        CGA3E2X7R1H104K080AA       TopLayer C1608             92.3000mm    49.9000mm    0        92.3000mm  49.9000mm ????1608???                         
+U3         LTC3245EMSE#PBF            TopLayer MSOP12            87.0000mm    55.9250mm    0        87.0000mm  55.9250mm "IC REG CHARG PUMP ADJ/PRG 12MSOP"  
+R29        ERJ-PA3F1003V              TopLayer R1608             93.1000mm    55.6000mm    90       93.1000mm  55.6000mm ???????1608???                      
+C18        CGA3E2X7R1H104K080AA       TopLayer C1608             91.5000mm    56.2500mm    90       91.5000mm  56.2500mm ????1608???                         
+C17        CGA3E2X7R1H104K080AA       TopLayer C1608             87.7000mm    61.5000mm    180      87.7000mm  61.5000mm ????1608???                         
+C31        EMK325ABJ107MM-T           TopLayer C3225             68.5000mm    69.0000mm    0        68.5000mm  69.0000mm ????3225???                         
+X2         SIT2001BI-S2-33E-12.000000 TopLayer SOT-23-5          119.6000mm   64.0000mm    90       119.6000mm 64.0000mm "OSC MEMS SOT-23-5"                 
+U9         TPA3140D2PWPR              TopLayer TSSOP28           70.8400mm    48.2250mm    180      70.8400mm  48.2250mm "IC AMP CLASS D STER 10W 28HTSSOP"  
+U4         LMZ14202HTZ/NOPB           TopLayer TO-PMOD-7         42.6000mm    72.4900mm    180      41.3750mm  72.4900mm "DC DC CONVERTER 5-30V"             
+U1         AS5F34G04SND-08LIN         TopLayer 8LGA(6X8)         121.4000mm   23.8150mm    180      121.4000mm 23.8000mm "IC FLASH 4GBIT SPI/QUAD I/O 8LGA"  
+TR2        DTDG14GPT100               TopLayer SOT-89-3          19.7000mm    14.4000mm    90       19.7000mm  14.8000mm "NPN  TR 1A with  Resi"             
+TR1        DTDG14GPT100               TopLayer SOT-89-3          12.7000mm    14.5000mm    90       12.7000mm  14.9000mm "NPN  TR 1A with  Resi"             
+SW1        219-8MST                   TopLayer 219-8MST          108.2900mm   8.0000mm     270      108.2900mm 8.0000mm  "SMD DIP Switch"                    
+R134       RK73Z1JTTD                 TopLayer R1608             74.9000mm    32.0000mm    180      74.9000mm  32.0000mm ???????1608???                      
+R133       ERJ-PA3F1002V              TopLayer R1608             74.9000mm    33.6000mm    0        74.9000mm  33.6000mm ???????1608???                      
+R130       ERJ-PA3F22R0V              TopLayer R1608             71.4000mm    55.7000mm    180      71.4000mm  55.7000mm ???????1608???                      
+R126       ERJ-PA3F3601V              TopLayer R1608             74.8900mm    36.8000mm    180      74.8900mm  36.8000mm ???????1608???                      
+R128       ERJ-PA3F22R0V              TopLayer R1608             71.4000mm    57.5000mm    180      71.4000mm  57.5000mm ???????1608???                      
+R119       RK73Z1JTTD                 TopLayer R1608             74.9000mm    26.8000mm    0        74.9000mm  26.8000mm ???????1608???                      
+R125       ERJ-PA3F1003V              TopLayer R1608             82.2500mm    46.2000mm    0        82.2500mm  46.2000mm ???????1608???                      
+R124       ERJ-PA3F3902V              TopLayer R1608             78.3000mm    47.7000mm    270      78.3000mm  47.7000mm ???????1608???                      
+R123       ERJ-PA3F1002V              TopLayer R1608             77.2000mm    42.1000mm    180      77.2000mm  42.1000mm ???????1608???                      
+R127       ERJ-PA3F1002V              TopLayer R1608             74.9000mm    38.4000mm    0        74.9000mm  38.4000mm ???????1608???                      
+VOL2       ST4ETB503                  TopLayer ST4ETB202         71.1000mm    18.2000mm    0        71.1000mm  18.2000mm "CERMET TRIMMER  Top adjustmet"     
+R120       RK73Z1JTTD                 TopLayer R1608             63.3000mm    19.4000mm    0        63.3000mm  19.4000mm ???????1608???                      
+R122       ERJ-PA3F1002V              TopLayer R1608             56.9000mm    33.3000mm    180      56.9000mm  33.3000mm ???????1608???                      
+R118       ERJ-PA3F5100V              TopLayer R1608             79.0000mm    14.5000mm    180      79.0000mm  14.5000mm ???????1608???                      
+R121       ERJ-PA3F1002V              TopLayer R1608             53.6000mm    33.3000mm    180      53.6000mm  33.3000mm ???????1608???                      
+R116       ERJ-PA3F1002V              TopLayer R1608             79.0000mm    11.3000mm    0        79.0000mm  11.3000mm ???????1608???                      
+VOL1       ST4ETB202                  TopLayer ST4ETB202         84.4588mm    18.2000mm    0        84.4588mm  18.2000mm "CERMET TRIMMER  Top adjustmet"     
+R114       ERJ-PA3F1302V              TopLayer R1608             71.0000mm    26.8000mm    0        71.0000mm  26.8000mm ???????1608???                      
+R113       ERJ-PA3F1201V              TopLayer R1608             53.5950mm    27.5437mm    180      53.5950mm  27.5437mm ???????1608???                      
+R115       ERJ-PA3F4701V              TopLayer R1608             74.9000mm    28.5000mm    0        74.9000mm  28.5000mm ???????1608???                      
+R111       ERJ-PA3F4701V              TopLayer R1608             71.0000mm    28.5000mm    0        71.0000mm  28.5000mm ???????1608???                      
+R110       ERJ-PA3F3601V              TopLayer R1608             53.5950mm    20.7000mm    0        53.5950mm  20.7000mm ???????1608???                      
+R109       ERJ-PA3F3601V              TopLayer R1608             53.5950mm    24.2000mm    180      53.5950mm  24.2000mm ???????1608???                      
+R105       RK73Z1JTTD                 TopLayer R1608             18.2000mm    72.1000mm    180      18.2000mm  72.1000mm ???????1608???                      
+R103       RK73B2ATTD392J             TopLayer R2012             21.8000mm    48.2760mm    180      21.8000mm  48.2760mm ???????2012???                      
+R102       RK73B2ATTD392J             TopLayer R2012             38.0000mm    3.0901mm     180      38.0000mm  3.0901mm  ???????2012???                      
+R100       ERJ-PA3F1002V              TopLayer R1608             26.7000mm    46.2400mm    90       26.7000mm  46.2400mm ???????1608???                      
+R99        RK73B2ATTD392J             TopLayer R2012             21.8000mm    51.8480mm    180      21.8000mm  51.8480mm ???????2012???                      
+R98        RK73B2ATTD392J             TopLayer R2012             26.9000mm    7.2000mm     0        26.9000mm  7.2000mm  ???????2012???                      
+R97        ERJ-PA3F1002V              TopLayer R1608             25.3000mm    49.3000mm    90       25.3000mm  49.3000mm ???????1608???                      
+R96        ERJ-PA3F1002V              TopLayer R1608             30.5000mm    9.6000mm     90       30.5000mm  9.6000mm  ???????1608???                      
+R95        RK73B2ATTD392J             TopLayer R2012             21.8000mm    55.4200mm    180      21.8000mm  55.4200mm ???????2012???                      
+R94        RK73B2ATTD392J             TopLayer R2012             26.9000mm    10.9625mm    0        26.9000mm  10.9625mm ???????2012???                      
+R93        ERJ-PA3F1002V              TopLayer R1608             26.7000mm    52.4000mm    90       26.7000mm  52.4000mm ???????1608???                      
+R92        ERJ-PA3F1002V              TopLayer R1608             31.9000mm    12.2000mm    90       31.9000mm  12.2000mm ???????1608???                      
+R91        RK73B2ATTD392J             TopLayer R2012             21.8000mm    58.9920mm    180      21.8000mm  58.9920mm ???????2012???                      
+R90        RK73B2ATTD392J             TopLayer R2012             26.9000mm    14.7250mm    0        26.9000mm  14.7250mm ???????2012???                      
+R89        ERJ-PA3F1002V              TopLayer R1608             25.3000mm    55.0000mm    90       25.3000mm  55.0000mm ???????1608???                      
+R88        ERJ-PA3F1002V              TopLayer R1608             30.5000mm    15.3000mm    90       30.5000mm  15.3000mm ???????1608???                      
+R87        RK73B2ATTD392J             TopLayer R2012             21.8000mm    33.9880mm    180      21.8000mm  33.9880mm ???????2012???                      
+R86        RK73B2ATTD392J             TopLayer R2012             21.8000mm    19.7000mm    0        21.8000mm  19.7000mm ???????2012???                      
+R85        ERJ-PA3F1002V              TopLayer R1608             26.7000mm    33.9200mm    90       26.7000mm  33.9200mm ???????1608???                      
+R84        ERJ-PA3F1002V              TopLayer R1608             26.5002mm    21.6000mm    90       26.5002mm  21.6000mm ???????1608???                      
+R83        RK73B2ATTD392J             TopLayer R2012             21.8000mm    37.5600mm    180      21.8000mm  37.5600mm ???????2012???                      
+R82        RK73B2ATTD392J             TopLayer R2012             21.8000mm    23.2720mm    0        21.8000mm  23.2720mm ???????2012???                      
+R81        ERJ-PA3F1002V              TopLayer R1608             25.2000mm    36.4600mm    90       25.2000mm  36.4600mm ???????1608???                      
+R80        ERJ-PA3F1002V              TopLayer R1608             25.1000mm    24.1000mm    90       25.1000mm  24.1000mm ???????1608???                      
+R79        RK73B2ATTD392J             TopLayer R2012             21.8000mm    41.1320mm    180      21.8000mm  41.1320mm ???????2012???                      
+R78        RK73B2ATTD392J             TopLayer R2012             21.8000mm    26.8440mm    0        21.8000mm  26.8440mm ???????2012???                      
+R77        ERJ-PA3F1002V              TopLayer R1608             26.7000mm    39.6000mm    90       26.7000mm  39.6000mm ???????1608???                      
+R76        ERJ-PA3F1002V              TopLayer R1608             26.5002mm    26.8000mm    90       26.5002mm  26.8000mm ???????1608???                      
+R75        RK73B2ATTD392J             TopLayer R2012             21.8000mm    44.7040mm    180      21.8000mm  44.7040mm ???????2012???                      
+R74        RK73B2ATTD392J             TopLayer R2012             21.8000mm    30.4160mm    0        21.8000mm  30.4160mm ???????2012???                      
+R73        ERJ-PA3F1002V              TopLayer R1608             25.2000mm    42.6400mm    90       25.2000mm  42.6400mm ???????1608???                      
+R72        ERJ-PA3F1002V              TopLayer R1608             25.2000mm    30.2800mm    90       25.2000mm  30.2800mm ???????1608???                      
+R71        ERJ-PA3F1002V              TopLayer R1608             40.7950mm    47.9650mm    0        40.7950mm  47.9650mm ???????1608???                      
+R70        ERJ-PA3F1002V              TopLayer R1608             40.8000mm    50.5350mm    0        40.8000mm  50.5350mm ???????1608???                      
+R69        ERJ-PA3F1002V              TopLayer R1608             40.8000mm    53.0750mm    0        40.8000mm  53.0750mm ???????1608???                      
+R68        ERJ-PA3F1002V              TopLayer R1608             40.8000mm    55.6150mm    0        40.8000mm  55.6150mm ???????1608???                      
+R67        ERJ-PA3F1002V              TopLayer R1608             40.9000mm    35.1000mm    0        40.9000mm  35.1000mm ???????1608???                      
+R66        ERJ-PA3F1002V              TopLayer R1608             40.9000mm    37.7000mm    0        40.9000mm  37.7000mm ???????1608???                      
+R65        ERJ-PA3F1002V              TopLayer R1608             40.9000mm    40.2000mm    0        40.9000mm  40.2000mm ???????1608???                      
+R64        ERJ-PA3F1002V              TopLayer R1608             40.9000mm    42.7450mm    0        40.9000mm  42.7450mm ???????1608???                      
+R63        ERJ-PA3F1002V              TopLayer R1608             46.4000mm    15.2450mm    0        46.4000mm  15.2450mm ???????1608???                      
+R62        ERJ-PA3F1002V              TopLayer R1608             46.4000mm    12.7000mm    0        46.4000mm  12.7000mm ???????1608???                      
+R61        ERJ-PA3F1002V              TopLayer R1608             46.4000mm    10.1650mm    0        46.4000mm  10.1650mm ???????1608???                      
+R60        ERJ-PA3F1002V              TopLayer R1608             46.4000mm    7.6000mm     0        46.4000mm  7.6000mm  ???????1608???                      
+R59        ERJ-PA3F1002V              TopLayer R1608             40.9000mm    29.9400mm    0        40.9000mm  29.9400mm ???????1608???                      
+R58        ERJ-PA3F1002V              TopLayer R1608             40.9000mm    27.4000mm    0        40.9000mm  27.4000mm ???????1608???                      
+R57        ERJ-PA3F1002V              TopLayer R1608             40.9000mm    24.9000mm    0        40.9000mm  24.9000mm ???????1608???                      
+R56        ERJ-PA3F1002V              TopLayer R1608             40.9000mm    22.3000mm    0        40.9000mm  22.3000mm ???????1608???                      
+R54        ERJ-PA3F1001V              TopLayer R1608             52.3000mm    68.9000mm    270      52.3000mm  68.9000mm ???????1608???                      
+R53        ERJ-PA3F1001V              TopLayer R1608             55.4000mm    68.9000mm    90       55.4000mm  68.9000mm ???????1608???                      
+R52        ERJ-PA3F1001V              TopLayer R1608             53.9000mm    68.9000mm    90       53.9000mm  68.9000mm ???????1608???                      
+R51        ERJ-PA3F3301V              TopLayer R1608             56.2050mm    72.4000mm    180      56.2050mm  72.4000mm ???????1608???                      
+R50        ERJ-PA3F3602V              TopLayer R1608             53.9000mm    75.7000mm    270      53.9000mm  75.7000mm ???????1608???                      
+R49        ERJ-PA3F1003V              TopLayer R1608             49.9000mm    65.7000mm    0        49.9000mm  65.7000mm ???????1608???                      
+R32        ERJ-PA3F2001V              TopLayer R1608             82.2500mm    44.3000mm    0        82.2500mm  44.3000mm ???????1608???                      
+R31        ERJ-PA3F2001V              TopLayer R1608             82.2500mm    37.5000mm    0        82.2500mm  37.5000mm ???????1608???                      
+R28        ERJ-PA3F2001V              TopLayer R1608             82.2500mm    39.7667mm    0        82.2500mm  39.7667mm ???????1608???                      
+R26        ERJ-PA3F2001V              TopLayer R1608             82.2500mm    42.0333mm    0        82.2500mm  42.0333mm ???????1608???                      
+R43        RK73B2ATTD472J             TopLayer R2012             13.0000mm    3.7651mm     270      13.0000mm  3.7651mm  ???????2012???                      
+R42        ERJ-PA3F1003V              TopLayer R1608             120.6000mm   17.9000mm    0        120.6000mm 17.9000mm ???????1608???                      
+R41        ERJ-PA3F1003V              TopLayer R1608             120.6000mm   16.1333mm    0        120.6000mm 16.1333mm ???????1608???                      
+R40        ERJ-PA3F1003V              TopLayer R1608             125.7000mm   14.4556mm    0        125.7000mm 14.4556mm ???????1608???                      
+R39        ERJ-PA3F1003V              TopLayer R1608             125.7000mm   12.7778mm    0        125.7000mm 12.7778mm ???????1608???                      
+R38        ERJ-PA3F1003V              TopLayer R1608             125.7000mm   11.1000mm    0        125.7000mm 11.1000mm ???????1608???                      
+R36        ERJ-PA3F1003V              TopLayer R1608             104.8000mm   16.7000mm    270      104.8000mm 16.7000mm ???????1608???                      
+R35        ERJ-PA3F1003V              TopLayer R1608             103.0000mm   16.7000mm    270      103.0000mm 16.7000mm ???????1608???                      
+R24        ERJ-PA3F1002V              TopLayer R1608             96.2000mm    55.6000mm    270      96.2000mm  55.6000mm ???????1608???                      
+R30        ERJ-PA3F22R0V              TopLayer R1608             86.4000mm    47.9625mm    180      86.4000mm  47.9625mm ???????1608???                      
+R27        ERJ-PA3F22R0V              TopLayer R1608             86.4000mm    49.6000mm    180      86.4000mm  49.6000mm ???????1608???                      
+R6         ERJ-PA3F4701V              TopLayer R1608             112.4000mm   23.8000mm    90       112.4000mm 23.8000mm ???????1608???                      
+R5         ERJ-PA3F4701V              TopLayer R1608             126.0000mm   36.3000mm    0        126.0000mm 36.3000mm ???????1608???                      
+R1         ERJ-PA3F4701V              TopLayer R1608             126.7000mm   32.9000mm    90       126.7000mm 32.9000mm ???????1608???                      
+R17        ERJ-PA3F4701V              TopLayer R1608             104.6000mm   76.4995mm    90       104.6000mm 76.4995mm ???????1608???                      
+R11        ERJ-PA3F4701V              TopLayer R1608             95.3000mm    76.4995mm    90       95.3000mm  76.4995mm ???????1608???                      
+R10        ERJ-PA3F4701V              TopLayer R1608             98.6000mm    76.5000mm    90       98.6000mm  76.5000mm ???????1608???                      
+R9         ERJ-PA3F4701V              TopLayer R1608             100.6000mm   76.5000mm    90       100.6000mm 76.5000mm ???????1608???                      
+R8         ERJ-PA3F4701V              TopLayer R1608             106.6000mm   76.5000mm    90       106.6000mm 76.5000mm ???????1608???                      
+R7         ERJ-PA3F4701V              TopLayer R1608             110.6000mm   76.4995mm    90       110.6000mm 76.4995mm ???????1608???                      
+PC8        PS2801-4-F3-A              TopLayer SO16              32.9000mm    51.1700mm    0        32.9000mm  51.1700mm "4 Channel 16-SO"                   
+PC7        PS2801-4-F3-A              TopLayer SO16              38.4000mm    10.7800mm    0        38.4000mm  10.7800mm "4 Channel 16-SO"                   
+PC6        PS2801-4-F3-A              TopLayer SO16              33.0000mm    38.3000mm    0        33.0000mm  38.3000mm "4 Channel 16-SO"                   
+PC5        PS2801-4-F3-A              TopLayer SO16              33.0000mm    25.4950mm    0        33.0000mm  25.4950mm "4 Channel 16-SO"                   
+PC3        TLP291(SE                  TopLayer SOP4              18.7999mm    4.4001mm     180      18.8000mm  4.4000mm  "PHOTOCOUPLER 1ch"                  
+PC1        TLP291(SE                  TopLayer SOP4              18.7999mm    7.5001mm     180      18.8000mm  7.5000mm  "PHOTOCOUPLER 1ch"                  
+LED4       APT1608LSECK/J3-PRV        TopLayer LED1608           86.6500mm    44.3000mm    180      86.6500mm  44.3000mm "LED 1608 RED"                      
+LED3       APT1608LZGCK               TopLayer LED1608           86.6500mm    37.5000mm    180      86.6500mm  37.5000mm "LED 1608 green"                    
+LED2       APT1608LSYCK/J3-PRV        TopLayer LED1608           86.6500mm    39.8000mm    180      86.6500mm  39.8000mm "LED 1608 yellow"                   
+LED1       APT1608LSECK/J4-PRV        TopLayer LED1608           86.6500mm    42.0333mm    180      86.6500mm  42.0333mm "LED 1608 orange"                   
+L6         "NR6028T330M  33uH"        TopLayer NR6028T           47.6000mm    52.4000mm    90       47.6000mm  52.4000mm "Shielded Inductor"                 
+L5         "NR6028T330M  33uH"        TopLayer NR6028T           47.6000mm    31.3000mm    90       47.6000mm  31.3000mm "Shielded Inductor"                 
+L1         MLZ2012N101LT000           TopLayer R2012             125.4000mm   55.9000mm    0        125.4000mm 55.9000mm "SMD Inductor 2012size"             
+JTAG1      "HEDDER12 2mm"             TopLayer HDR1X12_2MM       107.6000mm   72.0000mm    0        96.6000mm  72.0000mm "HEDDER12 2mm"                      
+FUSE1      ERB-RE3R00V                TopLayer R1608             18.1000mm    77.0000mm    0        18.1000mm  77.0000mm "3A 1608???"                        
+USB1       87583-3010RPALF            TopLayer USB_2.0           82.5000mm    68.4000mm    180      82.5000mm  70.7000mm "CONN RCPT USB2.0 TYPEA 4P SMD RA"  
+C77        CGA3E2X7R1H104K080AA       TopLayer C1608             71.0000mm    40.2000mm    180      71.0000mm  40.2000mm ????1608???                         
+C76        TMK107BJ105MA-T            TopLayer C1608             75.0400mm    55.7250mm    180      75.0400mm  55.7250mm ????1608???                         
+C74        GCM1885C2A102JA16D         TopLayer C1608             67.0000mm    54.6000mm    90       67.0000mm  54.6000mm ????1608???                         
+C73        TMK107BJ105MA-T            TopLayer C1608             79.7400mm    50.5000mm    180      79.7400mm  50.5000mm ????1608???                         
+C70        TMK107BJ105MA-T            TopLayer C1608             82.2450mm    48.4000mm    180      82.2450mm  48.4000mm ????1608???                         
+C72        TMK107BJ105MA-T            TopLayer C1608             79.7400mm    52.0000mm    0        79.7400mm  52.0000mm ????1608???                         
+C71        UMK107B7474KA-TR           TopLayer C1608             55.6000mm    51.4000mm    0        55.6000mm  51.4000mm ????1608???                         
+C67        TMK212BJ105KG-T            TopLayer C2012             55.6000mm    48.8000mm    0        55.6000mm  48.8000mm ????2012???                         
+C65        UMK107B7474KA-TR           TopLayer C1608             53.8000mm    44.7000mm    0        53.8000mm  44.7000mm ????1608???                         
+C53        CGA3E2X7R1H104K080AA       TopLayer C1608             60.6000mm    31.4750mm    180      60.6000mm  31.4750mm ????1608???                         
+C62        GCM1885C2A102JA16D         TopLayer C1608             71.0000mm    38.3750mm    180      71.0000mm  38.3750mm ????1608???                         
+C69        CGA3E2X7R1H104K080AA       TopLayer C1608             53.6000mm    30.8000mm    0        53.6000mm  30.8000mm ????1608???                         
+C68        CGA3E2X7R1H104K080AA       TopLayer C1608             53.6000mm    29.2000mm    0        53.6000mm  29.2000mm ????1608???                         
+C78        CGA3E2X7R1H104K080AA       TopLayer C1608             66.8525mm    30.3000mm    180      66.8525mm  30.3000mm ????1608???                         
+C64        CGA3E2X7R1H104K080AA       TopLayer C1608             56.9000mm    30.8000mm    180      56.9000mm  30.8000mm ????1608???                         
+C60        GCM1885C2A102JA16D         TopLayer C1608             71.0000mm    30.3000mm    0        71.0000mm  30.3000mm ????1608???                         
+C59        GCM1885C2A682JA16D         TopLayer C1608             53.6000mm    22.4000mm    180      53.6000mm  22.4000mm ????1608???                         
+C55        TMK107BJ105MA-T            TopLayer C1608             79.0000mm    12.9000mm    180      79.0000mm  12.9000mm ????1608???                         
+C57        GCM1885C2A221JA16D         TopLayer C1608             53.6000mm    25.9000mm    180      53.6000mm  25.9000mm ????1608???                         
+C56        GCM1885C2A471JA16D         TopLayer C1608             71.0000mm    25.2000mm    0        71.0000mm  25.2000mm ????1608???                         
+C58        TMK107BJ105MA-T            TopLayer C1608             74.9000mm    30.3000mm    0        74.9000mm  30.3000mm ????1608???                         
+C52        GRM21BR71H474MA88          TopLayer C2012             11.8000mm    71.1000mm    0        11.8000mm  71.1000mm ????2012???                         
+C51        GRM21BR71H474MA88          TopLayer C2012             22.7000mm    71.5000mm    270      22.7000mm  71.5000mm ????2012???                         
+C49        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    60.8000mm    0        22.0000mm  60.8000mm ????1608???                         
+C48        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    57.2273mm    0        22.0000mm  57.2273mm ????1608???                         
+C47        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    53.6545mm    0        22.0000mm  53.6545mm ????1608???                         
+C46        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    50.0818mm    0        22.0000mm  50.0818mm ????1608???                         
+C45        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    46.5091mm    0        22.0000mm  46.5091mm ????1608???                         
+C44        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    42.9364mm    0        22.0000mm  42.9364mm ????1608???                         
+C43        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    39.3636mm    0        22.0000mm  39.3636mm ????1608???                         
+C42        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    35.7909mm    0        22.0000mm  35.7909mm ????1608???                         
+C41        CGA3E2X7R1H104K080AA       TopLayer C1608             27.1000mm    9.1000mm     0        27.1000mm  9.1000mm  ????1608???                         
+C40        CGA3E2X7R1H104K080AA       TopLayer C1608             27.1000mm    12.8500mm    0        27.1000mm  12.8500mm ????1608???                         
+C39        CGA3E2X7R1H104K080AA       TopLayer C1608             27.1000mm    17.4000mm    0        27.1000mm  17.4000mm ????1608???                         
+C37        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    25.0727mm    0        22.0000mm  25.0727mm ????1608???                         
+C34        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    28.6455mm    0        22.0000mm  28.6455mm ????1608???                         
+C32        CGA3E2X7R1H104K080AA       TopLayer C1608             22.0000mm    32.2182mm    0        22.0000mm  32.2182mm ????1608???                         
+C30        CGA3E2X7R1H104K080AA       TopLayer C1608             67.9000mm    66.5000mm    0        67.9000mm  66.5000mm ????1608???                         
+C29        GRM21BR71H474MA88          TopLayer C2012             63.5000mm    69.6000mm    180      63.5000mm  69.6000mm ????2012???                         
+C28        GCD188R71H103KA01D         TopLayer C1608             52.2750mm    73.0600mm    90       52.2750mm  73.0600mm ????1608???                         
+C27        TMK212BBJ106MG-T           TopLayer C2012             58.7000mm    67.5750mm    0        58.7000mm  67.5750mm ????2012???                         
+C26        TMK212BBJ106MG-T           TopLayer C2012             58.7000mm    69.7900mm    0        58.7000mm  69.7900mm ????2012???                         
+C25        TMK212BBJ106MG-T           TopLayer C2012             72.8000mm    61.5000mm    270      72.8000mm  61.5000mm ????2012???                         
+C24        TMK212BBJ106MG-T           TopLayer C2012             70.8000mm    61.5000mm    270      70.8000mm  61.5000mm ????2012???                         
+C22        GRM21BR71H474MA88          TopLayer C2012             45.7000mm    60.9000mm    90       45.7000mm  60.9000mm ????2012???                         
+C21        GCD188R71H103KA01D         TopLayer C1608             56.9000mm    75.7000mm    90       56.9000mm  75.7000mm ????1608???                         
+C20        GCD188R71H103KA01D         TopLayer C1608             55.3750mm    75.7000mm    90       55.3750mm  75.7000mm ????1608???                         
+C3         CGA3E2X7R1H104K080AA       TopLayer C1608             97.7000mm    51.0000mm    0        97.7000mm  51.0000mm ????1608???                         
+C2         TMK107BJ105MA-T            TopLayer C1608             104.3000mm   28.6000mm    180      104.3000mm 28.6000mm ????1608???                         
+C1         TMK107BJ105MA-T            TopLayer C1608             97.7000mm    52.8000mm    0        97.7000mm  52.8000mm ????1608???                         
+C6         CGA3E2X7R1H104K080AA       TopLayer C1608             94.2000mm    45.2000mm    270      94.2000mm  45.2000mm ????1608???                         
+C5         CGA3E2X7R1H104K080AA       TopLayer C1608             104.3000mm   26.9000mm    180      104.3000mm 26.9000mm ????1608???                         
+C15        CGA3E2X7R1H104K080AA       TopLayer C1608             120.1516mm   67.1000mm    0        120.1516mm 67.1000mm ????1608???                         
+C7         GCD188R71H103KA01D         TopLayer C1608             127.9000mm   29.6000mm    90       127.9000mm 29.6000mm ????1608???                         
+C13        GCM1885C2A150FA16D         TopLayer C1608             109.5333mm   63.4000mm    270      109.5333mm 63.4000mm ????1608???                         
+C12        GCM1885C2A150FA16D         TopLayer C1608             112.4000mm   63.4000mm    270      112.4000mm 63.4000mm ????1608???                         
+C11        CGA3E2X7R1H104K080AA       TopLayer C1608             116.1000mm   59.4000mm    270      116.1000mm 59.4000mm ????1608???                         
+C10        CGA3E2X7R1H104K080AA       TopLayer C1608             114.5000mm   59.4000mm    270      114.5000mm 59.4000mm ????1608???                         
+C9         TMK107BJ105MA-T            TopLayer C1608             126.9000mm   60.0000mm    270      126.9000mm 60.0000mm ????1608???                         
